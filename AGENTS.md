@@ -1,6 +1,5 @@
 # Agent Rules
 
-- **Terminal Commands**: Always use `cmd /c` prefix for terminal commands to ensuring proper execution in the Windows environment.
 - ONLY call `dotnet` commands if requested by user.
 
 ## Avalonia UI Rules

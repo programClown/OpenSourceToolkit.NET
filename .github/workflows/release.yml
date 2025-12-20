@@ -1,0 +1,198 @@
+name: Release
+
+# MANUAL TRIGGER ONLY - Creates a new GitHub Release with desktop app artifacts.
+# Go to Actions → Release → Run workflow → Enter version (e.g., 0.1.0)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 0.1.0) - without "v" prefix'
+        required: true
+        type: string
+      skip_tag:
+        description: 'Skip tag creation (assumes you already pushed the tag manually)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.validate.outputs.version }}
+      tag: ${{ steps.validate.outputs.tag }}
+    steps:
+      - name: Validate version format
+        id: validate
+        run: |
+          VERSION="${{ inputs.version }}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version format. Use semantic versioning (e.g., 0.1.0)"
+            exit 1
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "✅ Version: $VERSION, Tag: v$VERSION"
+
+  build-desktop:
+    needs: validate
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish Desktop App (win-x64)
+        shell: pwsh
+        run: |
+          dotnet publish OpenSourceToolkit.NET/OpenSourceToolkit.NET.csproj `
+            -c Release `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true `
+            -p:UseLocalFlowery=false `
+            -o ./publish
+
+      - name: Zip artifact
+        shell: pwsh
+        run: |
+          $artifactName = "OpenSourceToolkit.NET-Desktop-Windows-x64"
+          Compress-Archive -Path ./publish/* -DestinationPath "./$artifactName.zip"
+
+      - name: Upload desktop artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: OpenSourceToolkit.NET-Desktop-Windows-x64
+          path: |
+            ./OpenSourceToolkit.NET-Desktop-Windows-x64.zip
+
+  publish:
+    needs: [validate, build-desktop]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify version in OpenSourceToolkit.NET.csproj
+        run: |
+          CSPROJ_VERSION=$(grep -oP '(?<=<Version>)[^<]+' OpenSourceToolkit.NET/OpenSourceToolkit.NET.csproj | head -n 1)
+          if [ -z "$CSPROJ_VERSION" ]; then
+            echo "::error::No <Version> found in OpenSourceToolkit.NET/OpenSourceToolkit.NET.csproj"
+            exit 1
+          fi
+          if [ "$CSPROJ_VERSION" != "${{ needs.validate.outputs.version }}" ]; then
+            echo "::error::Version mismatch! csproj has $CSPROJ_VERSION but you specified ${{ needs.validate.outputs.version }}"
+            echo "::error::Please update OpenSourceToolkit.NET/OpenSourceToolkit.NET.csproj first!"
+            exit 1
+          fi
+          echo "✅ Version matches: $CSPROJ_VERSION"
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./release-artifacts
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p ./final
+          find ./release-artifacts -name "*.zip" -exec cp {} ./final/ \;
+          echo "=== Release artifacts ==="
+          ls -la ./final/
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.validate.outputs.version }}"
+          # Extract the section for this version from CHANGELOG.md
+          # Matches from "## [X.Y.Z]" until the next "## [" or end of file
+          CHANGELOG=$(awk -v ver="$VERSION" '
+            /^## \[/ {
+              if (found) exit
+              if ($0 ~ "\\[" ver "\\]") found=1
+            }
+            found && !/^## \[/ { print }
+          ' CHANGELOG.md)
+
+          if [ -z "$CHANGELOG" ]; then
+            echo "::error::No changelog entry found for version $VERSION in CHANGELOG.md"
+            exit 1
+          fi
+
+          # Write to file for multiline support
+          echo "$CHANGELOG" > changelog_section.md
+          echo "✅ Extracted changelog for v$VERSION"
+
+      - name: Create and push tag
+        if: ${{ inputs.skip_tag != true }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ needs.validate.outputs.tag }}
+          git push origin ${{ needs.validate.outputs.tag }}
+          echo "✅ Created tag: ${{ needs.validate.outputs.tag }}"
+
+      - name: Skip tag creation
+        if: ${{ inputs.skip_tag == true }}
+        run: echo "⏭️ Skipping tag creation (tag already exists)"
+
+      - name: Build release notes
+        run: |
+          cat > release_notes.md << 'HEADER'
+          ## 📋 What's Changed
+          HEADER
+          cat changelog_section.md >> release_notes.md
+          cat >> release_notes.md << 'FOOTER'
+
+          ---
+
+          FOOTER
+          cat >> release_notes.md << 'APP'
+
+          ## 🖥️ Desktop App (Windows)
+
+          Self-contained executable - no .NET installation required!
+
+          | Platform | Download |
+          |----------|----------|
+          | Windows x64 | `OpenSourceToolkit.NET-Desktop-Windows-x64.zip` |
+          APP
+
+          echo "=== Release Notes ==="
+          cat release_notes.md
+
+      - name: Load custom release notes
+        id: release_body
+        run: |
+          {
+            echo 'body<<EOF'
+            cat release_notes.md
+            echo ''
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ needs.validate.outputs.tag }}
+          name: "v${{ needs.validate.outputs.version }}"
+          files: ./final/*
+          generate_release_notes: true
+          body: ${{ steps.release_body.outputs.body }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "## 🎉 Release Complete!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ needs.validate.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag:** ${{ needs.validate.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release:** ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ needs.validate.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
