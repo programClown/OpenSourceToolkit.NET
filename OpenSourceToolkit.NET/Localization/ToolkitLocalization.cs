@@ -46,6 +46,7 @@ namespace OpenSourceToolkit.NET.Localization
         {
             ("en", "English"),
             ("ar", "العربية"),
+            ("he", "עברית"),
             ("de", "Deutsch"),
             ("es", "Español"),
             ("fr", "Français"),

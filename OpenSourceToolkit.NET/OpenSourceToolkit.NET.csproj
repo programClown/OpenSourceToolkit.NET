@@ -23,6 +23,7 @@
     <EmbeddedResource Include="Localization\it.json" />
     <EmbeddedResource Include="Localization\ja.json" />
     <EmbeddedResource Include="Localization\ko.json" />
+    <EmbeddedResource Include="Localization\he.json" />
     <EmbeddedResource Include="Localization\ar.json" />
     <EmbeddedResource Include="Localization\tr.json" />
     <EmbeddedResource Include="Localization\uk.json" />

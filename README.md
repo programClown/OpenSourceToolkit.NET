@@ -1,16 +1,33 @@
+<!-- markdownlint-disable MD033 -->
+<!-- markdownlint-disable MD041 -->
+
 # OpenSourceToolkit.Net
 
-A comprehensive C# .NET Framework 4.7.2 port of the utilities and tools found in the main **[OpenSourceToolkit](https://github.com/truethari/OpensourceToolkit/)** project. **Special thanks to the original author [truethari](https://github.com/truethari) for the incredible work.**
+![OpenSourceToolkit.NET Screenshot](OpenSourceToolkit.NET.png)
 
-This project is a **pure AI-driven port** executed using **Gemini 3 Pro** and **GPT-5.1**.
+Originally started as a C#/.NET 8 port of the utilities and tools found in the inspiring **[OpenSourceToolkit](https://github.com/truethari/OpensourceToolkit/)** project, and has since been extended with additional tools and features (including a full Avalonia desktop app to explore everything interactively). **Special thanks to the original author [truethari](https://github.com/truethari) for their incredible work.**
 
-This suite provides reusable, modular components for text manipulation, security, networking, hardware testing, and more. Crucially, it includes a full **Avalonia UI application** that allows users to interactively test and verify all functions of the **25+ separate tools** and libraries in a modern desktop interface.
+This suite provides reusable, modular components for text manipulation, security, networking, hardware testing, and more. Crucially, it includes a full **Avalonia UI application** that allows users to interactively test and verify most functions of the **40+ tools (currently 41)** and libraries in a modern desktop interface.
+
+Porting was mainly done by help of AI, but I spent hundreds of hours tweaking
+the tools, adding translations, add more features and simultaneously enhancing
+my [Flowery.NET component suite](https://github.com/tobitege/Flowery.NET) for the UI.
+
+<div align="center">
+
+🌐 **Localized in 12 languages** including:
+
+🇯🇵 日本語にローカライズ済み &nbsp;•&nbsp; 🇰🇷 한국어로 현지화됨 &nbsp;•&nbsp; 🇨🇳 已本地化为简体中文
+
+🇺🇦 Локалізовано українською &nbsp;•&nbsp; 🇸🇦 مترجم للعربية &nbsp;•&nbsp; 🇮🇱 מתורגם לעברית
+
+</div>
 
 ## 🚀 Overview
 
-- **Framework**: .NET Framework 4.7.2
-- **Language**: C# 7.3
-- **Output**: Reusable DLLs (Class Libraries) and Console Applications.
+- **Frameworks**: .NET 8 (`net8.0` libraries + `net8.0-windows` desktop app)
+- **Language**: C# (LangVersion: `latest`)
+- **Output**: Reusable DLLs (class libraries) and a desktop GUI (WinExe).
 - **Architecture**: Modular design with a core library and specialized domain libraries.
 
 ## 📁 Project Structure
@@ -19,8 +36,9 @@ The solution `OpenSourceToolkit.Net.sln` is organized into the following project
 
 ### **OpenSourceToolkit.NET**
 
-- **Full GUI Application** to test all 25+ tools interactively.
-- Dependencies: All of the below, `Avalonia`
+- **Avalonia desktop application (GUI)** to test all tools interactively.
+- Target framework: `net8.0-windows`
+- Dependencies: All of the below, `Avalonia`, `Flowery.NET`
 
 | Project | Description | Dependencies |
 |---------|-------------|--------------|
@@ -37,15 +55,88 @@ The solution `OpenSourceToolkit.Net.sln` is organized into the following project
 | **OpenSourceToolkit.Colors** | Color format converters (HEX, RGB, HSL). | `System.Drawing.Common` |
 | **OpenSourceToolkit.Hardware** | Hardware testing abstractions for Keyboard, Speaker, Mic, and Camera. | `NAudio` |
 | **OpenSourceToolkit.Calculators** | Financial calculators (Compound Interest, Loan Payments, ROI). | None |
-| **OpenSourceToolkit.Demo** | Console application demonstrating usage of the libraries. | All of the above |
 | **OpenSourceToolkit.Tests** | MSTest unit tests for ensuring parity and correctness. | MSTest |
+
+> Note: This repository also contains `OpenSourceToolkit.AI` (a .NET 8 library), but it is not included in `OpenSourceToolkit.Net.sln` by default.
+
+## 🧰 Tool Catalog (GUI)
+
+The desktop app (`OpenSourceToolkit.NET`) currently includes **41 tools**, grouped in the sidebar as follows:
+
+### Media & Files
+
+- Image Editor
+- Folder Analyzer
+- ASCII Art Generator
+- PDF Tools
+- Clipboard Image Saver
+- Audio Noise Reduction
+- Fonts Viewer
+
+### Generators
+
+- UUID Generator
+- Lorem Ipsum Generator
+- Mock Data Generator
+- Privacy Policy Generator
+- QR Code Generator
+- Password Generator
+- VCard Generator
+
+### Converters
+
+- Text Case Converter
+- Timestamp Converter
+- Base64 Converter
+- Color Toolkit
+- Ethereum Converter
+- JSON Formatter
+
+### Security
+
+- Hash Generator
+- HMAC Generator
+- JWT Debugger
+
+### Networking
+
+- Uptime Monitor
+- DNS Lookup
+- IP Location
+- IP Calculator
+- Speed Test
+
+### Development
+
+- Cron Scheduler
+- API Tester
+- Next.js Image Decoder
+- Regex Tester
+- Diff Checker
+- SQL Formatter
+- Markdown Editor
+- Theme Testing
+
+### Hardware
+
+- Hardware Tester
+- Keyboard Tester
+- Stopwatch & Timer
+
+### Math
+
+- Scientific Calculator
+
+### Finance
+
+- Financial Calculator
 
 ## 🛠️ Building & Running
 
 ### Prerequisites
 
-- .NET SDK (capable of targeting .NET Framework 4.7.2)
-- Windows OS (recommended for Hardware/Audio/System.Drawing dependencies)
+- .NET 8 SDK
+- Windows (required for the `OpenSourceToolkit.NET` desktop app, and for projects targeting `net8.0-windows`)
 
 ### Build
 
@@ -55,38 +146,51 @@ To build the entire solution, run the following command in this directory:
 dotnet build
 ```
 
-**Note**: The build is configured via `Directory.Build.props` to output all artifacts to a common directory:
+**Note**: Debug builds are configured to output artifacts to a common directory:
 
-- **Debug**: `bin\Debug\net472\`
-- **Release**: `bin\Release\net472\`
+- **Debug**: `bin\debug\net8.0\` and `bin\debug\net8.0-windows\`
 
 ### Run Avalonia App (GUI)
 
 The best way to explore the toolkit is via the Avalonia UI app, which provides a dedicated interface for every tool:
 
 ```bash
-.\bin\Debug\net472\OpenSourceToolkit.NET.exe
-```
-
-### Run Demo (Console)
-
-You can also run the console demo application:
-
-```bash
-.\bin\Debug\net472\OpenSourceToolkit.Demo.exe
+.\bin\debug\net8.0-windows\OpenSourceToolkit.NET.exe
 ```
 
 ### Run Tests
 
-To execute the 48 test cases in the unit tests:
+To execute the unit tests:
 
 ```bash
 dotnet test
 ```
 
+### Scripts (PowerShell)
+
+For convenience, the repo includes two PowerShell scripts under `scripts/` to build and run the Avalonia desktop app.
+
+- **`scripts/build_desktop.ps1`**: builds `OpenSourceToolkit.NET` (optionally also `OpenSourceToolkit.Tests`)
+  - Examples:
+
+```powershell
+pwsh ./scripts/build_desktop.ps1
+pwsh ./scripts/build_desktop.ps1 -Configuration Release
+pwsh ./scripts/build_desktop.ps1 -IncludeTests
+pwsh ./scripts/build_desktop.ps1 -NoRestore
+```
+
+- **`scripts/run_desktop.ps1`**: builds and starts `OpenSourceToolkit.NET` in the background
+  - Examples:
+
+```powershell
+pwsh ./scripts/run_desktop.ps1
+pwsh ./scripts/run_desktop.ps1 -Configuration Release
+```
+
 ## 📦 Usage Examples
 
-### Text & Data
+### Text & Data library
 
 ```csharp
 using OpenSourceToolkit.TextData;
@@ -99,7 +203,7 @@ var generator = new LoremIpsumGenerator();
 string text = generator.GenerateSentences(3);
 ```
 
-### Security
+### Security library
 
 ```csharp
 using OpenSourceToolkit.Security;
@@ -111,7 +215,7 @@ string md5 = HashGenerator.ComputeMd5("OpenSourceToolkit");
 string token = JwtHelper.GenerateToken("secret_key", "issuer", "audience");
 ```
 
-### Networking
+### Networking library
 
 ```csharp
 using OpenSourceToolkit.Networking;
@@ -122,7 +226,7 @@ var result = await monitor.CheckAsync("https://google.com");
 Console.WriteLine($"Is Up: {result.IsUp}");
 ```
 
-### Hardware (Windows)
+### Hardware (Windows) library
 
 ```csharp
 using OpenSourceToolkit.Hardware;
@@ -145,14 +249,24 @@ The project relies on high-quality open-source packages:
 - **[NCrontab](https://github.com/atifaziz/NCrontab)**: Cron parsing.
 - **[NAudio](https://github.com/naudio/NAudio)**: Audio playback and capture.
 - **[Avalonia](https://github.com/AvaloniaUI/Avalonia)**: Cross-platform UI framework.
-- **[Flowery.NET](https://github.com/tobitege/Flowery.NET)**: DaisyUI component library for Avalonia. **Requires v1.0.9 or later** (for `CustomThemeApplicator` support).
+- **[Flowery.NET](https://github.com/tobitege/Flowery.NET)**: Themed component library for Avalonia. **Requires v1.7.2 or later** (for `CustomThemeApplicator` support).
 
 ## 🌍 Localization
 
 The application supports multiple languages with runtime switching. Currently supported:
 
-- **English (en-US)** - Default
-- **German (de-DE)** - Full translation
+- **English (en)** - Default / fallback
+- **Arabic (ar)**
+- **Hebrew (he)**
+- **German (de)**
+- **Spanish (es)**
+- **French (fr)**
+- **Italian (it)**
+- **Japanese (ja)**
+- **Korean (ko)**
+- **Turkish (tr)**
+- **Ukrainian (uk)**
+- **Chinese (Simplified) (zh-Hans)**
 
 ### For Users
 
@@ -178,22 +292,26 @@ Use the `Localize` markup extension:
 
 #### Adding New Translations
 
-1. Add resource key to `ToolkitStrings.resx` (English)
-2. Add translation to `ToolkitStrings.de.resx` (German)
+Localization strings are stored as embedded JSON files in `OpenSourceToolkit.NET\Localization\` (e.g. `en.json`, `de.json`, `fr.json`).
+
+1. Add / update keys in `OpenSourceToolkit.NET\Localization\en.json` (fallback)
+2. Add / update the same keys in the target language JSON (e.g. `de.json`)
 3. Use the key in XAML via `{loc:Localize YourKey}`
 
 #### Implementation Notes
 
-**Critical**: The `ToolkitLocalization.SetCulture()` method sets culture at multiple levels to ensure `ResourceManager` respects culture changes:
+The `ToolkitLocalization.SetCulture()` method updates thread cultures and notifies bindings so `{loc:Localize ...}` updates immediately:
 
 ```csharp
 Thread.CurrentThread.CurrentUICulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 CultureInfo.DefaultThreadCurrentCulture = culture;
-_resourceManager.ReleaseAllResources();
+CultureChanged?.Invoke(null, culture);
+Instance.PropertyChanged?.Invoke(Instance, new PropertyChangedEventArgs("Item"));
+Instance.PropertyChanged?.Invoke(Instance, new PropertyChangedEventArgs("Item[]"));
 ```
 
-This pattern is **essential** for reliable runtime culture switching. Without `DefaultThreadCurrentUICulture`, the ResourceManager may cache strings from the initial system culture even after calling `ReleaseAllResources()`.
+Translations are loaded lazily from embedded JSON resources when a language is selected.
 
 ## 📄 License
 
@@ -201,7 +319,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🧪 Tests
 
-The solution includes a comprehensive test suite in `OpenSourceToolkit.Tests` using **MSTest**. These tests verify the functionality of the ported libraries and ensure parity with the original tools.
+The solution includes a comprehensive test suite in `OpenSourceToolkit.Tests` using **MSTest**. These 170+ tests verify the functionality of most of the libraries.
 
 ### Coverage Areas
 
