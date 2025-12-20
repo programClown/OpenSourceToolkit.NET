@@ -1163,7 +1163,7 @@ namespace OpenSourceToolkit.NET.ViewModels.Tools
             {
                 // Use Google Fonts Developer API (free, no key required for font list)
                 // This URL returns all font families with metadata
-                var apiUrl = "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=AIzaSyBwIX97bVWr3-6AIUvGkcNnmFgirefZ6Sw";
+                var apiUrl = "https://www.googleapis.com/webfonts/v1/webfonts?sort=popularity&key=";
 
                 var response = await _httpClient.GetStringAsync(apiUrl);
                 var jsonDoc = JsonDocument.Parse(response);
