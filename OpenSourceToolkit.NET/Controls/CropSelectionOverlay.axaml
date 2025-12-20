@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+             x:Class="OpenSourceToolkit.NET.Controls.CropSelectionOverlay"
+             x:Name="Root"
+             ClipToBounds="True"
+             Background="Transparent">
+
+    <Canvas x:Name="OverlayCanvas" Background="Transparent">
+        <!-- Darkened areas outside selection -->
+        <Border x:Name="TopDarkArea" Background="{DynamicResource DaisyNeutralBrush}" Opacity="0.5" IsHitTestVisible="False"/>
+        <Border x:Name="BottomDarkArea" Background="{DynamicResource DaisyNeutralBrush}" Opacity="0.5" IsHitTestVisible="False"/>
+        <Border x:Name="LeftDarkArea" Background="{DynamicResource DaisyNeutralBrush}" Opacity="0.5" IsHitTestVisible="False"/>
+        <Border x:Name="RightDarkArea" Background="{DynamicResource DaisyNeutralBrush}" Opacity="0.5" IsHitTestVisible="False"/>
+
+        <!-- Selection Rectangle Border -->
+        <Border x:Name="SelectionBorder"
+                BorderBrush="{DynamicResource DaisyNeutralContentBrush}"
+                BorderThickness="2"
+                Background="Transparent"
+                Cursor="SizeAll">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="2" Opacity="0.5" OffsetX="0" OffsetY="0"/>
+            </Border.Effect>
+        </Border>
+
+        <!-- Dashed inner border -->
+        <Border x:Name="SelectionBorderDashed"
+                BorderBrush="{DynamicResource DaisyNeutralBrush}"
+                BorderThickness="1"
+                Background="Transparent"
+                IsHitTestVisible="False"/>
+
+        <!-- Resize Handles -->
+        <Border x:Name="HandleNW" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="TopLeftCorner" CornerRadius="2"/>
+        <Border x:Name="HandleN" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="TopSide" CornerRadius="2"/>
+        <Border x:Name="HandleNE" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="TopRightCorner" CornerRadius="2"/>
+        <Border x:Name="HandleW" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="LeftSide" CornerRadius="2"/>
+        <Border x:Name="HandleE" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="RightSide" CornerRadius="2"/>
+        <Border x:Name="HandleSW" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="BottomLeftCorner" CornerRadius="2"/>
+        <Border x:Name="HandleS" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="BottomSide" CornerRadius="2"/>
+        <Border x:Name="HandleSE" Width="10" Height="10" Background="{DynamicResource DaisyNeutralContentBrush}" BorderBrush="{DynamicResource DaisyNeutralBrush}" BorderThickness="1" Cursor="BottomRightCorner" CornerRadius="2"/>
+
+        <!-- Selection Size Display -->
+        <Border x:Name="SizeDisplay"
+                Background="{DynamicResource DaisyNeutralBrush}"
+                CornerRadius="3"
+                Padding="6,3"
+                IsHitTestVisible="False">
+            <TextBlock x:Name="SizeText"
+                       Foreground="{DynamicResource DaisyNeutralContentBrush}"
+                       FontSize="11"
+                       FontWeight="SemiBold"/>
+        </Border>
+    </Canvas>
+</UserControl>

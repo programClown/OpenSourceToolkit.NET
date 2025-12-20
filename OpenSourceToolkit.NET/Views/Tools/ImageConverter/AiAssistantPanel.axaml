@@ -1,0 +1,239 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:imgvm="using:OpenSourceToolkit.NET.ViewModels.Tools.ImageConverter"
+             xmlns:models="using:OpenSourceToolkit.NET.ViewModels.Tools.ImageConverter.Models"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="500"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ImageConverter.AiAssistantPanel"
+             x:DataType="imgvm:AiAssistantViewModel">
+
+    <!-- AI Assistant Panel - extracted from ImageConverterToolView for maintainability -->
+    <Grid RowDefinitions="Auto,Auto,*,Auto">
+        <!-- Row 0: Header with Connection Dropdown -->
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock Text="AI Assistant" FontWeight="Bold" FontSize="14"/>
+
+            <!-- Connection Dropdown -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="Connection" FontSize="11" Opacity="0.7"/>
+                <ComboBox ItemsSource="{Binding AiConnectionNames}"
+                          SelectedItem="{Binding SelectedAiConnection}"
+                          HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <!-- Image Generation Options (visible when connection supports it) -->
+            <StackPanel Spacing="5" IsVisible="{Binding IsImageGenerationConnection}">
+                <Separator Margin="0,4"/>
+                <TextBlock Text="Generation Settings" FontSize="11" Opacity="0.7"/>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="4" ColumnSpacing="8">
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="2">
+                        <TextBlock Text="Size" FontSize="10" Opacity="0.6"/>
+                        <ComboBox ItemsSource="{x:Static imgvm:AiAssistantViewModel.ImageGenSizeOptions}"
+                                  SelectedItem="{Binding ImageGenSize}"
+                                  HorizontalAlignment="Stretch"
+                                  FontSize="11"/>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="2">
+                        <TextBlock Text="Quality" FontSize="10" Opacity="0.6"/>
+                        <ComboBox ItemsSource="{x:Static imgvm:AiAssistantViewModel.ImageGenQualityOptions}"
+                                  SelectedItem="{Binding ImageGenQuality}"
+                                  HorizontalAlignment="Stretch"
+                                  FontSize="11"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Row 1: Toolbar (Save/Copy/Clear + Font Size) -->
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Margin="0,8,0,0">
+            <!-- Left: Save/Copy/Clear -->
+            <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                <daisy:DaisyButton Command="{Binding AiChatSaveCommand}"
+                        ToolTip.Tip="Save Chat History"
+                        Size="Small" Variant="Ghost">
+                    <PathIcon Data="{StaticResource SaveIcon}" Width="12" Height="12"/>
+                </daisy:DaisyButton>
+                <daisy:DaisyButton Command="{Binding AiChatCopyCommand}"
+                        ToolTip.Tip="Copy All to Clipboard"
+                        Size="Small" Variant="Ghost">
+                    <PathIcon Data="{StaticResource CopyIcon}" Width="12" Height="12"/>
+                </daisy:DaisyButton>
+                <daisy:DaisyButton Command="{Binding AiChatClearCommand}"
+                        ToolTip.Tip="Clear Chat"
+                        Size="Small" Variant="Ghost">
+                    <PathIcon Data="{StaticResource ClearIcon}" Width="12" Height="12"/>
+                </daisy:DaisyButton>
+            </StackPanel>
+            <!-- Right: Font Size Controls -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4">
+                <daisy:DaisyButton Command="{Binding AiChatFontDecreaseCommand}"
+                        ToolTip.Tip="Decrease Font Size"
+                        Size="Small" Variant="Ghost">
+                    <PathIcon Data="{StaticResource ZoomOutIcon}" Width="12" Height="12"/>
+                </daisy:DaisyButton>
+                <TextBlock Text="{Binding AiChatFontSize, StringFormat='{}{0}pt'}"
+                           FontSize="10" VerticalAlignment="Center" Opacity="0.7" MinWidth="28" TextAlignment="Center"/>
+                <daisy:DaisyButton Command="{Binding AiChatFontIncreaseCommand}"
+                        ToolTip.Tip="Increase Font Size"
+                        Size="Small" Variant="Ghost">
+                    <PathIcon Data="{StaticResource ZoomInIcon}" Width="12" Height="12"/>
+                </daisy:DaisyButton>
+            </StackPanel>
+        </Grid>
+
+        <!-- Row 2: Chat Messages with DaisyChatBubble -->
+        <Border Grid.Row="2"
+                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Margin="0,6,0,6"
+                MinHeight="120"
+                Background="{DynamicResource DaisyBase100Brush}">
+            <ScrollViewer x:Name="ChatScrollViewer"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <!-- Empty state when no messages -->
+                <Panel>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="8"
+                                IsVisible="{Binding !HasMessages}">
+                        <PathIcon Data="{StaticResource ChatIcon}" Width="32" Height="32" Opacity="0.3"/>
+                        <TextBlock Text="No messages yet" Opacity="0.5" HorizontalAlignment="Center" FontSize="12"/>
+                        <TextBlock Text="Ask about the current image or request a new one" Opacity="0.4" HorizontalAlignment="Center" FontSize="11" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </StackPanel>
+                    
+                    <!-- Chat messages -->
+                    <ItemsControl ItemsSource="{Binding ChatMessages}"
+                                  IsVisible="{Binding HasMessages}"
+                                  Padding="8">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Spacing="12"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="models:ChatMessageItem">
+                                <Panel>
+                                    <!-- User messages (right-aligned, Primary variant) -->
+                                    <daisy:DaisyChatBubble 
+                                        IsEnd="True"
+                                        Variant="Primary"
+                                        Content="{Binding Content}"
+                                        Footer="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
+                                        IsVisible="{Binding Role, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static models:ChatMessageRole.User}}"
+                                        DoubleTapped="OnMessageDoubleTapped" Tag="{Binding}"/>
+                                    
+                                    <!-- AI messages (left-aligned, Default variant) - only when NOT success -->
+                                    <daisy:DaisyChatBubble 
+                                        IsEnd="False"
+                                        Header="AI"
+                                        Content="{Binding Content}"
+                                        Footer="{Binding Footer}"
+                                        DoubleTapped="OnMessageDoubleTapped" Tag="{Binding}">
+                                        <daisy:DaisyChatBubble.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="Role" Converter="{x:Static ObjectConverters.Equal}" ConverterParameter="{x:Static models:ChatMessageRole.Assistant}"/>
+                                                <Binding Path="!IsSuccess"/>
+                                            </MultiBinding>
+                                        </daisy:DaisyChatBubble.IsVisible>
+                                    </daisy:DaisyChatBubble>
+                                    
+                                    <!-- System messages: Error (left, Error variant) -->
+                                    <daisy:DaisyChatBubble 
+                                        IsEnd="False"
+                                        Variant="Error"
+                                        Header="Error"
+                                        Content="{Binding Content}"
+                                        Footer="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
+                                        DoubleTapped="OnMessageDoubleTapped" Tag="{Binding}">
+                                        <daisy:DaisyChatBubble.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="IsError"/>
+                                                <Binding Path="Role" Converter="{x:Static ObjectConverters.Equal}" ConverterParameter="{x:Static models:ChatMessageRole.System}"/>
+                                            </MultiBinding>
+                                        </daisy:DaisyChatBubble.IsVisible>
+                                    </daisy:DaisyChatBubble>
+                                    
+                                    <!-- System messages: Cancelled (left, Warning variant) -->
+                                    <daisy:DaisyChatBubble 
+                                        IsEnd="False"
+                                        Variant="Warning"
+                                        Header="Cancelled"
+                                        Content="{Binding Content}"
+                                        Footer="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
+                                        DoubleTapped="OnMessageDoubleTapped" Tag="{Binding}">
+                                        <daisy:DaisyChatBubble.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="IsCancelled"/>
+                                                <Binding Path="Role" Converter="{x:Static ObjectConverters.Equal}" ConverterParameter="{x:Static models:ChatMessageRole.System}"/>
+                                            </MultiBinding>
+                                        </daisy:DaisyChatBubble.IsVisible>
+                                    </daisy:DaisyChatBubble>
+                                    
+                                    <!-- System messages: Success (left, Success variant) -->
+                                    <daisy:DaisyChatBubble 
+                                        IsEnd="False"
+                                        Variant="Success"
+                                        Content="{Binding Content}"
+                                        Footer="{Binding Timestamp, StringFormat='{}{0:HH:mm}'}"
+                                        DoubleTapped="OnMessageDoubleTapped" Tag="{Binding}">
+                                        <daisy:DaisyChatBubble.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding Path="IsSuccess"/>
+                                                <Binding Path="Role" Converter="{x:Static ObjectConverters.Equal}" ConverterParameter="{x:Static models:ChatMessageRole.Assistant}"/>
+                                            </MultiBinding>
+                                        </daisy:DaisyChatBubble.IsVisible>
+                                    </daisy:DaisyChatBubble>
+                                </Panel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Panel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Row 3: Input and Send/Abort Button -->
+        <StackPanel Grid.Row="3" Spacing="6">
+            <TextBox x:Name="AiUserInputTextBox"
+                     Text="{Binding AiUserInput}"
+                     Watermark="Enter message (Ctrl+Enter)"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     MinHeight="50"
+                     MaxHeight="100"
+                     FontSize="{Binding AiChatFontSize}"
+                     IsEnabled="{Binding !IsAiProcessing}">
+                <TextBox.KeyBindings>
+                    <KeyBinding Gesture="Ctrl+Enter" Command="{Binding SendAiMessageCommand}"/>
+                </TextBox.KeyBindings>
+            </TextBox>
+            <daisy:DaisyCheckBox Content="Send current image?" 
+                                  IsChecked="{Binding SendWorkspaceImage}"
+                                  ToolTip.Tip="Include workspace image with AI request"
+                                  Size="Small"
+                                  Margin="0,2,0,0"/>
+            <Grid ColumnDefinitions="*">
+                <daisy:DaisyButton Grid.Column="0"
+                        Command="{Binding SendAiMessageCommand}"
+                        Shape="Block" Variant="Primary"
+                        IsVisible="{Binding !IsAiProcessing}">
+                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                        <PathIcon Data="{StaticResource SendIcon}" Width="14" Height="14"/>
+                        <TextBlock Text="Send" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </daisy:DaisyButton>
+                <daisy:DaisyButton Grid.Column="0"
+                        Command="{Binding AbortAiCommand}"
+                        Shape="Block" Variant="Error"
+                        IsVisible="{Binding IsAiProcessing}">
+                    <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Center">
+                        <PathIcon Data="{StaticResource StopIcon}" Width="14" Height="14"/>
+                        <TextBlock Text="Abort" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </daisy:DaisyButton>
+            </Grid>
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsAiProcessing}" Height="3"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

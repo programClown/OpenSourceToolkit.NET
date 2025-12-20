@@ -1,0 +1,184 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.KeyboardTesterToolView"
+             x:DataType="vm:KeyboardTesterToolViewModel"
+             Focusable="True">
+
+    <UserControl.Styles>
+        <Style Selector="Border.Card">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+        <Style Selector="TextBlock.Label">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.Value">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*">
+        <daisy:DaisyTabs Grid.Row="0" Variant="Boxed" Size="Small">
+            <!-- Key Events Tab -->
+            <TabItem Header="{loc:Localize Keyboard_KeyEvents_Tab}">
+                <ScrollViewer>
+                    <StackPanel Spacing="10" Margin="0,10,0,0">
+                        <!-- Controls -->
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <daisy:DaisyButton Command="{Binding StartListeningCommand}"
+                                    Content="{loc:Localize Keyboard_StartMonitoring_Button}"
+                                    IsVisible="{Binding !IsListening}"
+                                    Variant="Success"
+                                    Click="OnStartMonitoringClick"/>
+                            <daisy:DaisyButton Command="{Binding StopListeningCommand}"
+                                    Content="{loc:Localize Keyboard_StopMonitoring_Button}"
+                                    IsVisible="{Binding IsListening}"
+                                    Variant="Warning"
+                                    Click="OnStartMonitoringClick"/>
+                            <daisy:DaisyButton Command="{Binding ClearEventsCommand}" Content="{loc:Localize Keyboard_ClearData_Button}"/>
+                        </StackPanel>
+
+                        <!-- Current Key Display -->
+                        <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                BorderThickness="1" CornerRadius="8" Padding="30"
+                                Background="{DynamicResource DaisyBase200Brush}"
+                                MinHeight="150">
+                            <StackPanel HorizontalAlignment="Center" Spacing="10" VerticalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_CurrentlyPressed_Label}" FontSize="14" HorizontalAlignment="Center" Foreground="{DynamicResource DaisyPrimaryBrush}"/>
+                                <TextBlock Text="{Binding CurrentKey.Key, TargetNullValue='No key pressed'}"
+                                           FontSize="48" FontWeight="Bold"
+                                           HorizontalAlignment="Center"/>
+                                <StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center" MinHeight="20">
+                                    <TextBlock Text="{Binding CurrentKey.Code, StringFormat='Code: {0}', TargetNullValue='Code: ---'}" FontFamily="Consolas,Monospace" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                    <TextBlock Text="{Binding CurrentKey.Modifiers, StringFormat='Modifiers: {0}', TargetNullValue='Modifiers: None'}" FontFamily="Consolas,Monospace" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Stats Grid -->
+                        <Grid ColumnDefinitions="*,*,*">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_TotalKeys_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding TotalKeys}" Classes="Value" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_UniqueKeys_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding UniqueKeys}" Classes="Value" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_MostPressed_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding MostPressed}" Classes="Value" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Key Events Table -->
+                        <DataGrid ItemsSource="{Binding KeyEvents}"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  CanUserResizeColumns="True">
+                            <DataGrid.Styles>
+                                <Style Selector="DataGridColumnHeader">
+                                    <Setter Property="Foreground" Value="{DynamicResource DaisyPrimaryBrush}"/>
+                                </Style>
+                            </DataGrid.Styles>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="80"/>
+                                <DataGridTextColumn Header="Key" Binding="{Binding Key}" Width="100"/>
+                                <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="60"/>
+                                <DataGridTextColumn Header="Modifiers" Binding="{Binding Modifiers}" Width="120"/>
+                                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss.fff}'}" Width="*"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Typing Test Tab -->
+            <TabItem Header="{loc:Localize Keyboard_TypingTest_Tab}">
+                <ScrollViewer>
+                    <StackPanel Spacing="20" Margin="0,10,0,0">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <ComboBox ItemsSource="{Binding AvailableTexts}"
+                                          SelectedItem="{Binding SelectedText}"
+                                          IsVisible="{Binding !IsContinuousMode}"
+                                          MinWidth="300"/>
+                                <daisy:DaisyCheckBox Content="{loc:Localize Keyboard_Continuous_Label}"
+                                          IsChecked="{Binding IsContinuousMode}"
+                                          IsEnabled="{Binding !IsTypingTestActive}"
+                                          VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                                <daisy:DaisyButton Command="{Binding StartTypingTestCommand}" Content="{loc:Localize Keyboard_StartTest_Button}" Variant="Primary" Click="OnStartTypingTestClick"/>
+                                <daisy:DaisyButton Command="{Binding ResetTypingTestCommand}" Content="{loc:Localize Button_Reset}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                BorderThickness="1" CornerRadius="4" Padding="15"
+                                Background="{DynamicResource DaisyBase200Brush}">
+                            <TextBlock Text="{Binding TypingTestText}" FontSize="16" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <TextBox x:Name="TypingInputBox"
+                                 Text="{Binding TypingInput, Mode=TwoWay}"
+                                 IsEnabled="{Binding IsTypingTestActive}"
+                                 AcceptsReturn="True" TextWrapping="Wrap"
+                                 Height="100" FontSize="16"
+                                 Watermark="{loc:Localize Keyboard_TypeHere_Watermark}"
+                                 FontFamily="Consolas,Monospace"/>
+
+                        <Grid ColumnDefinitions="*,*,*">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_WPM_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Wpm}" Classes="Value" Foreground="{DynamicResource SemiGreen}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_Accuracy_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding Accuracy, StringFormat='{}{0}%'}" Classes="Value" Foreground="{DynamicResource SemiBlue}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Text="{loc:Localize Keyboard_WrongWords_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{Binding WrongWords}" Classes="Value" Foreground="{DynamicResource SemiOrange}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Session Stats (Continuous Mode) -->
+                        <Border IsVisible="{Binding IsContinuousMode}"
+                                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                BorderThickness="1" CornerRadius="4" Padding="15"
+                                Background="{DynamicResource DaisyBase200Brush}">
+                            <Grid ColumnDefinitions="*,*,*,*">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Localize Keyboard_Sentences_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SentencesCompleted, StringFormat='{}{0} / 20'}" Classes="Value" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Localize Keyboard_SessionWPM_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SessionWpm}" Classes="Value" Foreground="{DynamicResource SemiGreen}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Localize Keyboard_SessionAccuracy_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SessionAccuracy, StringFormat='{}{0}%'}" Classes="Value" Foreground="{DynamicResource SemiBlue}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                    <TextBlock Text="{loc:Localize Keyboard_WrongWords_Label}" Classes="Label" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding SessionWrongWords}" Classes="Value" Foreground="{DynamicResource SemiOrange}" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </daisy:DaisyTabs>
+    </Grid>
+</UserControl>

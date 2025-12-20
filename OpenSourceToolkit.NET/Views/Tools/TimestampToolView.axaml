@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.TimestampToolView"
+             x:DataType="vm:TimestampToolViewModel">
+    <StackPanel Spacing="10">
+        <TextBlock Text="{loc:Localize Timestamp_DateTime_Label}" FontWeight="SemiBold"/>
+        <DatePicker SelectedDate="{Binding Date}" />
+        <!-- Time picker support in Avalonia 11 is better, but let's stick to simple date for now or use string format -->
+        <TextBlock Text="{Binding Date}" />
+
+        <TextBlock Text="{loc:Localize Timestamp_UnixSeconds_Label}" FontWeight="SemiBold"/>
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <controls:NumericEntry Value="{Binding UnixSeconds}" Width="100" FormatString="0"/>
+            <daisy:DaisyButton Command="{Binding ConvertToDateCommand}" Content="{loc:Localize Timestamp_Convert_Button}" Variant="Primary" HorizontalAlignment="Left" />
+        </StackPanel>
+
+    </StackPanel>
+</UserControl>

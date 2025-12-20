@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.HardwareToolView"
+             x:DataType="vm:HardwareToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <daisy:DaisyCard Variant="Compact">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{loc:Localize Hardware_SpeakerTest_Label}" FontSize="18" FontWeight="SemiBold"/>
+                    <TextBlock Text="{loc:Localize Hardware_SpeakerTest_Desc}" Classes="Caption"
+                               IsVisible="{Binding IsAudioSupported}"/>
+                    <TextBlock Text="{loc:Localize Hardware_WindowsOnly_Text}" Classes="Caption"
+                               Foreground="{DynamicResource DaisyWarningBrush}"
+                               IsVisible="{Binding !IsAudioSupported}"/>
+                    <daisy:DaisyButton Command="{Binding PlayToneCommand}" Content="{loc:Localize Hardware_PlayTone_Button}"
+                            IsEnabled="{Binding IsAudioSupported}" Variant="Primary" MaxWidth="200" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </daisy:DaisyCard>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

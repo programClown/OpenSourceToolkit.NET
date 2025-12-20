@@ -1,0 +1,220 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:OpenSourceToolkit.NET"
+             xmlns:converters="using:OpenSourceToolkit.NET.Converters"
+
+             xmlns:daisy="clr-namespace:Flowery;assembly=Flowery.NET"
+             xmlns:daisyControls="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             x:Class="OpenSourceToolkit.NET.App"
+             RequestedThemeVariant="Dark">
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- Theme resources and icons - no bootstrap palette needed -->
+                <!-- DaisyUITheme's Colors.axaml now provides proper ThemeDictionaries -->
+                <ResourceInclude Source="avares://OpenSourceToolkit.NET/Themes/ThemeResources.axaml" />
+                <ResourceInclude Source="avares://OpenSourceToolkit.NET/Themes/Icons.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <FontFamily x:Key="MainFont">Segoe UI, Inter, SF Pro Display, Helvetica Neue, Arial</FontFamily>
+            <!-- Editor font for multi-line textboxes - can be changed via Fonts Viewer -->
+            <FontFamily x:Key="EditorFont">Consolas, Cascadia Code, JetBrains Mono, monospace</FontFamily>
+            <!-- DaisyBase200Brush: Custom key for card backgrounds.
+                 Defined here (not in ThemeResources.axaml) so DaisyUI can override at runtime.
+                 Fallback: semi-transparent overlay for Semi themes. -->
+            <SolidColorBrush x:Key="DaisyBase200Brush" Color="#808080" Opacity="0.15"/>
+            <converters:IconKeyToGeometryConverter x:Key="IconKeyToGeometryConverter" />
+            <converters:DiffTypeToBrushConverter x:Key="DiffTypeToBrushConverter" />
+            <SolidColorBrush x:Key="PrimaryBrush" Color="#0078D4" />
+        </ResourceDictionary>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://OpenSourceToolkit.NET/Themes/FluentOverrides.axaml" />
+        <daisy:DaisyUITheme />
+        <materialIcons:MaterialIconStyles />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+        <!-- ============================================= -->
+        <!-- Global Base Control Styles (DaisyUI theming)  -->
+        <!-- These ensure all controls update when theme   -->
+        <!-- changes via DaisyThemeManager                 -->
+        <!-- ============================================= -->
+        
+        <!-- Window background -->
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase100Brush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+        </Style>
+        
+        <!-- Global TextBlock foreground (fallback) -->
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+        </Style>
+        
+        <!-- DaisyInput default to Small size for consistency with standard controls -->
+        <Style Selector="daisyControls|DaisyInput">
+            <Setter Property="Size" Value="Small"/>
+        </Style>
+        
+        <!-- DaisyButton default to Small size for consistency with standard controls -->
+        <Style Selector="daisyControls|DaisyButton">
+            <Setter Property="Size" Value="Small"/>
+        </Style>
+        
+        <!-- Fix: TextBlocks inside DaisyButtons should inherit the button's Foreground -->
+        <!-- This prevents the global TextBlock style from overriding button text colors -->
+        <Style Selector="daisyControls|DaisyButton TextBlock">
+            <Setter Property="Foreground" Value="{Binding $parent[daisyControls:DaisyButton].Foreground}"/>
+        </Style>
+        
+        <!-- Fix: TextBlocks inside DaisyBadge should inherit the badge's Foreground -->
+        <!-- This prevents the global TextBlock style from overriding badge text colors -->
+        <Style Selector="daisyControls|DaisyBadge TextBlock">
+            <Setter Property="Foreground" Value="{Binding $parent[daisyControls:DaisyBadge].Foreground}"/>
+        </Style>
+        
+        <!-- DaisySelect default to Small size for consistency with standard controls -->
+        <Style Selector="daisyControls|DaisySelect">
+            <Setter Property="Size" Value="Small"/>
+        </Style>
+        
+        <!-- TextBox styles -->
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyBase300Brush}"/>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+        
+        <!-- Label styles -->
+        <Style Selector="Label">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+        </Style>
+        
+        <!-- Border defaults -->
+        <Style Selector="Border">
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyBase300Brush}"/>
+        </Style>
+        
+        <!-- ComboBox styles -->
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+        </Style>
+        
+        <!-- ListBox/ListBoxItem styles -->
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase100Brush}"/>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyBaseContentBrush}"/>
+        </Style>
+        
+        <!-- ScrollViewer background -->
+        <Style Selector="ScrollViewer">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <!-- TextBlock Headings -->
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <Style Selector="TextBlock.h2">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,12,0,8"/>
+        </Style>
+
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Opacity" Value="0.6"/>
+        </Style>
+
+        <!-- Image Editor Toolbar Styles -->
+        <Style Selector="ToggleButton.tool-category">
+            <Setter Property="Width" Value="36"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+
+        <Style Selector="ToggleButton.tool-category:checked">
+            <Setter Property="Background" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+
+        <Style Selector="ToggleButton.tool-category:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DaisyNeutralBrush}"/>
+        </Style>
+
+        <Style Selector="ToggleButton.tool-category:checked:pointerover">
+            <Setter Property="Background" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+
+        <!-- Accent style for regular Buttons (used by Fit/1:1 zoom buttons) -->
+        <!-- Uses ButtonSolidForeground for text which is set from color-primary-content by DaisyUI themes -->
+        <Style Selector="Button.accent">
+            <Setter Property="Background" Value="{DynamicResource DaisyPrimaryBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ButtonSolidForeground}"/>
+        </Style>
+
+        <Style Selector="Button.accent:pointerover">
+            <!-- AppColorPrimaryHover doesn't exist; use PrimaryLight or a slightly lighter primary -->
+            <Setter Property="Background" Value="{DynamicResource DaisyPrimaryFocusBrush}"/>
+        </Style>
+
+        <Style Selector="Button.accent:disabled">
+            <Setter Property="Background" Value="{DynamicResource DaisyNeutralBrush}"/>
+            <Setter Property="Foreground" Value="{DynamicResource DaisyNeutralContentBrush}"/>
+        </Style>
+
+        <Style Selector="Button.accent:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyNeutralContentBrush}"/>
+        </Style>
+
+        <!-- TextBox: top-align content only for multi-line textboxes -->
+        <Style Selector="TextBox[AcceptsReturn=True]">
+            <Setter Property="VerticalContentAlignment" Value="Top"/>
+            <!-- Apply custom editor font (can be changed via Fonts Viewer) -->
+            <Setter Property="FontFamily" Value="{DynamicResource EditorFont}"/>
+        </Style>
+
+        <!-- Fix: Ensure plain Button text uses primary accent color -->
+        <!-- Target ContentPresenter directly (not TextElement.Foreground which cascades aggressively) -->
+        <!-- Exclude all Semi button classes that set their own foreground -->
+        <Style Selector="Button:not(.Primary):not(.primary):not(.Secondary):not(.secondary):not(.Tertiary):not(.tertiary):not(.Success):not(.success):not(.Warning):not(.warning):not(.Danger):not(.danger):not(.accent):not(.outline) /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+
+        <!-- DaisyUI Theme: Override solid button foregrounds for proper contrast -->
+        <!-- These use Daisy*ContentBrush resources injected by SemiThemeApplicator -->
+        <Style Selector="Button.secondary /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisySecondaryContentBrush}"/>
+        </Style>
+        <Style Selector="Button.tertiary /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyAccentContentBrush}"/>
+        </Style>
+        <Style Selector="Button.success /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisySuccessContentBrush}"/>
+        </Style>
+        <Style Selector="Button.warning /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyWarningContentBrush}"/>
+        </Style>
+        <Style Selector="Button.danger /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource DaisyErrorContentBrush}"/>
+        </Style>
+
+    </Application.Styles>
+</Application>

@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.MockDataToolView"
+             x:DataType="vm:MockDataToolViewModel">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10">
+            <TextBlock Text="{loc:Localize Label_Count}" VerticalAlignment="Center"/>
+            <daisy:DaisyNumericUpDown Value="{Binding Count}" Minimum="1" Maximum="100" Increment="1" FormatString="0" MinWidth="120" Size="Small" />
+
+            <TextBlock Text="{loc:Localize MockData_Type_Label}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            <daisy:DaisySelect ItemsSource="{Binding DataTypes}" SelectedItem="{Binding DataType}" Width="220">
+                <daisy:DaisySelect.ItemTemplate>
+                    <DataTemplate x:DataType="vm:DataTypeItem">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Panel Width="20" Height="12" VerticalAlignment="Center">
+                                <!-- User icon -->
+                                <PathIcon Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"
+                                          Width="16" Height="12" IsVisible="{Binding FlagKey, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=User}"/>
+                                <!-- US Flag -->
+                                <Grid IsVisible="{Binding FlagKey, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=US}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/><RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/><RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Rectangle Grid.Row="0" Fill="#B22234"/><Rectangle Grid.Row="1" Fill="White"/>
+                                    <Rectangle Grid.Row="2" Fill="#B22234"/><Rectangle Grid.Row="3" Fill="White"/>
+                                    <Rectangle Grid.Row="4" Fill="#B22234"/><Rectangle Grid.Row="5" Fill="White"/>
+                                    <Rectangle Grid.RowSpan="3" Width="8" HorizontalAlignment="Left" Fill="#3C3B6E"/>
+                                </Grid>
+                                <!-- Germany Flag -->
+                                <Grid IsVisible="{Binding FlagKey, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=DE}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/><RowDefinition Height="*"/><RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Rectangle Grid.Row="0" Fill="Black"/>
+                                    <Rectangle Grid.Row="1" Fill="#DD0000"/>
+                                    <Rectangle Grid.Row="2" Fill="#FFCC00"/>
+                                </Grid>
+                                <!-- UK Flag -->
+                                <Grid IsVisible="{Binding FlagKey, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=GB}">
+                                    <Rectangle Fill="#012169"/>
+                                    <Rectangle Fill="White" Height="2" VerticalAlignment="Center"/>
+                                    <Rectangle Fill="White" Width="3" HorizontalAlignment="Center"/>
+                                    <Rectangle Fill="#C8102E" Height="1" VerticalAlignment="Center"/>
+                                    <Rectangle Fill="#C8102E" Width="1.5" HorizontalAlignment="Center"/>
+                                </Grid>
+                                <!-- Japan Flag -->
+                                <Grid IsVisible="{Binding FlagKey, Converter={x:Static ObjectConverters.Equal}, ConverterParameter=JP}">
+                                    <Rectangle Fill="White"/>
+                                    <Ellipse Width="6" Height="6" Fill="#BC002D" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Panel>
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </daisy:DaisySelect.ItemTemplate>
+            </daisy:DaisySelect>
+
+            <daisy:DaisyButton Command="{Binding GenerateCommand}" Content="{loc:Localize MockData_Generate_Button}" Variant="Primary" HorizontalAlignment="Left" />
+        </StackPanel>
+
+        <controls:CopyableTextBox Grid.Row="1"
+                                  Text="{Binding Output}"
+                                  IsReadOnly="True"
+                                  AcceptsReturn="True"
+                                  TextWrapping="Wrap"
+                                  FontFamily="Consolas,Monospace"
+                                  Margin="0,10,0,0" />
+    </Grid>
+</UserControl>

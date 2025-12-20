@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.IpCalculatorToolView"
+             x:DataType="vm:IpCalculatorToolViewModel">
+    <StackPanel Spacing="10">
+        <StackPanel Spacing="10">
+            <TextBlock Text="{loc:Localize IpCalculator_IpAddress_Label}" />
+            <daisy:DaisyInput Text="{Binding IpAddress}" />
+            <TextBlock Text="{loc:Localize IpCalculator_SubnetMask_Label}" />
+            <daisy:DaisyInput Text="{Binding SubnetMask}" />
+        </StackPanel>
+        <daisy:DaisyButton Command="{Binding CalculateCommand}" Content="{loc:Localize Button_Calculate}" Variant="Primary" HorizontalAlignment="Left" />
+        <controls:CopyableTextBox Text="{Binding Output}" IsReadOnly="True" Height="100" AcceptsReturn="True" />
+    </StackPanel>
+</UserControl>

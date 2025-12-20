@@ -1,0 +1,562 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.FinancialCalculatorToolView"
+             x:DataType="vm:FinancialCalculatorToolViewModel">
+    <UserControl.Styles>
+        <!-- Add spacing between labels and their inputs -->
+        <Style Selector="StackPanel > TextBlock">
+            <Setter Property="Margin" Value="0,0,0,4"/>
+        </Style>
+    </UserControl.Styles>
+    <daisy:DaisyTabs Variant="Boxed" Size="Small">
+        <!-- Compound Interest -->
+        <TabItem Header="{loc:Localize Financial_CompoundInterest_Tab}">
+            <ScrollViewer>
+                <StackPanel Spacing="20" Margin="10" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto" >
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,10">
+                            <TextBlock Text="{loc:Localize Financial_PrincipalAmount_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding Principal}" Watermark="1000" Maximum="999999999" MaxIntegerDigits="9" Width="120" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,20,10">
+                            <TextBlock Text="{loc:Localize Financial_AnnualRate_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding Rate}" Watermark="5" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,10">
+                            <TextBlock Text="{loc:Localize Financial_TimeYears_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding Years}" Watermark="10" Maximum="99" MaxIntegerDigits="2" MaxDecimalPlaces="2" Width="80" />
+                        </StackPanel>
+                    </Grid>
+                    <daisy:DaisyButton Command="{Binding CalculateInterestCommand}" Content="{loc:Localize Financial_CalculateInterest_Button}" Variant="Primary" HorizontalAlignment="Left"/>
+                    <controls:CopyableInput Text="{Binding InterestResult}" IsReadOnly="True" />
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Loan Payment -->
+        <TabItem Header="{loc:Localize Financial_LoanPayment_Tab}">
+            <ScrollViewer>
+                <StackPanel Spacing="20" Margin="10" HorizontalAlignment="Left">
+                    <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,0">
+                            <TextBlock Text="{loc:Localize Financial_LoanAmount_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding LoanAmount}" Watermark="250000" Maximum="999999999" MaxIntegerDigits="9" Width="120" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,20,0">
+                            <TextBlock Text="{loc:Localize Financial_InterestRate_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding LoanRate}" Watermark="4.5" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="{loc:Localize Financial_LoanTermMonths_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding LoanMonths}" Watermark="360" Maximum="600" MaxIntegerDigits="3" MaxDecimalPlaces="0" Width="80" />
+                        </StackPanel>
+                    </Grid>
+                    <daisy:DaisyButton Command="{Binding CalculateLoanCommand}" Content="{loc:Localize Financial_CalculatePayment_Button}" Variant="Primary" HorizontalAlignment="Left"/>
+                    <controls:CopyableInput Text="{Binding LoanResult}" IsReadOnly="True" />
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Investment Growth -->
+        <TabItem Header="{loc:Localize Financial_Investment_Tab}">
+            <ScrollViewer>
+                <StackPanel Spacing="20" Margin="10" HorizontalAlignment="Left">
+                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,20,0">
+                            <TextBlock Text="{loc:Localize Financial_InitialInvestment_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding InvInitial}" Watermark="5000" Maximum="999999999" MaxIntegerDigits="9" Width="120" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="0,0,20,0">
+                            <TextBlock Text="{loc:Localize Financial_MonthlyContribution_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding InvMonthly}" Watermark="500" Maximum="999999999" MaxIntegerDigits="9" Width="100" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,20,0">
+                            <TextBlock Text="{loc:Localize Financial_AnnualReturn_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding InvRate}" Watermark="7" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="3">
+                            <TextBlock Text="{loc:Localize Financial_PeriodYears_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding InvYears}" Watermark="20" Maximum="99" MaxIntegerDigits="2" MaxDecimalPlaces="2" Width="80" />
+                        </StackPanel>
+                     </Grid>
+                     <daisy:DaisyButton Command="{Binding CalculateInvestmentCommand}" Content="{loc:Localize Financial_CalculateGrowth_Button}" Variant="Primary" HorizontalAlignment="Left"/>
+                     <controls:CopyableInput Text="{Binding InvResult}" IsReadOnly="True" />
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Deposits & Savings -->
+        <TabItem Header="{loc:Localize Financial_DepositsSavings_Tab}">
+             <ScrollViewer>
+                 <StackPanel Spacing="20">
+                     <!-- Top row: Fixed Deposit + CD Ladder side by side -->
+                     <Grid ColumnDefinitions="Auto,20,Auto">
+                         <!-- Fixed Deposit -->
+                         <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                             <StackPanel Spacing="10">
+                                 <TextBlock Text="Fixed Deposit Calculator" FontSize="18" FontWeight="SemiBold"/>
+                                 <Grid ColumnDefinitions="Auto,20,Auto" RowDefinitions="Auto,Auto,Auto">
+                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,5">
+                                         <TextBlock Text="Deposit Amount"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding FdAmount}" Maximum="999999999" MaxIntegerDigits="9" Width="120"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,5">
+                                         <TextBlock Text="Annual Rate (%)"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding FdRate}" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,5">
+                                         <TextBlock Text="Tenure"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding FdTenure}" Maximum="600" MaxIntegerDigits="3" MaxDecimalPlaces="0" Width="80" />
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,5">
+                                         <TextBlock Text="Tenure Type"/>
+                                         <daisy:DaisySelect SelectedIndex="{Binding FdTenureType}" Width="120">
+                                             <ComboBoxItem>Months</ComboBoxItem>
+                                             <ComboBoxItem>Years</ComboBoxItem>
+                                         </daisy:DaisySelect>
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,0,0,5">
+                                         <TextBlock Text="Compounding"/>
+                                         <daisy:DaisySelect SelectedIndex="{Binding FdCompoundingIndex}" Width="150">
+                                             <ComboBoxItem>Annually</ComboBoxItem>
+                                             <ComboBoxItem>Semi-annually</ComboBoxItem>
+                                             <ComboBoxItem>Quarterly</ComboBoxItem>
+                                             <ComboBoxItem>Monthly</ComboBoxItem>
+                                             <ComboBoxItem>Daily</ComboBoxItem>
+                                         </daisy:DaisySelect>
+                                     </StackPanel>
+                                 </Grid>
+                                 <daisy:DaisyButton Command="{Binding CalculateFdCommand}" Content="Calculate FD Maturity" Variant="Primary" HorizontalAlignment="Left"/>
+                                 <controls:CopyableInput Text="{Binding FdResult}" IsReadOnly="True"/>
+                             </StackPanel>
+                         </Border>
+
+                         <!-- CD Ladder -->
+                         <Border Grid.Column="2" BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10">
+                             <StackPanel Spacing="10">
+                                 <TextBlock Text="CD Ladder Strategy" FontSize="18" FontWeight="SemiBold"/>
+                                 <Grid ColumnDefinitions="Auto,20,Auto" RowDefinitions="Auto,Auto">
+                                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,0,5">
+                                         <TextBlock Text="Total Investment"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding CdTotal}" Maximum="999999999" MaxIntegerDigits="9" Width="120"/>
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,5">
+                                         <TextBlock Text="Ladder Length (Years)"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding CdYears}" Maximum="99" MaxIntegerDigits="2" MaxDecimalPlaces="0" Width="80" />
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,0,5">
+                                         <TextBlock Text="Starting Rate (%)"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding CdStart}" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                                     </StackPanel>
+                                     <StackPanel Grid.Row="1" Grid.Column="2" Margin="0,0,0,5">
+                                         <TextBlock Text="Ending Rate (%)"/>
+                                         <daisy:DaisyNumericUpDown Size="Small" Value="{Binding CdEnd}" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                                     </StackPanel>
+                                 </Grid>
+                                 <daisy:DaisyButton Command="{Binding CalculateCdCommand}" Content="Calculate Ladder" Variant="Primary" HorizontalAlignment="Left"/>
+                                 <controls:CopyableInput Text="{Binding CdSummary}" IsReadOnly="True"/>
+
+                                 <ItemsControl ItemsSource="{Binding CdResultList}">
+                                     <ItemsControl.ItemTemplate>
+                                         <DataTemplate>
+                                             <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="5">
+                                                <Grid ColumnDefinitions="Auto, Auto, Auto, Auto, Auto">
+                                                    <TextBlock Grid.Column="0" Text="{Binding Index, StringFormat='CD {0}'}" FontWeight="Bold" Width="50"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Amount, StringFormat={}{0:C2}}" Width="80"/>
+                                                    <TextBlock Grid.Column="2" Text="{Binding Rate, StringFormat={}{0:F2}%}" Width="60"/>
+                                                    <TextBlock Grid.Column="3" Text="{Binding Term, StringFormat={}{0} Years}" Width="60"/>
+                                                    <TextBlock Grid.Column="4" Text="{Binding Maturity, StringFormat={}{0:C2}}" Foreground="{DynamicResource DaisySuccessBrush}"/>
+                                                </Grid>
+                                             </Border>
+                                         </DataTemplate>
+                                     </ItemsControl.ItemTemplate>
+                                 </ItemsControl>
+                             </StackPanel>
+                         </Border>
+                     </Grid>
+
+                     <!-- APY Converter -->
+                     <Border BorderBrush="Gray" BorderThickness="1" CornerRadius="4" Padding="10" HorizontalAlignment="Left">
+                         <StackPanel Spacing="10">
+                             <TextBlock Text="APR to APY Converter" FontSize="18" FontWeight="SemiBold"/>
+                             <Grid ColumnDefinitions="Auto,20,Auto">
+                                 <StackPanel Grid.Column="0">
+                                     <TextBlock Text="Nominal Rate (APR %)"/>
+                                     <daisy:DaisyNumericUpDown Size="Small" Value="{Binding ApyNominal}" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="80" />
+                                 </StackPanel>
+                                 <StackPanel Grid.Column="2">
+                                     <TextBlock Text="Compounding Frequency"/>
+                                     <daisy:DaisySelect SelectedIndex="{Binding ApyFreqIndex}" Width="150">
+                                         <ComboBoxItem>Annually</ComboBoxItem>
+                                         <ComboBoxItem>Semi-annually</ComboBoxItem>
+                                         <ComboBoxItem>Quarterly</ComboBoxItem>
+                                         <ComboBoxItem>Monthly</ComboBoxItem>
+                                         <ComboBoxItem>Daily</ComboBoxItem>
+                                     </daisy:DaisySelect>
+                                 </StackPanel>
+                             </Grid>
+                             <daisy:DaisyButton Command="{Binding CalculateApyCommand}" Content="Calculate APY" Variant="Primary" HorizontalAlignment="Left"/>
+                             <controls:CopyableInput Text="{Binding ApyResult}" IsReadOnly="True"/>
+                         </StackPanel>
+                     </Border>
+                 </StackPanel>
+             </ScrollViewer>
+        </TabItem>
+
+        <!-- ROI (Legacy/Bonus) -->
+        <TabItem Header="{loc:Localize Financial_ROI_Tab}">
+            <ScrollViewer>
+                <StackPanel Spacing="20" Margin="10" HorizontalAlignment="Left">
+                    <TextBlock Text="ROI Calculator" FontSize="18" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="Auto,20,Auto" RowDefinitions="Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="{loc:Localize Financial_InitialInvestment_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding Investment}" Watermark="1000" Maximum="999999999" MaxIntegerDigits="9" Width="120" />
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="{loc:Localize Financial_ReturnedAmount_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding ReturnAmount}" Watermark="1500" Maximum="999999999" MaxIntegerDigits="9" Width="120" />
+                        </StackPanel>
+                    </Grid>
+                    <daisy:DaisyButton Command="{Binding CalculateRoiCommand}" Content="{loc:Localize Financial_CalculateROI_Button}" Variant="Primary" HorizontalAlignment="Left"/>
+                    <controls:CopyableInput Text="{Binding RoiResult}" IsReadOnly="True" />
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <!-- Mortgage Amortization -->
+        <TabItem Header="{loc:Localize Financial_MortgageAmortization_Tab}">
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <!-- Input Section -->
+                <Border Grid.Row="0" Background="{DynamicResource DaisyBase200Brush}" CornerRadius="4" Padding="12" Margin="8,8,8,4">
+                    <Grid ColumnDefinitions="Auto,20,Auto,20,Auto,20,Auto,20,Auto,20,Auto" RowDefinitions="Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Home Price" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortHomePrice}" Watermark="400000" Maximum="999999999" MaxIntegerDigits="9" Width="100"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Down Payment" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortDownPayment}" Watermark="80000" Maximum="999999999" MaxIntegerDigits="9" Width="90"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Interest Rate %" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortInterestRate}" Watermark="6.5" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Term" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisySelect SelectedIndex="{Binding MortTermIndex}" MinWidth="110">
+                                <ComboBoxItem>15 Years</ComboBoxItem>
+                                <ComboBoxItem>20 Years</ComboBoxItem>
+                                <ComboBoxItem>30 Years</ComboBoxItem>
+                            </daisy:DaisySelect>
+                        </StackPanel>
+                        <StackPanel Grid.Column="8">
+                            <TextBlock Text="Annual Tax" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortAnnualTax}" Watermark="4800" Maximum="999999" MaxIntegerDigits="6" Width="80"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="10">
+                            <TextBlock Text="Annual Insurance" FontWeight="SemiBold" FontSize="11"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortAnnualInsurance}" Watermark="1800" Maximum="999999" MaxIntegerDigits="6" Width="80"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Summary Cards -->
+                <daisy:DaisyCard Grid.Row="1" Variant="Compact" Margin="8,4">
+                    <Grid ColumnDefinitions="*,*,*,*,*,*">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="MONTHLY PITI" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortMonthlyPITI, StringFormat={}{0:C2}}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                            <TextBlock Text="PRINCIPAL &amp; INTEREST" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortMonthlyPI, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                            <TextBlock Text="TAX + INSURANCE" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortMonthlyEscrow, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3" Margin="0,0,10,0">
+                            <TextBlock Text="LOAN AMOUNT" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortLoanAmount, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4" Margin="0,0,10,0">
+                            <TextBlock Text="TOTAL INTEREST" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortTotalInterest, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="5">
+                            <TextBlock Text="PAYOFF DATE" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding MortPayoffDate, StringFormat={}{0:MMM yyyy}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </daisy:DaisyCard>
+
+                <!-- Savings Summary + Extra Payment Controls -->
+                <daisy:DaisyCard Grid.Row="2" Variant="Compact" Margin="8,4">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <!-- Savings Summary -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="20">
+                            <StackPanel>
+                                <TextBlock Text="Interest Saved" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="{Binding MortInterestSaved, StringFormat={}{0:C2}}" FontSize="14" Foreground="{DynamicResource DaisySuccessBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Time Saved" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="{Binding MortTimeSaved}" FontSize="14" Foreground="{DynamicResource DaisySuccessBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="New Payoff" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="{Binding MortNewPayoffDate, StringFormat={}{0:MMM yyyy}}" FontSize="14" Foreground="{DynamicResource DaisySuccessBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="Extra Paid" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="{Binding MortExtraPaid, StringFormat={}{0:C2}}" FontSize="14" Foreground="{DynamicResource DaisyWarningBrush}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Extra Payment Controls -->
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                            <TextBlock Text="Monthly extra payment:" VerticalAlignment="Center"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding MortMonthlyExtra}" Maximum="999999" MaxIntegerDigits="6" Width="80"/>
+                            <daisy:DaisyButton Command="{Binding MortApplyAllExtraCommand}" Content="Apply All" />
+                            <daisy:DaisyButton Command="{Binding MortClearExtraCommand}" Content="Clear"/>
+                            <daisy:DaisyButton Command="{Binding CalculateMortgageCommand}" Content="Calculate" Variant="Primary" HorizontalAlignment="Left"/>
+                            <daisy:DaisyButton Command="{Binding MortResetCommand}" Content="Reset"/>
+                        </StackPanel>
+                    </Grid>
+                </daisy:DaisyCard>
+
+                <!-- Amortization Table -->
+                <Border Grid.Row="3" Margin="8,4,8,8">
+                    <DataGrid ItemsSource="{Binding AmortizationSchedule}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="False"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="{DynamicResource DaisyBase300Brush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Number}" Width="40" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:MMM yyyy}}" Width="Auto" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Principal" Binding="{Binding Principal, StringFormat={}{0:C2}}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Interest" Binding="{Binding Interest, StringFormat={}{0:C2}}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Escrow" Binding="{Binding Escrow, StringFormat={}{0:C2}}" Width="80" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Extra" Binding="{Binding Extra, StringFormat={}{0:N2}}" Width="70"/>
+                            <DataGridTextColumn Header="Total" Binding="{Binding Total, StringFormat={}{0:C2}}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Ahead" Binding="{Binding Ahead, StringFormat=+{0:C2}}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Orig Bal" Binding="{Binding OrigBalance, StringFormat={}{0:C2}}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Balance" Binding="{Binding Balance, StringFormat={}{0:C2}}" Width="100" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <!-- German Baufinanzierung -->
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Border Width="20" Height="14" BorderBrush="Gray" BorderThickness="1">
+                        <Grid RowDefinitions="*,*,*">
+                            <Rectangle Grid.Row="0" Fill="#000000"/>
+                            <Rectangle Grid.Row="1" Fill="#DD0000"/>
+                            <Rectangle Grid.Row="2" Fill="#FFCE00"/>
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="Baufinanzierung"/>
+                </StackPanel>
+            </TabItem.Header>
+            <Grid RowDefinitions="Auto,Auto,Auto,*">
+                <!-- Input Section -->
+                <Border Grid.Row="0" Background="{DynamicResource DaisyBase200Brush}" CornerRadius="4" Padding="12" Margin="8,8,8,4">
+                    <Grid ColumnDefinitions="Auto,20,Auto,20,Auto,20,Auto" RowDefinitions="Auto">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Darlehensbetrag (€)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Loan Amount" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeLoanAmount}" Watermark="300000" Maximum="999999999" MaxIntegerDigits="9" Width="110"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="Sollzins (% p.a.)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Interest Rate" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeInterestRate}" Watermark="3.5" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="Anf. Tilgung (%)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Initial Repayment" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeTilgung}" Watermark="2.0" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="70"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="6">
+                            <TextBlock Text="Zinsbindung (J)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Fixed Period (Yrs)" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeZinsbindung}" Watermark="10" Maximum="99" MaxIntegerDigits="2" MaxDecimalPlaces="0" Width="60"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Summary Cards -->
+                <daisy:DaisyCard Grid.Row="1" Variant="Compact" Margin="8,4">
+                    <Grid ColumnDefinitions="*,*,*,*,*">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="MONATLICHE RATE" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Monthly Payment" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeMonthlyPayment, StringFormat={}{0:C2}}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                            <TextBlock Text="RESTSCHULD" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Remaining Balance" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeRestschuld, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                            <TextBlock Text="ORIG. RESTSCHULD" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Orig. Remaining" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeOrigRestschuld, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3" Margin="0,0,10,0">
+                            <TextBlock Text="ZINSEN GESPART" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Interest Saved" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeInterestSaved, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisySuccessBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="SONDERTILGUNG" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Extra Payments" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeSondertilgungPaid, StringFormat={}{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisyWarningBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </daisy:DaisyCard>
+
+                <!-- Sondertilgung Controls -->
+                <daisy:DaisyCard Grid.Row="2" Variant="Compact" Margin="8,4">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="Monatl. Sondertilgung:" FontSize="11"/>
+                            <TextBlock Text="Monthly Extra Payment:" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeSondertilgung}" Maximum="999999" MaxIntegerDigits="6" Width="80"/>
+                        <daisy:DaisyButton Command="{Binding DeApplyAllSondertilgungCommand}" Content="Anwenden" ToolTip.Tip="Apply to All"/>
+                        <daisy:DaisyButton Command="{Binding DeClearSondertilgungCommand}" Content="Löschen" ToolTip.Tip="Clear All"/>
+                        <daisy:DaisyButton Command="{Binding CalculateDeLoanCommand}" Content="Berechnen" ToolTip.Tip="Calculate" Variant="Primary" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </daisy:DaisyCard>
+
+                <!-- Amortization Table -->
+                <Border Grid.Row="3" Margin="8,4,8,8">
+                    <DataGrid ItemsSource="{Binding DeLoanSchedule}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="False"
+                              IsReadOnly="False"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="{DynamicResource DaisyBase300Brush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Number}" Width="40" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Datum" Binding="{Binding Date, StringFormat={}{0:MMM yyyy}}" Width="Auto" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Tilgung" Binding="{Binding Principal, StringFormat={}{0:C2}}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Zinsen" Binding="{Binding Interest, StringFormat={}{0:C2}}" Width="90" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Sondertilg." Binding="{Binding Extra, StringFormat={}{0:N2}}" Width="80"/>
+                            <DataGridTextColumn Header="Vorsprung" Binding="{Binding Ahead, StringFormat=+{0:C2}}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Restschuld" Binding="{Binding Balance, StringFormat={}{0:C2}}" Width="110" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </TabItem>
+
+        <!-- German Festgeld -->
+        <TabItem>
+            <TabItem.Header>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <Border Width="20" Height="14" BorderBrush="Gray" BorderThickness="1">
+                        <Grid RowDefinitions="*,*,*">
+                            <Rectangle Grid.Row="0" Fill="#000000"/>
+                            <Rectangle Grid.Row="1" Fill="#DD0000"/>
+                            <Rectangle Grid.Row="2" Fill="#FFCE00"/>
+                        </Grid>
+                    </Border>
+                    <TextBlock Text="Festgeld"/>
+                </StackPanel>
+            </TabItem.Header>
+            <Grid RowDefinitions="Auto,Auto,*">
+                <!-- Input Section -->
+                <Border Grid.Row="0" Background="{DynamicResource DaisyBase200Brush}" CornerRadius="4" Padding="12" Margin="8,8,8,4">
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                        <StackPanel>
+                            <TextBlock Text="Anlagebetrag (€)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Deposit Amount" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeFdAmount}" Watermark="25000" Maximum="999999999" MaxIntegerDigits="9" Width="110"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Zinssatz (% p.a.)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Interest Rate" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeFdRate}" Watermark="3.0" Maximum="100" MaxIntegerDigits="3" MaxDecimalPlaces="3" Width="70"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="Laufzeit (Monate)" FontWeight="SemiBold" FontSize="11"/>
+                            <TextBlock Text="Term (Months)" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <daisy:DaisyNumericUpDown Size="Small" Value="{Binding DeFdMonths}" Watermark="12" Maximum="600" MaxIntegerDigits="3" MaxDecimalPlaces="0" Width="70"/>
+                        </StackPanel>
+                        <daisy:DaisyButton Command="{Binding CalculateDeFdCommand}" Content="Berechnen" ToolTip.Tip="Calculate" VerticalAlignment="Bottom" Variant="Primary" HorizontalAlignment="Left"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Summary Cards -->
+                <daisy:DaisyCard Grid.Row="1" Variant="Compact" Margin="8,4">
+                    <Grid ColumnDefinitions="*,*,*,*">
+                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <TextBlock Text="EINLAGE" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Deposit" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeFdAmount, StringFormat={}{0:C2}}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                            <TextBlock Text="ENDKAPITAL" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Final Balance" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeFdFinalBalance, StringFormat={}{0:C2}}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource DaisySuccessBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Margin="0,0,10,0">
+                            <TextBlock Text="ZINSERTRAG" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Interest Earned" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeFdTotalInterest, StringFormat=+{0:C2}}" FontSize="16" Foreground="{DynamicResource DaisySuccessBrush}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="3">
+                            <TextBlock Text="FÄLLIGKEIT" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="Maturity Date" FontSize="9" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            <TextBlock Text="{Binding DeFdMaturityDate, StringFormat={}{0:MMM yyyy}}" FontSize="16" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                    </Grid>
+                </daisy:DaisyCard>
+
+                <!-- Growth Schedule Table -->
+                <Border Grid.Row="2" Margin="8,4,8,8">
+                    <DataGrid ItemsSource="{Binding DeFdSchedule}"
+                              AutoGenerateColumns="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              CanUserSortColumns="False"
+                              IsReadOnly="True"
+                              GridLinesVisibility="Horizontal"
+                              BorderThickness="1"
+                              BorderBrush="{DynamicResource DaisyBase300Brush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Number}" Width="40"/>
+                            <DataGridTextColumn Header="Datum" Binding="{Binding Date, StringFormat={}{0:MMM yyyy}}" Width="Auto"/>
+                            <DataGridTextColumn Header="Monatszinsen" Binding="{Binding Interest, StringFormat=+{0:C2}}" Width="110"/>
+                            <DataGridTextColumn Header="Kum. Zinsen" Binding="{Binding Ahead, StringFormat=+{0:C2}}" Width="110"/>
+                            <DataGridTextColumn Header="Guthaben" Binding="{Binding Balance, StringFormat={}{0:C2}}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </Grid>
+        </TabItem>
+
+    </daisy:DaisyTabs>
+</UserControl>

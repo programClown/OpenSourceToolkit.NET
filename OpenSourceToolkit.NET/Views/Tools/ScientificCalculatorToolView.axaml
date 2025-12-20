@@ -1,0 +1,137 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ScientificCalculatorToolView"
+             x:DataType="vm:ScientificCalculatorToolViewModel">
+    <Grid RowDefinitions="*,Auto,Auto,Auto,2*,Auto" Margin="10" Width="580" MaxWidth="580" MaxHeight="700" HorizontalAlignment="Left" VerticalAlignment="Top">
+
+        <!-- Paper Roll Display -->
+        <Border Grid.Row="0" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="0,0,0,1" Margin="0,0,0,8">
+            <Panel>
+                <ScrollViewer Name="RollScrollViewer" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding History}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="0,0,0,1" Padding="8,4">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Expression}" Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="12" HorizontalAlignment="Right"/>
+                                        <TextBlock Text="{Binding Result}" FontWeight="Bold" FontSize="14" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8">
+                     <daisy:DaisyButton Command="{Binding ClearHistoryCommand}" Content="{loc:Localize Calculator_ClearTape_Button}" ButtonStyle="Outline" Size="Small"/>
+                     <daisy:DaisyButton Command="{Binding CopyTapeCommand}" Content="{loc:Localize Calculator_Copy_Button}" ButtonStyle="Outline" Size="Small"/>
+                </StackPanel>
+            </Panel>
+        </Border>
+
+        <!-- Current Expression Being Typed -->
+        <TextBlock Grid.Row="1" Text="{Binding Expression}"
+                   HorizontalAlignment="Right" VerticalAlignment="Center"
+                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                   FontSize="14" Margin="0,0,12,4"/>
+
+        <!-- Main Input Display -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto,*" Margin="0,0,0,12">
+            <daisy:DaisyButton Grid.Column="0" Command="{Binding CopyDisplayCommand}" Variant="Ghost" Size="Small" ToolTip.Tip="Copy Result">
+                <PathIcon Data="{StaticResource CopyIcon}" Width="16" Height="16"/>
+            </daisy:DaisyButton>
+            <TextBox Grid.Column="1" Text="{Binding Display}"
+                     FontSize="28" FontWeight="Bold"
+                     TextAlignment="Right"
+                     IsReadOnly="True"
+                     BorderThickness="0"
+                     Background="Transparent"/>
+        </Grid>
+
+        <!-- Memory Status -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="M"
+                       FontWeight="Bold"
+                       IsVisible="{Binding IsMemoryStored}"
+                       Margin="5,0"/>
+        </StackPanel>
+
+        <!-- Keypad -->
+        <Grid Grid.Row="4" ColumnDefinitions="*,*,*,*,*" RowDefinitions="*,*,*,*,*,*,*,*">
+
+            <!-- Row 0: Undo, Memory, Clear -->
+            <daisy:DaisyButton Grid.Row="0" Grid.Column="0" Command="{Binding UndoCommand}" Variant="Neutral">
+                <PathIcon Data="M12.5,8C9.85,8 7.45,8.9 5.6,10.3L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z" Width="16" Height="16"/>
+            </daisy:DaisyButton>
+            <daisy:DaisyButton Grid.Row="0" Grid.Column="1" Content="MR" Command="{Binding MemoryReadCommand}" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="0" Grid.Column="2" Content="M+" Command="{Binding MemoryAddCommand}" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="0" Grid.Column="3" Content="M-" Command="{Binding MemorySubtractCommand}" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="0" Grid.Column="4" Command="{Binding ClearCommand}" ButtonStyle="Outline">
+                <PathIcon Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" Width="16" Height="16" Foreground="{DynamicResource DaisyErrorBrush}"/>
+            </daisy:DaisyButton>
+
+            <!-- Row 1: Adv Funcs -->
+            <daisy:DaisyButton Grid.Row="1" Grid.Column="0" Content="abs" Command="{Binding FunctionCommand}" CommandParameter="abs" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="1" Grid.Column="1" Content="floor" Command="{Binding FunctionCommand}" CommandParameter="floor" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="1" Grid.Column="2" Content="ceil" Command="{Binding FunctionCommand}" CommandParameter="ceil" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="1" Grid.Column="3" Content="round" Command="{Binding FunctionCommand}" CommandParameter="round" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="1" Grid.Column="4" Content="trunc" Command="{Binding FunctionCommand}" CommandParameter="trunc" Variant="Neutral"/>
+
+            <!-- Row 2: Sci Funcs 1 -->
+            <daisy:DaisyButton Grid.Row="2" Grid.Column="0" Content="sin" Command="{Binding FunctionCommand}" CommandParameter="sin" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="2" Grid.Column="1" Content="cos" Command="{Binding FunctionCommand}" CommandParameter="cos" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="2" Grid.Column="2" Content="tan" Command="{Binding FunctionCommand}" CommandParameter="tan" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="2" Grid.Column="3" Content="(" Command="{Binding DigitCommand}" CommandParameter="(" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="2" Grid.Column="4" Content=")" Command="{Binding DigitCommand}" CommandParameter=")" Variant="Neutral"/>
+
+            <!-- Row 3: Sci Funcs 2 -->
+            <daisy:DaisyButton Grid.Row="3" Grid.Column="0" Content="asin" Command="{Binding FunctionCommand}" CommandParameter="asin" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="3" Grid.Column="1" Content="acos" Command="{Binding FunctionCommand}" CommandParameter="acos" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="3" Grid.Column="2" Content="atan" Command="{Binding FunctionCommand}" CommandParameter="atan" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="3" Grid.Column="3" Command="{Binding FunctionCommand}" CommandParameter="sqrt" Variant="Neutral">
+                <PathIcon Data="M19 7H11L7.5 18L5.5 10H2V8H6.5L7.5 14L9.8 7H19V7Z" Width="16" Height="16"/>
+            </daisy:DaisyButton>
+            <daisy:DaisyButton Grid.Row="3" Grid.Column="4" Content="^" Command="{Binding OperatorCommand}" CommandParameter="^" Variant="Neutral"/>
+
+            <!-- Row 4: 7-9 / -->
+            <daisy:DaisyButton Grid.Row="4" Grid.Column="0" Content="log" Command="{Binding FunctionCommand}" CommandParameter="log" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="4" Grid.Column="1" Content="7" Command="{Binding DigitCommand}" CommandParameter="7" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="4" Grid.Column="2" Content="8" Command="{Binding DigitCommand}" CommandParameter="8" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="4" Grid.Column="3" Content="9" Command="{Binding DigitCommand}" CommandParameter="9" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="4" Grid.Column="4" Content="/" Command="{Binding OperatorCommand}" CommandParameter="/" ButtonStyle="Outline"/>
+
+            <!-- Row 5: 4-6 * -->
+            <daisy:DaisyButton Grid.Row="5" Grid.Column="0" Content="ln" Command="{Binding FunctionCommand}" CommandParameter="ln" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="5" Grid.Column="1" Content="4" Command="{Binding DigitCommand}" CommandParameter="4" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="5" Grid.Column="2" Content="5" Command="{Binding DigitCommand}" CommandParameter="5" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="5" Grid.Column="3" Content="6" Command="{Binding DigitCommand}" CommandParameter="6" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="5" Grid.Column="4" Content="*" Command="{Binding OperatorCommand}" CommandParameter="*" ButtonStyle="Outline"/>
+
+            <!-- Row 6: 1-3 - -->
+            <daisy:DaisyButton Grid.Row="6" Grid.Column="0" Content="pi" Command="{Binding DigitCommand}" CommandParameter="pi" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="6" Grid.Column="1" Content="1" Command="{Binding DigitCommand}" CommandParameter="1" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="6" Grid.Column="2" Content="2" Command="{Binding DigitCommand}" CommandParameter="2" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="6" Grid.Column="3" Content="3" Command="{Binding DigitCommand}" CommandParameter="3" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="6" Grid.Column="4" Content="-" Command="{Binding OperatorCommand}" CommandParameter="-" ButtonStyle="Outline"/>
+
+            <!-- Row 7: 0 . = + -->
+            <daisy:DaisyButton Grid.Row="7" Grid.Column="0" Content="e" Command="{Binding DigitCommand}" CommandParameter="e" Variant="Neutral"/>
+            <daisy:DaisyButton Grid.Row="7" Grid.Column="1" Content="0" Command="{Binding DigitCommand}" CommandParameter="0" Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="7" Grid.Column="2" Content="." Command="{Binding DigitCommand}" CommandParameter="." Variant="Ghost"/>
+            <daisy:DaisyButton Grid.Row="7" Grid.Column="3" Content="=" Command="{Binding EqualsCommand}" Variant="Primary"/>
+            <daisy:DaisyButton Grid.Row="7" Grid.Column="4" Content="+" Command="{Binding OperatorCommand}" CommandParameter="+" ButtonStyle="Outline"/>
+        </Grid>
+
+        <!-- Keyboard hint -->
+        <TextBlock Grid.Row="5" 
+                   Text="{loc:Localize Calculator_KeyboardHint}"
+                   FontSize="11" Opacity="0.6"
+                   HorizontalAlignment="Center" Margin="0,8,0,0"/>
+    </Grid>
+</UserControl>

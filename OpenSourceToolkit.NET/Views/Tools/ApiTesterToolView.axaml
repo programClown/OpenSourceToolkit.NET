@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:api="clr-namespace:OpenSourceToolkit.ApiTesting;assembly=OpenSourceToolkit.ApiTesting"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ApiTesterToolView"
+             x:DataType="vm:ApiTesterToolViewModel">
+
+  <Grid RowDefinitions="Auto,*" Margin="10">
+     <!-- URL Bar -->
+     <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Margin="0,0,0,10">
+        <daisy:DaisySelect ItemsSource="{Binding Methods}" SelectedItem="{Binding SelectedMethod}" Width="110" Margin="0,0,10,0"/>
+        <daisy:DaisyInput Text="{Binding Url}" Grid.Column="1" Watermark="{loc:Localize ApiTester_Url_Watermark}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+        <daisy:DaisyButton Command="{Binding ExecuteRequestCommand}" Content="{loc:Localize ApiTester_Send_Button}" Grid.Column="2" IsEnabled="{Binding !IsLoading}" Variant="Primary"/>
+     </Grid>
+
+     <Grid Grid.Row="1" ColumnDefinitions="*, 5, *">
+        <!-- Request Config -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*">
+            <TextBlock Text="{loc:Localize ApiTester_Request_Label}" FontWeight="Bold" Margin="0,0,0,5"/>
+            <daisy:DaisyTabs Grid.Row="1" Variant="Boxed" Size="Small">
+               <TabItem Header="{loc:Localize ApiTester_Headers_Tab}">
+               <daisy:DaisyTextArea Text="{Binding Headers}" Watermark="{loc:Localize ApiTester_Headers_Watermark}" VerticalContentAlignment="Top"/>
+               </TabItem>
+               <TabItem Header="{loc:Localize ApiTester_Body_Tab}">
+               <daisy:DaisyTextArea Text="{Binding Body}" Watermark="{loc:Localize ApiTester_Body_Watermark}" VerticalContentAlignment="Top"/>
+               </TabItem>
+               <TabItem Header="{loc:Localize ApiTester_Auth_Tab}">
+                  <ScrollViewer>
+                      <StackPanel Spacing="10" Margin="10">
+                         <TextBlock Text="{loc:Localize ApiTester_AuthType_Label}"/>
+                         <daisy:DaisySelect ItemsSource="{Binding AuthTypes}" SelectedItem="{Binding SelectedAuthType}" HorizontalAlignment="Stretch"/>
+
+                         <!-- Bearer -->
+                         <StackPanel IsVisible="{Binding SelectedAuthType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static api:AuthType.Bearer}}" Spacing="5">
+                             <TextBlock Text="{loc:Localize ApiTester_Token_Label}"/>
+                             <daisy:DaisyInput Text="{Binding AuthToken}" PasswordChar="*" Watermark="{loc:Localize ApiTester_BearerToken_Watermark}"/>
+                         </StackPanel>
+
+                         <!-- Basic -->
+                         <StackPanel IsVisible="{Binding SelectedAuthType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static api:AuthType.Basic}}" Spacing="5">
+                             <TextBlock Text="{loc:Localize ApiTester_Username_Label}"/>
+                             <daisy:DaisyInput Text="{Binding AuthUsername}"/>
+                             <TextBlock Text="{loc:Localize ApiTester_Password_Label}"/>
+                             <daisy:DaisyInput Text="{Binding AuthPassword}" PasswordChar="*"/>
+                         </StackPanel>
+
+                         <!-- Api Key -->
+                         <StackPanel IsVisible="{Binding SelectedAuthType, Converter={x:Static ObjectConverters.Equal}, ConverterParameter={x:Static api:AuthType.ApiKey}}" Spacing="5">
+                             <TextBlock Text="{loc:Localize ApiTester_KeyName_Label}"/>
+                             <daisy:DaisyInput Text="{Binding ApiKeyName}"/>
+                             <TextBlock Text="{loc:Localize ApiTester_Value_Label}"/>
+                             <daisy:DaisyInput Text="{Binding ApiKey}" PasswordChar="*"/>
+                             <TextBlock Text="{loc:Localize ApiTester_Location_Label}"/>
+                             <daisy:DaisySelect ItemsSource="{Binding ApiKeyLocations}" SelectedItem="{Binding SelectedApiKeyLocation}" HorizontalAlignment="Stretch"/>
+                         </StackPanel>
+                      </StackPanel>
+                  </ScrollViewer>
+               </TabItem>
+            </daisy:DaisyTabs>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="Gray"/>
+
+        <!-- Response -->
+        <Grid Grid.Column="2" RowDefinitions="Auto,*" Margin="5,0,0,0">
+           <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="15" Margin="0,0,0,5">
+              <TextBlock Text="{loc:Localize ApiTester_Response_Label}" FontWeight="Bold"/>
+              <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding HasResponse}">
+                  <TextBlock Text="{Binding ResponseStatusCode, StringFormat='Status: {0}'}" FontWeight="SemiBold"/>
+                  <TextBlock Text="{Binding ResponseTime, StringFormat='Time: {0}'}"/>
+              </StackPanel>
+           </StackPanel>
+
+           <Grid Grid.Row="1">
+               <daisy:DaisyTabs IsVisible="{Binding HasResponse}" Variant="Boxed" Size="Small">
+                  <TabItem Header="{loc:Localize ApiTester_Body_Tab}">
+                     <daisy:DaisyTextArea Text="{Binding ResponseBody}" IsReadOnly="True" VerticalContentAlignment="Top"/>
+                  </TabItem>
+                  <TabItem Header="{loc:Localize ApiTester_Headers_Tab}">
+                     <daisy:DaisyTextArea Text="{Binding ResponseHeaders}" IsReadOnly="True" VerticalContentAlignment="Top"/>
+                  </TabItem>
+               </daisy:DaisyTabs>
+
+               <!-- Loading State -->
+               <StackPanel IsVisible="{Binding IsLoading}" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+                   <ProgressBar IsIndeterminate="True" Width="200"/>
+                   <TextBlock Text="{loc:Localize ApiTester_Sending_Text}" HorizontalAlignment="Center"/>
+               </StackPanel>
+
+               <!-- Empty State -->
+               <TextBlock Text="{loc:Localize ApiTester_NoResponse_Text}"
+                          IsVisible="{Binding !HasResponse}"
+                          IsEnabled="{Binding !IsLoading}"
+                          VerticalAlignment="Center" HorizontalAlignment="Center"
+                          Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+           </Grid>
+        </Grid>
+     </Grid>
+  </Grid>
+</UserControl>

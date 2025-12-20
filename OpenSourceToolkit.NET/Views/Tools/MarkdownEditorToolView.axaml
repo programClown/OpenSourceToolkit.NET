@@ -1,0 +1,377 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:textdata="using:OpenSourceToolkit.TextData"
+             xmlns:converters="using:OpenSourceToolkit.NET.Converters"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.MarkdownEditorToolView"
+             x:DataType="vm:MarkdownEditorToolViewModel">
+    <!-- Main layout grid: Settings, Editor, Splitter, Linter, Guide -->
+    <!-- Row 1 (Editor) and Row 3 (Linter) are both star-sized for splitter to work -->
+    <Grid Margin="0,0,10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="3*" MinHeight="100"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="80"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <!-- Row 0: Settings Row (Collapsible) - compact single-row layout -->
+        <controls:CollapsibleSection Grid.Row="0" IsExpanded="{Binding IsSettingsExpanded}" Margin="0,0,0,10">
+            <controls:CollapsibleSection.Header>
+                <TextBlock Text="{loc:Localize Markdown_SettingsQuickActions_Header}" FontWeight="SemiBold" FontSize="12"/>
+            </controls:CollapsibleSection.Header>
+            <controls:CollapsibleSection.Content>
+                <WrapPanel Orientation="Horizontal">
+                    <!-- Linting toggle -->
+                    <daisy:DaisyCheckBox Content="{loc:Localize Markdown_EnableLinting_Checkbox}" IsChecked="{Binding EnableLinting}" FontSize="12"
+                              VerticalAlignment="Center" Margin="0,0,20,4"/>
+
+                    <!-- Quick Insert buttons -->
+                    <WrapPanel Orientation="Horizontal" Margin="0,0,20,4" VerticalAlignment="Center">
+                        <TextBlock Text="{loc:Localize Markdown_Insert_Label}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="Bold" Command="{Binding InsertBoldCommand}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="Italic" Command="{Binding InsertItalicCommand}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="Code" Command="{Binding InsertCodeCommand}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="Link" Command="{Binding InsertLinkCommand}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="H1" Command="{Binding InsertH1Command}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="H2" Command="{Binding InsertH2Command}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="List" Command="{Binding InsertListCommand}" Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                        <daisy:DaisyButton Content="Quote" Command="{Binding InsertQuoteCommand}" Size="Small" Variant="Secondary"/>
+                    </WrapPanel>
+
+                    <!-- Templates -->
+                    <WrapPanel Orientation="Horizontal" Margin="0,0,0,4" VerticalAlignment="Center">
+                        <TextBlock Text="{loc:Localize Markdown_Templates_Label}" FontWeight="SemiBold" FontSize="12" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}" Margin="0,0,4,0"/>
+                        <ItemsControl ItemsSource="{Binding Templates}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <daisy:DaisyButton Command="{Binding $parent[UserControl].DataContext.LoadTemplateCommand}"
+                                            CommandParameter="{Binding}"
+                                            Content="{Binding Name}"
+                                            ToolTip.Tip="{Binding Description}"
+                                            Size="Small" Variant="Secondary" Margin="0,0,4,0"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </WrapPanel>
+                </WrapPanel>
+            </controls:CollapsibleSection.Content>
+        </controls:CollapsibleSection>
+
+        <!-- Row 1: Editor Row (takes remaining space) -->
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="{Binding ShowHtmlPreview, Converter={x:Static converters:BoolToGridLengthConverter.Instance}}"/>
+            </Grid.ColumnDefinitions>
+            <!-- Editor -->
+            <Border Grid.Column="0" Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8" Padding="15"
+                    Margin="{Binding ShowHtmlPreview, Converter={x:Static converters:BoolToMarginConverter.Instance}}">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,0,0,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{loc:Localize Markdown_Editor_Header}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding CurrentFileName, StringFormat='— {0}'}"
+                                           IsVisible="{Binding CurrentFileName, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                           Foreground="{DynamicResource SemiBlue}" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBlock Text="{loc:Localize Markdown_Editor_Hint}"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <daisy:DaisyButton Grid.Column="1" Command="{Binding UndoCommand}"
+                                ToolTip.Tip="{Binding UndoTooltip}" Margin="0,0,4,0" Size="Small" Variant="Ghost">
+                            <PathIcon Data="{StaticResource UndoIcon}" Width="16" Height="16"/>
+                        </daisy:DaisyButton>
+                        <daisy:DaisyButton Grid.Column="2" Command="{Binding RedoCommand}"
+                                ToolTip.Tip="{Binding RedoTooltip}" Margin="0,0,8,0" Size="Small" Variant="Ghost">
+                            <PathIcon Data="{StaticResource RedoIcon}" Width="16" Height="16"/>
+                        </daisy:DaisyButton>
+                        <daisy:DaisyButton Grid.Column="3" Command="{Binding OpenFileCommand}"
+                                ToolTip.Tip="Open Markdown File" Margin="0,0,4,0" Size="Small" Variant="Ghost">
+                            <PathIcon Data="{StaticResource OpenFileIcon}" Width="16" Height="16"/>
+                        </daisy:DaisyButton>
+                        <daisy:DaisyButton Grid.Column="4" Command="{Binding SaveFileCommand}"
+                                ToolTip.Tip="Save As" Margin="0,0,4,0" Size="Small" Variant="Ghost">
+                            <PathIcon Data="{StaticResource SaveIcon}" Width="16" Height="16"/>
+                        </daisy:DaisyButton>
+                        <daisy:DaisyToggle Grid.Column="5" IsChecked="{Binding ShowHtmlPreview}"
+                                      ToolTip.Tip="Toggle HTML Preview" Margin="0,0,8,0">
+                            <PathIcon Data="{StaticResource EyeIcon}" Width="16" Height="16"/>
+                        </daisy:DaisyToggle>
+                        <daisy:DaisyButton Grid.Column="6" Content="Clear" Command="{Binding ClearCommand}" Size="Small"/>
+                        <daisy:DaisyButton Grid.Column="7" Content="F-" Command="{Binding DecreaseFontSizeCommand}"
+                                ToolTip.Tip="Decrease font size (Ctrl+-)" Size="Small" Margin="8,0,2,0"/>
+                        <daisy:DaisyButton Grid.Column="8" Content="F+" Command="{Binding IncreaseFontSizeCommand}"
+                                ToolTip.Tip="Increase font size (Ctrl++)" Size="Small" Margin="0,0,0,0"/>
+                    </Grid>
+                    <controls:DragDropTextBox Grid.Row="1" Name="EditorTextBox"
+                                              Text="{Binding Markdown}"
+                                              AcceptsReturn="True" TextWrapping="NoWrap"
+                                              FontSize="{Binding EditorFontSize}"
+                                              ShowLineNumbers="True"
+                                              VerticalAlignment="Stretch"
+                                              VerticalContentAlignment="Top"
+                                              DropTitle="Drop a Markdown file or text"
+                                              DropHint="We will load the file content or dropped text into the editor."
+                                              Watermark="# Start writing your Markdown here...
+
+Try some **bold text**, *italic text*, or `inline code`.
+
+- Create lists
+- Add [links](https://example.com)"/>
+                </Grid>
+            </Border>
+
+            <!-- Preview (optional, off by default) -->
+            <Border Grid.Column="1" Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,0,0"
+                    IsVisible="{Binding ShowHtmlPreview}">
+                <Grid RowDefinitions="Auto,*">
+                    <Grid Grid.Row="0" ColumnDefinitions="Auto,*" Margin="0,0,0,10">
+                        <TextBlock Text="{loc:Localize Markdown_HTMLPreview_Header}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+                                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <daisy:DaisyCheckBox Content="{loc:Localize Markdown_Tables_Checkbox}" IsChecked="{Binding EnableTables}" FontSize="11"/>
+                            <daisy:DaisyCheckBox Content="{loc:Localize Markdown_TaskLists_Checkbox}" IsChecked="{Binding EnableTaskLists}" FontSize="11"/>
+                        </StackPanel>
+                    </Grid>
+                    <Border Grid.Row="1" Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="4" Padding="15">
+                        <ScrollViewer>
+                            <SelectableTextBlock Text="{Binding HtmlPreview}"
+                                                 TextWrapping="Wrap"
+                                                 FontSize="13"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Row 2: Splitter between Editor and Linter -->
+        <GridSplitter Grid.Row="2" Height="8" Background="Transparent"
+                      ResizeBehavior="PreviousAndNext" ResizeDirection="Rows"
+                      HorizontalAlignment="Stretch" Margin="0,2">
+            <GridSplitter.Template>
+                <ControlTemplate>
+                    <Border Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid>
+                            <Border Height="1" VerticalAlignment="Center" Background="{DynamicResource DaisyBase300Brush}"/>
+                            <Border Width="24" Height="4" CornerRadius="2" Background="{DynamicResource DaisyBase300Brush}" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+
+        <!-- Row 3: Linter Results (Collapsible) -->
+        <controls:CollapsibleSection Grid.Row="3" IsExpanded="{Binding IsLinterExpanded}" Margin="0,0,0,10"
+                                     IsVisible="{Binding EnableLinting}">
+            <controls:CollapsibleSection.Header>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Text="{loc:Localize Markdown_LinterResults_Header}" FontWeight="SemiBold" FontSize="14"
+                               VerticalAlignment="Center"/>
+                    <Border Background="{DynamicResource DaisyWarningBrush}"
+                            CornerRadius="10" Padding="8,2"
+                            VerticalAlignment="Center"
+                            IsVisible="{Binding HasViolations}">
+                        <TextBlock Text="{Binding ViolationCount, StringFormat='{}{0} issues'}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource DaisyWarningContentBrush}"/>
+                    </Border>
+                    <Border Background="{DynamicResource DaisySuccessBrush}"
+                            CornerRadius="10" Padding="8,2"
+                            VerticalAlignment="Center"
+                            IsVisible="{Binding !HasViolations}">
+                        <TextBlock Text="{loc:Localize Markdown_NoIssues_Badge}"
+                                   FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource DaisySuccessContentBrush}"/>
+                    </Border>
+                </StackPanel>
+            </controls:CollapsibleSection.Header>
+            <controls:CollapsibleSection.HeaderRight>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <daisy:DaisyButton Content="{loc:Localize Markdown_RunLinter_Button}" Command="{Binding RunLinterCommand}" Size="Small"/>
+                    <daisy:DaisyButton Content="{loc:Localize Markdown_AutoFixAll_Button}" Command="{Binding AutoFixCommand}" Size="Small" Variant="Primary"/>
+                </StackPanel>
+            </controls:CollapsibleSection.HeaderRight>
+            <controls:CollapsibleSection.Content>
+                <Border Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="4" Padding="10">
+                    <ScrollViewer>
+                        <StackPanel Margin="0,0,0,4">
+                            <ItemsControl ItemsSource="{Binding LintViolations}" IsVisible="{Binding HasViolations}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="textdata:MarkdownLintViolation">
+                                        <Border Background="{DynamicResource DaisyBase300Brush}" CornerRadius="4" Margin="0,1" Padding="6,3">
+                                            <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                                <Border Background="{DynamicResource DaisyWarningBrush}" CornerRadius="3" Padding="4,1" Margin="0,0,8,0"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding RuleId}"
+                                                               FontFamily="Consolas" FontSize="12"
+                                                               Foreground="{DynamicResource DaisyWarningContentBrush}" FontWeight="SemiBold"/>
+                                                </Border>
+                                                <TextBlock Grid.Column="1" Text="{Binding LineNumber, StringFormat='Line {0}: '}"
+                                                           FontFamily="Consolas" FontSize="13"
+                                                           Foreground="{DynamicResource DaisyBaseContentBrush}" VerticalAlignment="Center"/>
+                                                <daisy:DaisyButton Grid.Column="2"
+                                                        Command="{Binding $parent[UserControl].DataContext.GoToViolationCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Variant="Ghost">
+                                                    <TextBlock Text="{Binding Description}"
+                                                               FontSize="12" TextWrapping="Wrap"/>
+                                                </daisy:DaisyButton>
+                                                <daisy:DaisyButton Grid.Column="3" Content="{loc:Localize Markdown_Fix_Button}"
+                                                        Command="{Binding $parent[UserControl].DataContext.FixViolationCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Size="Small" Variant="Success" Margin="8,0,0,0"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{loc:Localize Markdown_NoLintingIssues_Text}" FontSize="12" IsVisible="{Binding !HasViolations}"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </controls:CollapsibleSection.Content>
+        </controls:CollapsibleSection>
+
+        <!-- Row 4: Markdown Guide (Collapsible) -->
+        <controls:CollapsibleSection Grid.Row="4" IsExpanded="{Binding IsGuideExpanded}">
+            <controls:CollapsibleSection.Header>
+                <TextBlock Text="{loc:Localize Markdown_Guide_Header}" FontWeight="SemiBold"/>
+            </controls:CollapsibleSection.Header>
+            <controls:CollapsibleSection.Content>
+                <StackPanel Spacing="15">
+                    <!-- Row 1: Headers, Emphasis, Inline Code -->
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Headers" FontWeight="SemiBold" FontSize="13"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="# H1" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}" Width="80"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="→ Largest heading" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="## H2" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="→ Section heading" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="### H3" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="→ Subsection" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="#### H4" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="→ Sub-subsection" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="##### H5" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="→ Minor heading" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="###### H6" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="→ Smallest heading" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4" Margin="10,0">
+                            <TextBlock Text="Text Formatting" FontWeight="SemiBold" FontSize="13"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="**bold**" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}" Width="110"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="→ Bold text" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="*italic*" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="→ Italic text" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="***bold italic***" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="→ Bold + italic" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="~~strikethrough~~" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="→ Strikethrough" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="`inline code`" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="→ Code snippet" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="4" Margin="10,0,0,0">
+                            <TextBlock Text="Links &amp; Images" FontWeight="SemiBold" FontSize="13"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="[text](url)" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}" Width="140"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="→ Hyperlink" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="![alt](image.png)" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="→ Image" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="[text][ref]" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="→ Reference link" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="&lt;https://url&gt;" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="→ Auto-link" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Background="{DynamicResource DaisyBase300Brush}" Height="1" Margin="0,5"/>
+
+                    <!-- Row 2: Lists, Blockquotes, Code Blocks -->
+                    <Grid ColumnDefinitions="*,*,*">
+                        <StackPanel Grid.Column="0" Spacing="4">
+                            <TextBlock Text="Lists" FontWeight="SemiBold" FontSize="13"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="- item" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}" Width="80"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="→ Unordered list" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="* item" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="→ Also unordered" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="1. item" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="→ Ordered list" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="   - nested" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="→ Nested (3 spaces)" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="- [x] done" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="4" Grid.Column="1" Text="→ Checked task" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="- [ ] todo" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="5" Grid.Column="1" Text="→ Unchecked task" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="4" Margin="10,0">
+                            <TextBlock Text="Blockquotes &amp; Rules" FontWeight="SemiBold" FontSize="13"/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="&gt; quote" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}" Width="110"/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" Text="→ Blockquote" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="&gt;&gt; nested" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="→ Nested quote" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="---" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="→ Horizontal rule" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="***" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="→ Also horiz. rule" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="4" Margin="10,0,0,0">
+                            <TextBlock Text="Code Blocks" FontWeight="SemiBold" FontSize="13"/>
+                            <StackPanel Spacing="2" Margin="0,4,0,0">
+                                <TextBlock Text="```language" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Text="code here" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}" Margin="8,0,0,0"/>
+                                <TextBlock Text="```" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Text="Languages: js, python, csharp, bash, json, xml, sql, etc." FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <Separator Background="{DynamicResource DaisyBase300Brush}" Height="1" Margin="0,5"/>
+
+                    <!-- Row 3: Tables -->
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Tables" FontWeight="SemiBold" FontSize="13"/>
+                        <Grid ColumnDefinitions="*,*">
+                            <StackPanel Grid.Column="0" Spacing="2">
+                                <TextBlock Text="| Header 1 | Header 2 | Header 3 |" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Text="|----------|----------|----------|" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="| Cell 1   | Cell 2   | Cell 3   |" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Text="| Cell 4   | Cell 5   | Cell 6   |" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource SemiBlue}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="2" Margin="20,0,0,0">
+                                <TextBlock Text="Column Alignment:" FontWeight="SemiBold" FontSize="11"/>
+                                <TextBlock Text="|:---| → Left align" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="|:--:| → Center align" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <TextBlock Text="|---:| → Right align" FontFamily="Consolas" FontSize="11" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
+            </controls:CollapsibleSection.Content>
+        </controls:CollapsibleSection>
+    </Grid>
+</UserControl>

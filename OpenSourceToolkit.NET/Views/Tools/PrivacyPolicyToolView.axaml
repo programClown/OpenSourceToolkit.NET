@@ -1,0 +1,151 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.PrivacyPolicyToolView"
+             x:DataType="vm:PrivacyPolicyToolViewModel">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <!-- Configuration Panel -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,20,*,20,Auto" Margin="0,0,0,15">
+            <!-- Company Information -->
+            <StackPanel Grid.Column="0" Spacing="8">
+                <TextBlock Text="{loc:Localize Privacy_CompanyInfo_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize Privacy_CompanyName_Label}"/>
+                            <TextBox Text="{Binding CompanyName}" Watermark="{loc:Localize Privacy_CompanyName_Watermark}"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize Privacy_WebsiteUrl_Label}"/>
+                            <TextBox Text="{Binding WebsiteUrl}" Watermark="https://example.com"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize Privacy_ContactEmail_Label}"/>
+                            <TextBox Text="{Binding ContactEmail}" Watermark="privacy@example.com"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Data Collection Options -->
+            <StackPanel Grid.Column="2" Spacing="8">
+                <TextBlock Text="{loc:Localize Privacy_DataCollection_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <daisy:DaisyCheckBox IsChecked="{Binding CollectsPersonalData}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_PersonalData_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_PersonalData_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                        <daisy:DaisyCheckBox IsChecked="{Binding CollectsCookies}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_Cookies_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_Cookies_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                        <daisy:DaisyCheckBox IsChecked="{Binding CollectsAnalytics}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_Analytics_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_Analytics_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                        <daisy:DaisyCheckBox IsChecked="{Binding HasThirdPartyServices}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_ThirdParty_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_ThirdParty_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                        <daisy:DaisyCheckBox IsChecked="{Binding HasUserAccounts}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_UserAccounts_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_UserAccounts_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Compliance & Output -->
+            <StackPanel Grid.Column="4" Spacing="8" MinWidth="200">
+                <TextBlock Text="{loc:Localize Privacy_Compliance_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="8">
+                        <daisy:DaisyCheckBox IsChecked="{Binding IncludeGdprSection}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_GDPR_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_GDPR_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                        <daisy:DaisyCheckBox IsChecked="{Binding IncludeCcpaSection}">
+                            <StackPanel Spacing="2">
+                                <TextBlock Text="{loc:Localize Privacy_CCPA_Label}"/>
+                                <TextBlock Text="{loc:Localize Privacy_CCPA_Desc}" FontSize="11"
+                                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                            </StackPanel>
+                        </daisy:DaisyCheckBox>
+                    </StackPanel>
+                </Border>
+
+                <TextBlock Text="{loc:Localize Privacy_OutputFormat_Label}" FontWeight="SemiBold" FontSize="14" Margin="0,8,0,0"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <daisy:DaisyCheckBox IsChecked="{Binding OutputAsMarkdown}">
+                        <StackPanel Spacing="2">
+                            <TextBlock Text="{loc:Localize Privacy_Markdown_Label}"/>
+                            <TextBlock Text="{loc:Localize Privacy_Markdown_Desc}" FontSize="11"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                    </daisy:DaisyCheckBox>
+                </Border>
+
+                <daisy:DaisyButton Command="{Binding GenerateCommand}"
+                        Content="{loc:Localize Privacy_Generate_Button}"
+                        Variant="Primary"
+                       
+                        Margin="0,8,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Output -->
+        <controls:CopyableTextBox Grid.Row="1"
+                                  Text="{Binding Output}"
+                                  IsReadOnly="True"
+                                  AcceptsReturn="True"
+                                  TextWrapping="Wrap"/>
+
+        <!-- Disclaimer -->
+        <Border Grid.Row="2"
+                Background="{DynamicResource DaisyBase300Brush}"
+                CornerRadius="4"
+                Padding="10"
+                Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <PathIcon Data="M13,13H11V7H13M13,17H11V15H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"
+                          Width="16" Height="16"
+                          Foreground="{DynamicResource DaisyBaseContentBrush}"
+                          VerticalAlignment="Center"/>
+                <TextBlock Text="{loc:Localize Privacy_Disclaimer}"
+                           FontSize="11"
+                           Foreground="{DynamicResource DaisyBaseContentBrush}"
+                           TextWrapping="Wrap"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             x:Class="OpenSourceToolkit.NET.Controls.DragDropTextBox"
+             x:Name="Root"
+             VerticalAlignment="Stretch"
+             HorizontalAlignment="Stretch">
+    <Grid>
+        <!-- Standard TextBox (when line numbers disabled) -->
+        <TextBox x:Name="PART_TextBox"
+                 IsVisible="{Binding !ShowLineNumbers, ElementName=Root}"
+                 Text="{Binding Text, ElementName=Root, Mode=TwoWay}"
+                 Watermark="{Binding Watermark, ElementName=Root}"
+                 AcceptsReturn="{Binding AcceptsReturn, ElementName=Root}"
+                 TextWrapping="{Binding TextWrapping, ElementName=Root}"
+                 FontSize="{Binding FontSize, ElementName=Root}"
+                 VerticalContentAlignment="{Binding VerticalContentAlignment, ElementName=Root}"
+                 Padding="{Binding TextPadding, ElementName=Root}"
+                 MinHeight="{Binding MinimumEditorHeight, ElementName=Root}"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Stretch"/>
+
+        <!-- LineNumberTextBox (when line numbers enabled) -->
+        <controls:LineNumberTextBox x:Name="PART_LineNumberTextBox"
+                                    IsVisible="{Binding ShowLineNumbers, ElementName=Root}"
+                                    Text="{Binding Text, ElementName=Root, Mode=TwoWay}"
+                                    Watermark="{Binding Watermark, ElementName=Root}"
+                                    AcceptsReturn="{Binding AcceptsReturn, ElementName=Root}"
+                                    TextWrapping="NoWrap"
+                                    FontSize="{Binding FontSize, ElementName=Root}"
+                                    VerticalContentAlignment="{Binding VerticalContentAlignment, ElementName=Root}"
+                                    MinimumEditorHeight="{Binding MinimumEditorHeight, ElementName=Root}"
+                                    ShowLineNumbers="True"
+                                    VerticalAlignment="Stretch"
+                                    HorizontalAlignment="Stretch"/>
+
+        <Border IsVisible="{Binding IsDragOver, ElementName=Root}"
+                Background="#66000000"
+                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                BorderThickness="1"
+                CornerRadius="6"
+                IsHitTestVisible="False">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                <TextBlock Text="{Binding DropTitle, ElementName=Root}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding DropHint, ElementName=Root}" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource DaisyNeutralContentBrush}" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <OutputPath Condition="'$(Configuration)'=='Debug'">..\bin\debug\</OutputPath>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.10" />
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSourceToolkit.TextData\OpenSourceToolkit.TextData.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Converters\OpenSourceToolkit.Converters.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Security\OpenSourceToolkit.Security.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Networking\OpenSourceToolkit.Networking.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.IO\OpenSourceToolkit.IO.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Colors\OpenSourceToolkit.Colors.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Documents\OpenSourceToolkit.Documents.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Hardware\OpenSourceToolkit.Hardware.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Media\OpenSourceToolkit.Media.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.Scheduling\OpenSourceToolkit.Scheduling.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.ApiTesting\OpenSourceToolkit.ApiTesting.csproj" />
+    <ProjectReference Include="..\OpenSourceToolkit.NET\OpenSourceToolkit.NET.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Fonts\Roboto-Regular.ttf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSourceToolkit.Calculators\OpenSourceToolkit.Calculators.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.JwtToolView"
+             x:DataType="vm:JwtToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <Border Classes="Card" BorderBrush="Gray" BorderThickness="1" Padding="10" CornerRadius="5">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="{loc:Localize Jwt_GenerateToken_Label}" FontWeight="Bold"/>
+                    <TextBlock Text="{loc:Localize Jwt_Secret_Label}" />
+                    <daisy:DaisyInput Text="{Binding Secret}" PasswordChar="*" />
+                    <TextBlock Text="{loc:Localize Jwt_Issuer_Label}" />
+                    <daisy:DaisyInput Text="{Binding Issuer}" />
+                    <daisy:DaisyButton Command="{Binding GenerateCommand}" Content="{loc:Localize Button_Generate}" Variant="Primary" HorizontalAlignment="Left" />
+                </StackPanel>
+            </Border>
+
+            <TextBlock Text="{loc:Localize Jwt_EncodedToken_Label}" FontWeight="SemiBold"/>
+            <controls:CopyableInput Text="{Binding EncodedToken}" Watermark="{loc:Localize Jwt_Token_Watermark}" IsReadOnly="False" />
+            <daisy:DaisyButton Command="{Binding DecodeCommand}" Content="{loc:Localize Button_Decode}" Variant="Secondary" HorizontalAlignment="Left" MaxWidth="100" />
+
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Localize Jwt_Header_Label}" FontWeight="Bold" Margin="0,0,5,0"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{loc:Localize Jwt_Payload_Label}" FontWeight="Bold" Margin="5,0,0,0"/>
+
+                <controls:CopyableTextBox Grid.Row="1" Grid.Column="0" Text="{Binding DecodedHeader}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" Height="200" Margin="0,0,5,0"/>
+                <controls:CopyableTextBox Grid.Row="1" Grid.Column="1" Text="{Binding DecodedPayload}" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" Height="200" Margin="5,0,0,0"/>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

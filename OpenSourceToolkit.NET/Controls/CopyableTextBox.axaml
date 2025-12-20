@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="50"
+             x:Class="OpenSourceToolkit.NET.Controls.CopyableTextBox"
+             x:Name="Root">
+    <Grid ColumnDefinitions="*,Auto">
+        <daisy:DaisyTextArea Text="{Binding Text, ElementName=Root, Mode=TwoWay}"
+                 Watermark="{Binding Watermark, ElementName=Root}"
+                 IsReadOnly="{Binding IsReadOnly, ElementName=Root}"
+                 VerticalAlignment="Stretch"
+                 HorizontalAlignment="Stretch" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="5" Margin="5,0,0,0" VerticalAlignment="Top">
+            <daisy:DaisyButton Click="Copy_Click" ToolTip.Tip="Copy to Clipboard" Size="Small" Variant="Ghost">
+                <PathIcon Data="{DynamicResource CopyIcon}" Width="14" Height="14"/>
+            </daisy:DaisyButton>
+            <daisy:DaisyButton Click="Clear_Click" ToolTip.Tip="Clear" Size="Small" Variant="Ghost">
+                <PathIcon Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Width="10" Height="10"/>
+            </daisy:DaisyButton>
+        </StackPanel>
+    </Grid>
+</UserControl>

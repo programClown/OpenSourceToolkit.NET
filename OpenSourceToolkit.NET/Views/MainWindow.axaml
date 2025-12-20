@@ -1,0 +1,63 @@
+<!--
+    FLICKER PREVENTION: Window starts hidden (IsVisible=False, ShowInTaskbar=False).
+    This allows position and theme to be applied before the window appears.
+    The window is revealed by MainWindow.OnThemeRestored() after App.ThemeRestored fires.
+    See App.axaml.cs and MainWindow.axaml.cs for the full startup sequence.
+-->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OpenSourceToolkit.NET.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ava="clr-namespace:Avalonia.Styling;assembly=Avalonia.Base"
+        xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+        xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="OpenSourceToolkit.NET.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/toolkit-logo.ico"
+        Title="OpenSourceToolkit.NET"
+        MinWidth="500" MinHeight="500"
+        WindowStartupLocation="Manual"
+        TransparencyLevelHint="AcrylicBlur"
+        ShowInTaskbar="False"
+        IsVisible="False">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid ColumnDefinitions="Auto,*">
+        <!-- Sidebar using FloweryComponentSidebar -->
+        <daisy:FloweryComponentSidebar x:Name="ComponentSidebar"
+                                       Grid.Column="0"
+                                       SidebarWidth="240"
+                                       ItemSelected="ComponentSidebar_ItemSelected"/>
+
+        <!-- Main Content -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,*">
+            <!-- Header Area (hidden for Home page) -->
+            <Border Grid.Row="0"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="0,0,0,1"
+                    Padding="20,16"
+                    IsVisible="{Binding ShowToolHeader}">
+                <StackPanel>
+                    <TextBlock Text="{Binding CurrentTool.Name}"
+                               Classes="h1"
+                               Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding CurrentTool.Description}"
+                               Classes="muted"
+                               FontSize="14"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Content Area -->
+            <TransitioningContentControl Grid.Row="1" Content="{Binding CurrentTool}" Margin="20">
+                <TransitioningContentControl.PageTransition>
+                    <CrossFade Duration="0:0:0.25" />
+                </TransitioningContentControl.PageTransition>
+            </TransitioningContentControl>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="using:OpenSourceToolkit.NET.Controls"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+             x:Class="OpenSourceToolkit.NET.Controls.ZoomableImageControl"
+             x:Name="Root"
+             ClipToBounds="True">
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Image canvas with border -->
+        <Border Grid.Row="0"
+                BorderBrush="{DynamicResource ImageCanvasBorderBrush}"
+                BorderThickness="1"
+                CornerRadius="2"
+                ClipToBounds="True">
+            <!-- Scrollable/pannable container -->
+            <ScrollViewer x:Name="ScrollContainer"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto"
+                          Background="Transparent">
+                <!-- Use a Grid instead of Canvas so the Image can be sized properly -->
+                <Grid x:Name="ImageCanvas">
+                    <Image x:Name="ZoomableImage"
+                           Stretch="Fill"
+                           RenderOptions.BitmapInterpolationMode="HighQuality"
+                           IsVisible="{Binding !IsComparisonMode, ElementName=Root}"/>
+
+                    <local:ImageComparisonControl x:Name="ComparisonView"
+                           BeforeSource="{Binding ComparisonSource, ElementName=Root}"
+                           AfterSource="{Binding Source, ElementName=Root}"
+                           SliderPosition="{Binding SliderPosition, Mode=TwoWay, ElementName=Root}"
+                           IsVertical="{Binding IsVerticalComparison, ElementName=Root}"
+                           IsVisible="{Binding IsComparisonMode, ElementName=Root}"/>
+                </Grid>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Zoom controls bar (below image) -->
+        <Border Grid.Row="1"
+                HorizontalAlignment="Right"
+                Margin="0,2,0,0"
+                Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+                CornerRadius="4"
+                Padding="4,2">
+            <StackPanel Orientation="Horizontal" Spacing="4">
+                <Button x:Name="ZoomOutButton" Content="−" Padding="6,2" FontSize="13"
+                        ToolTip.Tip="Zoom Out (Ctrl+-)"/>
+                <TextBlock x:Name="ZoomLevelText" Text="100%" VerticalAlignment="Center"
+                           Width="40" TextAlignment="Center" FontSize="11"/>
+                <Button x:Name="ZoomInButton" Content="+" Padding="6,2" FontSize="13"
+                        ToolTip.Tip="Zoom In (Ctrl++)"/>
+                <Button x:Name="ZoomFitButton" Content="Fit" Padding="6,2" FontSize="11"
+                        ToolTip.Tip="Fit to View"/>
+                <Button x:Name="Zoom100Button" Content="1:1" Padding="6,2" FontSize="11"
+                        ToolTip.Tip="Actual Size (100%)"/>
+                <Button x:Name="FullscreenButton" Padding="6,2"
+                        ToolTip.Tip="View fullscreen (scroll to zoom, drag to pan)">
+                    <PathIcon Data="{StaticResource FullscreenIcon}" Width="14" Height="14"/>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

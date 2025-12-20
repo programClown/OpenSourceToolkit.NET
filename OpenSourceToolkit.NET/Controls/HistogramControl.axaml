@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             mc:Ignorable="d" d:DesignWidth="280" d:DesignHeight="120"
+             x:Class="OpenSourceToolkit.NET.Controls.HistogramControl">
+
+    <Border Background="{DynamicResource SystemControlBackgroundAltHighBrush}"
+            BorderBrush="{DynamicResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1"
+            CornerRadius="4"
+            Padding="8">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <!-- Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,5">
+                <TextBlock Text="Histogram" FontWeight="SemiBold" FontSize="11"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                    <daisy:DaisyCheckBox x:Name="ShowRedCheckBox" Content="R" FontSize="10" IsChecked="True"
+                              Foreground="{DynamicResource DaisyErrorBrush}" Padding="2,0"/>
+                    <daisy:DaisyCheckBox x:Name="ShowGreenCheckBox" Content="G" FontSize="10" IsChecked="True"
+                              Foreground="{DynamicResource DaisySuccessBrush}" Padding="2,0"/>
+                    <daisy:DaisyCheckBox x:Name="ShowBlueCheckBox" Content="B" FontSize="10" IsChecked="True"
+                              Foreground="{DynamicResource DaisyInfoBrush}" Padding="2,0"/>
+                    <daisy:DaisyCheckBox x:Name="ShowLuminanceCheckBox" Content="L" FontSize="10" IsChecked="False"
+                              Foreground="{DynamicResource DaisyBaseContentBrush}" Padding="2,0"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Histogram Canvas - stretches to fill available width -->
+            <Grid Grid.Row="1" RowDefinitions="*,Auto">
+                <Border Background="{DynamicResource DaisyNeutralBrush}" ClipToBounds="True" MinHeight="80">
+                    <Canvas x:Name="HistogramCanvas" ClipToBounds="True"/>
+                </Border>
+
+                <!-- Stats - full width with proper spacing -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto" Margin="0,5,0,0">
+                    <TextBlock x:Name="MinLabel" Text="Min: 0" FontSize="9" Opacity="0.6"/>
+                    <TextBlock x:Name="MeanLabel" Text="Mean: 128" FontSize="9" Opacity="0.6"
+                               HorizontalAlignment="Center" Grid.Column="1"/>
+                    <TextBlock x:Name="MaxLabel" Text="Max: 255" FontSize="9" Opacity="0.6"
+                               Grid.Column="2"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

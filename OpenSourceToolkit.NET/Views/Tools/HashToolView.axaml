@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.HashToolView"
+             x:DataType="vm:HashToolViewModel">
+    <StackPanel Spacing="10" Margin="0,10,0,0">
+        <controls:DragDropTextBox Text="{Binding Input}"
+                                  Watermark="{loc:Localize Label_Input}"
+                                  AcceptsReturn="True"
+                                  TextWrapping="Wrap"
+                                  VerticalContentAlignment="Top"
+                                  DropTitle="Drop a text file or text"
+                                  DropHint="We will load the dropped file or text into the hasher."/>
+        <daisy:DaisyButton Command="{Binding ComputeCommand}" Content="{loc:Localize Button_Compute}" Variant="Primary" HorizontalAlignment="Left" />
+
+        <TextBlock Text="MD5:" FontWeight="SemiBold"/>
+        <controls:CopyableInput Text="{Binding OutputMd5}" IsReadOnly="True"/>
+
+        <TextBlock Text="SHA256:" FontWeight="SemiBold"/>
+        <controls:CopyableInput Text="{Binding OutputSha256}" IsReadOnly="True"/>
+    </StackPanel>
+</UserControl>

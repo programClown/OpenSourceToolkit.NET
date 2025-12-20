@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 
+    Theme Resources
+    ===============
+    Static resources that don't change with theme switching.
+    
+    IMPORTANT: Views should use Daisy* resources directly for theme colors:
+    - DaisyBase100Brush (background)
+    - DaisyBase200Brush (secondary background)
+    - DaisyBase300Brush (borders, fills)
+    - DaisyBaseContentBrush (primary text)
+    - DaisyNeutralContentBrush (secondary text)
+    - DaisyPrimaryBrush (accent color)
+    - DaisySuccessBrush, DaisyWarningBrush, DaisyErrorBrush, DaisyInfoBrush
+    -->
+    
+    <!-- Static accent colors (theme-independent) -->
+    <SolidColorBrush x:Key="SemiBlue" Color="#3B82F6"/>
+    <SolidColorBrush x:Key="SemiOrange" Color="#F97316"/>
+    <SolidColorBrush x:Key="SemiGreen" Color="#22C55E"/>
+    
+    <!-- Status indicator brushes (use Daisy semantics) -->
+    <SolidColorBrush x:Key="UnsavedIndicatorBrush" Color="#FF627D"/>
+    <SolidColorBrush x:Key="SavedIndicatorBrush" Color="#00D390"/>
+    <SolidColorBrush x:Key="DeleteIconBrush" Color="#FF627D"/>
+</ResourceDictionary>

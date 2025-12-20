@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             x:Class="OpenSourceToolkit.NET.Controls.CollapsibleSection"
+             x:Name="Root">
+    <Border Background="{DynamicResource DaisyBase200Brush}"
+            BorderBrush="{DynamicResource DaisyBase300Brush}"
+            BorderThickness="1" CornerRadius="8" Padding="15">
+        <StackPanel Spacing="10">
+            <!-- Header with toggle - clickable header area -->
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <!-- Clickable area: chevron + header title -->
+                <daisy:DaisyButton Grid.Column="0" Grid.ColumnSpan="2" Command="{Binding ToggleExpandedCommand, ElementName=Root}"
+                        Variant="Ghost"
+                        HorizontalAlignment="Left" Cursor="Hand">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <PathIcon x:Name="ChevronIcon" Data="{StaticResource ChevronDownIcon}" Width="12" Height="12"
+                                  RenderTransformOrigin="50%,50%"/>
+                        <ContentPresenter Content="{Binding Header, ElementName=Root}"
+                                          VerticalAlignment="Center"/>
+                    </StackPanel>
+                </daisy:DaisyButton>
+                <ContentPresenter Grid.Column="2" Content="{Binding HeaderRight, ElementName=Root}"
+                                  VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Expandable content -->
+            <ContentPresenter Content="{Binding Content, ElementName=Root}"
+                              IsVisible="{Binding IsExpanded, ElementName=Root}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

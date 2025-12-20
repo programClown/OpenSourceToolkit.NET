@@ -1,0 +1,216 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:converters="clr-namespace:OpenSourceToolkit.NET.Converters"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.PdfToolView"
+             x:DataType="vm:PdfToolViewModel">
+    <Grid RowDefinitions="*">
+        <ScrollViewer Grid.Row="0">
+            <StackPanel Spacing="10">
+
+                <daisy:DaisyTabs Variant="Boxed" Size="Small">
+                    <!-- Merge Tab -->
+                    <TabItem Header="{loc:Localize Pdf_Merge_Tab}">
+                        <StackPanel Spacing="15" Margin="0,15,0,0">
+                            <TextBlock Text="{loc:Localize Pdf_Merge_Desc}" Classes="muted"/>
+
+                            <TextBlock Text="{loc:Localize Pdf_InputFiles_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                                <ListBox Grid.Column="0" Grid.Row="0"
+                                         ItemsSource="{Binding MergeInputFiles}"
+                                         Height="150"
+                                         Background="{DynamicResource SidebarBackgroundBrush}"
+                                         BorderBrush="{DynamicResource SidebarBorderBrush}"
+                                         BorderThickness="1"
+                                         CornerRadius="4"/>
+
+                                <StackPanel Grid.Column="1" Grid.Row="0" Spacing="10" Margin="10,0,0,0">
+                                    <daisy:DaisyButton Content="{loc:Localize Pdf_AddFiles_Button}" Click="MergeAddFiles_Click"/>
+                                    <daisy:DaisyButton Command="{Binding ClearMergeInputsCommand}" Content="{loc:Localize Button_Clear}"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="{loc:Localize Pdf_OutputFile_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpan="2">
+                                <TextBox Text="{Binding MergeOutputFile}" Watermark="{loc:Localize Pdf_OutputPath_Watermark}" IsReadOnly="True"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize Pdf_SaveAs_Button}" Click="MergeSaveAs_Click" Margin="10,0,0,0"/>
+                            </Grid>
+
+                            <daisy:DaisyButton Command="{Binding MergeCommand}" Content="{loc:Localize Pdf_MergePdfs_Button}" Variant="Primary" Margin="0,10,0,0" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- Split Tab -->
+                    <TabItem Header="{loc:Localize Pdf_Split_Tab}">
+                        <StackPanel Spacing="15" Margin="0,15,0,0">
+                            <TextBlock Text="{loc:Localize Pdf_Split_Desc}" Classes="muted"/>
+
+                            <TextBlock Text="{loc:Localize Pdf_InputFile_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding SplitInputFile}" Watermark="{loc:Localize Pdf_SelectPdfToSplit_Watermark}" IsReadOnly="True"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize Pdf_Browse_Button}" Click="SplitBrowseInput_Click" Margin="10,0,0,0"/>
+                            </Grid>
+
+                            <TextBlock Text="{loc:Localize Pdf_OutputDirectory_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding SplitOutputDir}" Watermark="{loc:Localize Pdf_SelectOutputFolder_Watermark}" IsReadOnly="True"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize Pdf_Browse_Button}" Click="SplitBrowseOutput_Click" Margin="10,0,0,0"/>
+                            </Grid>
+
+                             <daisy:DaisyButton Command="{Binding SplitCommand}" Content="{loc:Localize Pdf_SplitPdf_Button}" Variant="Primary" Margin="0,10,0,0" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- Watermark Tab -->
+                    <TabItem Header="{loc:Localize Pdf_Watermark_Tab}">
+                         <StackPanel Spacing="15" Margin="0,15,0,0">
+                            <TextBlock Text="{loc:Localize Pdf_Watermark_Desc}" Classes="muted"/>
+
+                            <!-- Input/Output Files -->
+                            <TextBlock Text="{loc:Localize Pdf_InputFile_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding WatermarkInputFile}" Watermark="{loc:Localize Pdf_SelectPdf_Watermark}" IsReadOnly="True"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize Pdf_Browse_Button}" Click="WatermarkBrowseInput_Click" Margin="10,0,0,0"/>
+                            </Grid>
+
+                            <TextBlock Text="{loc:Localize Pdf_OutputFile_Label}" FontWeight="Bold"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox Text="{Binding WatermarkOutputFile}" Watermark="{loc:Localize Pdf_OutputPath_Watermark}" IsReadOnly="True"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize Pdf_SaveAs_Button}" Click="WatermarkSaveAs_Click" Margin="10,0,0,0"/>
+                            </Grid>
+
+                            <daisy:DaisyDivider />
+
+                            <!-- Presets Section -->
+                            <StackPanel Spacing="8">
+                                <TextBlock Text="{loc:Localize Pdf_Presets_Label}" FontWeight="Bold"/>
+                                <Grid ColumnDefinitions="*,Auto,Auto">
+                                    <daisy:DaisySelect Grid.Column="0" 
+                                                       ItemsSource="{Binding WatermarkPresets}"
+                                                       SelectedItem="{Binding SelectedPreset}"
+                                                       PlaceholderText="{loc:Localize Pdf_LoadPreset_Placeholder}"/>
+                                    <daisy:DaisyButton Grid.Column="1" 
+                                                        Content="{loc:Localize Pdf_SaveCurrent_Button}" 
+                                                        Variant="Secondary"
+                                                        Margin="10,0,0,0"
+                                                        Click="SavePreset_Click"/>
+                                    <daisy:DaisyButton Grid.Column="2" 
+                                                        Command="{Binding DeletePresetCommand}"
+                                                        Variant="Ghost"
+                                                        Margin="5,0,0,0"
+                                                        ToolTip.Tip="Delete selected preset">
+                                        <PathIcon Data="{StaticResource DeleteIcon}" Width="16" Height="16"/>
+                                    </daisy:DaisyButton>
+                                </Grid>
+                            </StackPanel>
+
+                            <daisy:DaisyDivider />
+
+                            <!-- Watermark Text -->
+                            <TextBlock Text="{loc:Localize Pdf_WatermarkText_Label}" FontWeight="Bold"/>
+                            <daisy:DaisyInput Text="{Binding WatermarkText}" Watermark="{loc:Localize Pdf_WatermarkText_Watermark}"/>
+
+                            <!-- Position and Rotation Row -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" Margin="0,5,0,0">
+                                <StackPanel Grid.Column="0" Grid.Row="0" Spacing="5" Margin="0,0,10,0">
+                                    <TextBlock Text="{loc:Localize Pdf_Position_Label}" FontWeight="Bold"/>
+                                    <daisy:DaisySelect ItemsSource="{Binding WatermarkPositionOptions}" 
+                                                       SelectedItem="{Binding SelectedWatermarkPosition}"
+                                                       PlaceholderText="Select position..."/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Grid.Row="0" Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{loc:Localize Pdf_Rotation_Label}" FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding WatermarkRotation, StringFormat={}{0:0}°}" 
+                                                   Foreground="{DynamicResource DaisyNeutralContentBrush}"/>
+                                    </Grid>
+                                    <Slider Minimum="-180" Maximum="180" Value="{Binding WatermarkRotation}" 
+                                            TickFrequency="15" IsSnapToTickEnabled="False"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Font Size and Opacity Row -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto" Margin="0,5,0,0">
+                                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,10,0">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{loc:Localize Pdf_FontSize_Label}" FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding WatermarkFontSize, StringFormat={}{0:0} pt}" 
+                                                   Foreground="{DynamicResource DaisyNeutralContentBrush}"/>
+                                    </Grid>
+                                    <Slider Minimum="12" Maximum="200" Value="{Binding WatermarkFontSize}" 
+                                            TickFrequency="4" IsSnapToTickEnabled="False"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{loc:Localize Pdf_Opacity_Label}" FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding WatermarkOpacity, StringFormat={}{0}%}" 
+                                                   Foreground="{DynamicResource DaisyNeutralContentBrush}"/>
+                                    </Grid>
+                                    <Slider Minimum="5" Maximum="100" Value="{Binding WatermarkOpacity}" 
+                                            TickFrequency="5" IsSnapToTickEnabled="False"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Color and Padding Row -->
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto" Margin="0,5,0,0">
+                                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,10,0">
+                                    <TextBlock Text="{loc:Localize Pdf_Color_Label}" FontWeight="Bold"/>
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Border Grid.Column="0" Width="32" Height="32" CornerRadius="4" 
+                                                BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                                Margin="0,0,10,0"
+                                                Background="{Binding WatermarkColor, Converter={x:Static converters:DecimalToColorConverter.Instance}}"/>
+                                        <daisy:DaisyNumericUpDown Grid.Column="1" 
+                                                                   NumberBase="ColorHex"
+                                                                   Minimum="0" Maximum="16777215"
+                                                                   Value="{Binding WatermarkColor}"
+                                                                   ShowButtons="False"/>
+                                        <daisy:DaisyButton Grid.Column="2" 
+                                                            Variant="Ghost"
+                                                            Margin="5,0,0,0"
+                                                            Click="OpenColorPicker_Click"
+                                                            ToolTip.Tip="Pick color...">
+                                            <PathIcon Data="{StaticResource PaletteIcon}" Width="16" Height="16"/>
+                                        </daisy:DaisyButton>
+                                    </Grid>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Text="{loc:Localize Pdf_Padding_Label}" FontWeight="Bold"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding WatermarkPadding, StringFormat={}{0} pt}" 
+                                                   Foreground="{DynamicResource DaisyNeutralContentBrush}"/>
+                                    </Grid>
+                                    <Slider Minimum="0" Maximum="100" Value="{Binding WatermarkPadding}" 
+                                            TickFrequency="5" IsSnapToTickEnabled="False"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Font Style Row -->
+                            <StackPanel Orientation="Horizontal" Spacing="15" Margin="0,5,0,0">
+                                <TextBlock Text="{loc:Localize Pdf_Style_Label}" FontWeight="Bold" VerticalAlignment="Center"/>
+                                <daisy:DaisyCheckBox Content="{loc:Localize Pdf_Bold_Label}" IsChecked="{Binding WatermarkBold}"/>
+                                <daisy:DaisyCheckBox Content="{loc:Localize Pdf_Italic_Label}" IsChecked="{Binding WatermarkItalic}"/>
+                            </StackPanel>
+
+                            <daisy:DaisyDivider />
+
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <daisy:DaisyButton Command="{Binding WatermarkCommand}" Content="{loc:Localize Pdf_AddWatermark_Button}" Variant="Primary"/>
+                                <daisy:DaisyButton Content="{loc:Localize Pdf_OpenPdf_Button}" Click="OpenOutputPdf_Click" 
+                                                   IsEnabled="{Binding WatermarkOutputFile, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </TabItem>
+                </daisy:DaisyTabs>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Toast Notifications -->
+        <daisy:DaisyToast x:Name="ToastContainer"
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Right" />
+    </Grid>
+</UserControl>

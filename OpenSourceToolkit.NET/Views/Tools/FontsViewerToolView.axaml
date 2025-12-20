@@ -1,0 +1,489 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:conv="using:OpenSourceToolkit.NET.Converters"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.FontsViewerToolView"
+             x:DataType="vm:FontsViewerToolViewModel"
+             FontSize="14">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.SectionHeader">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+        <Style Selector="Border.Card">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="*,Auto" Margin="0,0,15,0">
+        <!-- Main Content -->
+        <Grid Grid.Row="0" ColumnDefinitions="350,*">
+            <!-- LEFT PANEL: Font List -->
+            <Border Grid.Column="0" Margin="0,0,12,0">
+            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                <!-- Search & Filter -->
+                <StackPanel Grid.Row="0" Spacing="8">
+                    <TextBlock Text="{loc:Localize Fonts_GoogleFonts_Header}" Classes="SectionHeader"/>
+
+                    <!-- Search Box -->
+                    <daisy:DaisyInput Text="{Binding SearchText}"
+                             Watermark="{loc:Localize Fonts_Search_Watermark}"/>
+
+                    <!-- Category Filter -->
+                    <daisy:DaisySelect ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              HorizontalAlignment="Stretch"/>
+
+                    <!-- Tag Cloud Filter -->
+                    <Expander Header="{loc:Localize Fonts_FilterTags_Header}" IsExpanded="False" Padding="0" Margin="0,4,0,0">
+                        <StackPanel Spacing="8" Margin="0,8,0,0">
+                            <!-- Clear All Button -->
+                            <daisy:DaisyButton Command="{Binding ClearAllFiltersCommand}"
+                                    IsVisible="{Binding HasActiveFilters}"
+                                    Size="Small"
+                                    Variant="Ghost">
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <PathIcon Data="{DynamicResource ClearIcon}" Width="10" Height="10"/>
+                                    <TextBlock Text="{loc:Localize Fonts_ClearAllFilters_Button}"/>
+                                </StackPanel>
+                            </daisy:DaisyButton>
+
+                            <!-- Tags WrapPanel -->
+                            <ItemsControl ItemsSource="{Binding FilterTags}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FontFilterTag">
+                                        <ToggleButton IsChecked="{Binding IsSelected}"
+                                                      Content="{Binding DisplayName}"
+                                                      Padding="6,3" Margin="0,0,4,4"
+                                                      FontSize="11"
+                                                      CornerRadius="10"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Expander>
+                </StackPanel>
+
+                <!-- Loading Indicator -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,8"
+                            IsVisible="{Binding IsLoading}">
+                    <ProgressBar IsIndeterminate="True" Width="100" Height="4"/>
+                    <TextBlock Text="{loc:Localize Fonts_Loading_Text}" VerticalAlignment="Center" Opacity="0.7"/>
+                </StackPanel>
+
+                <!-- Font List -->
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding FilteredFonts}"
+                         SelectedItem="{Binding SelectedFont}"
+                         Margin="0,8,0,0"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:GoogleFontFamily">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="{Binding Family}"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <!-- Installed indicator -->
+                                    <PathIcon Data="{DynamicResource CheckmarkIcon}"
+                                              Width="12" Height="12"
+                                              Foreground="{DynamicResource DaisySuccessBrush}"
+                                              IsVisible="{Binding IsInstalled}"
+                                              ToolTip.Tip="Installed on this system"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="1" Grid.Row="0"
+                                           Text="{Binding VariantCount, StringFormat='{}{0} styles'}"
+                                           Opacity="0.6"
+                                           FontSize="12"/>
+                                <TextBlock Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"
+                                           Text="{Binding CategoryDisplay}"
+                                           Opacity="0.5"
+                                           FontSize="12"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Status Bar -->
+                <Border Grid.Row="3" Padding="0,8,0,0">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Opacity="0.7"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"/>
+                        <daisy:DaisyButton Grid.Column="1"
+                                Command="{Binding RefreshCommand}"
+                                ToolTip.Tip="Refresh font list"
+                                Variant="Ghost" Shape="Square">
+                            <PathIcon Data="{DynamicResource RefreshIcon}"
+                                       Width="16" Height="16"/>
+                        </daisy:DaisyButton>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- RIGHT PANEL: Font Details & Preview -->
+        <ScrollViewer Grid.Column="1">
+            <StackPanel>
+                <!-- No Selection Message -->
+                <Border Classes="Card" IsVisible="{Binding !HasSelectedFont}">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12">
+                        <PathIcon Data="{DynamicResource FontIcon}"
+                                   Width="48" Height="48" Opacity="0.3"/>
+                        <TextBlock Text="{loc:Localize Fonts_SelectToPreview_Text}"
+                                   FontSize="16" Opacity="0.5"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Font Details (when selected) -->
+                <StackPanel IsVisible="{Binding HasSelectedFont}">
+                    <!-- Font Header -->
+                    <Border Classes="Card">
+                        <Grid RowDefinitions="Auto,Auto,Auto">
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
+                                <TextBlock Text="{Binding SelectedFont.Family, FallbackValue=''}"
+                                           FontSize="24" FontWeight="Bold"/>
+                                <daisy:DaisyBadge Content="{Binding SelectedFont.CategoryDisplay, FallbackValue=''}"
+                                                  Variant="Accent"/>
+                                <!-- Installed badge -->
+                                <daisy:DaisyBadge Variant="Success"
+                                                  IsVisible="{Binding SelectedFont.IsInstalled, FallbackValue=False}"
+                                                  ToolTip.Tip="This font is installed on your system">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <PathIcon Data="{DynamicResource CheckmarkIcon}"
+                                                  Width="12" Height="12"/>
+                                        <TextBlock Text="{loc:Localize Fonts_Installed_Badge}"/>
+                                    </StackPanel>
+                                </daisy:DaisyBadge>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="16" Margin="0,8,0,0">
+                                <TextBlock Opacity="0.7">
+                                    <Run Text="{loc:Localize Fonts_Styles_Label}"/>
+                                    <Run Text="{Binding SelectedFont.VariantCount, FallbackValue=''}" FontWeight="SemiBold"/>
+                                </TextBlock>
+                                <TextBlock Opacity="0.7">
+                                    <Run Text="{loc:Localize Fonts_Version_Label}"/>
+                                    <Run Text="{Binding SelectedFont.Version, FallbackValue=''}" FontWeight="SemiBold"/>
+                                </TextBlock>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="0,12,0,0">
+                                <daisy:DaisyButton Command="{Binding CopyFontNameCommand}"
+                                        ToolTip.Tip="Copy font name" Size="Small" Variant="Secondary">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{DynamicResource CopyIcon}" Width="14" Height="14"/>
+                                        <TextBlock Text="{loc:Localize Fonts_CopyName_Button}"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                                <daisy:DaisyButton Command="{Binding OpenGoogleFontsCommand}"
+                                        ToolTip.Tip="Open in Google Fonts" Size="Small" Variant="Secondary">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{DynamicResource ExternalLinkIcon}"
+                                                   Width="14" Height="14"/>
+                                        <TextBlock Text="{loc:Localize Fonts_OpenInGoogle_Button}"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                                <daisy:DaisyButton Command="{Binding SetAsEditorFontCommand}"
+                                        ToolTip.Tip="Use this font for multi-line text editors in the app"
+                                        Size="Small" Variant="Primary">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{DynamicResource FontIcon}" Width="14" Height="14"/>
+                                        <TextBlock Text="{loc:Localize Fonts_SetAsEditorFont_Button}"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Warning Message (shown when trying to set uninstalled font) -->
+                    <Border Background="{DynamicResource DaisyWarningBrushLight}"
+                            CornerRadius="8" Padding="12" Margin="0,0,0,12"
+                            IsVisible="{Binding HasWarning}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <PathIcon Data="{DynamicResource WarningIcon}"
+                                      Width="20" Height="20"
+                                      Foreground="{DynamicResource DaisyWarningBrush}"
+                                      VerticalAlignment="Top" Margin="0,2,0,0"/>
+                            <TextBlock Grid.Column="1" Margin="12,0,0,0"
+                                       Text="{Binding WarningMessage}"
+                                       TextWrapping="Wrap"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Preview Section -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{loc:Localize Fonts_Preview_Header}" Classes="SectionHeader" Grid.Column="0"/>
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <!-- Open Cache Folder Button -->
+                                    <daisy:DaisyButton Command="{Binding OpenCacheFolderCommand}"
+                                            IsVisible="{Binding HasCachedFonts}"
+                                            ToolTip.Tip="Open font cache folder in Explorer"
+                                            Variant="Ghost" Size="Small">
+                                        <PathIcon Data="{DynamicResource FolderIcon}"
+                                                   Width="12" Height="12"/>
+                                    </daisy:DaisyButton>
+                                    <!-- Clear Cache Button -->
+                                    <daisy:DaisyButton Command="{Binding ClearCacheCommand}"
+                                            IsVisible="{Binding HasCachedFonts}"
+                                            ToolTip.Tip="Clear downloaded font cache"
+                                            Variant="Ghost" Size="Small">
+                                        <StackPanel Orientation="Horizontal" Spacing="4">
+                                            <PathIcon Data="{DynamicResource ClearIcon}"
+                                                       Width="12" Height="12"/>
+                                            <TextBlock Text="{Binding CacheStatusText}" FontSize="11"/>
+                                        </StackPanel>
+                                    </daisy:DaisyButton>
+                                    <TextBlock Text="{loc:Localize Fonts_LivePreview_Label}" VerticalAlignment="Center" Opacity="0.8"/>
+                                    <daisy:DaisyToggle IsChecked="{Binding IsLivePreviewEnabled}"
+                                                  ToolTip.Tip="Download font temporarily for accurate preview"/>
+                                    <!-- Dark/Light mode toggle -->
+                                    <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                            BorderThickness="1" CornerRadius="4" Padding="4,2">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <!-- Sun icon: bright when light mode (IsDarkPreview=false), dim when dark mode -->
+                                            <PathIcon Data="{DynamicResource SunIcon}"
+                                                       Width="14" Height="14"
+                                                       Opacity="{Binding !IsDarkPreview, Converter={x:Static conv:BoolToOpacityConverter.Instance}}"/>
+                                            <daisy:DaisyToggle IsChecked="{Binding IsDarkPreview}"
+                                                          ToolTip.Tip="Toggle dark/light preview background"/>
+                                            <!-- Moon icon: bright when dark mode (IsDarkPreview=true), dim when light mode -->
+                                            <PathIcon Data="{DynamicResource MoonIcon}"
+                                                       Width="14" Height="14"
+                                                       Opacity="{Binding IsDarkPreview, Converter={x:Static conv:BoolToOpacityConverter.Instance}}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Preview Controls -->
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                                <daisy:DaisyInput Grid.Column="0" Grid.Row="0"
+                                         Text="{Binding CustomPreviewText}"
+                                         Watermark="{loc:Localize Fonts_PreviewText_Watermark}"
+                                         Margin="0,0,12,0"/>
+                                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{loc:Localize Fonts_Size_Label}" VerticalAlignment="Center"/>
+                                    <daisy:DaisyNumericUpDown Value="{Binding PreviewFontSize}"
+                                                   Minimum="8" Maximum="72"
+                                                   Width="80"
+                                                   FormatString="0" Size="Small"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Preview Display - SkiaSharp rendered image when live preview is on -->
+                            <Border Background="{Binding PreviewBackground}"
+                                    CornerRadius="6" Padding="16" MinHeight="100"
+                                    IsVisible="{Binding IsLivePreviewEnabled}">
+                                <Grid>
+                                    <Image Source="{Binding PreviewImage}"
+                                           Stretch="None"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"/>
+                                    <!-- Loading Preview Indicator (overlay at bottom) -->
+                                    <Border Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="4" Padding="12,8"
+                                            HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                            Margin="0,0,0,4"
+                                            IsVisible="{Binding IsLoadingPreview}">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <ProgressBar IsIndeterminate="True" Width="80" Height="3"/>
+                                            <TextBlock Text="Loading..." Foreground="{DynamicResource DaisyNeutralContentBrush}" FontSize="12"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <!-- Preview Display - TextBlock when live preview is off (system fonts only) -->
+                            <Border Background="{Binding PreviewBackground}"
+                                    CornerRadius="6" MinHeight="100"
+                                    IsVisible="{Binding !IsLivePreviewEnabled}">
+                                <Grid RowDefinitions="*,Auto">
+                                    <TextBlock Grid.Row="0"
+                                               Text="{Binding PreviewText}"
+                                               Foreground="{Binding PreviewForeground}"
+                                               FontSize="{Binding PreviewFontSize}"
+                                               TextWrapping="Wrap"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="16"/>
+                                    <!-- Preview Hint (fixed at bottom row) -->
+                                    <Border Grid.Row="1"
+                                            Background="{DynamicResource DaisyBase300Brush}"
+                                            CornerRadius="4" Padding="8,6"
+                                            HorizontalAlignment="Center"
+                                            Margin="0,0,0,8"
+                                            IsVisible="{Binding ShowPreviewHint}">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <PathIcon Data="{DynamicResource InfoIcon}"
+                                                       Width="12" Height="12" Opacity="0.7"/>
+                                            <TextBlock Text="{loc:Localize Fonts_EnableLivePreviewHint}"
+                                                       Opacity="0.7" FontSize="11"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <!-- Sample Sizes - SkiaSharp rendered when live preview is on -->
+                            <Border Background="{Binding PreviewBackground}" CornerRadius="4" Padding="8"
+                                    IsVisible="{Binding IsLivePreviewEnabled}">
+                                <StackPanel Spacing="4">
+                                    <Image Source="{Binding PreviewImage12}" Stretch="None" HorizontalAlignment="Left"/>
+                                    <Image Source="{Binding PreviewImage16}" Stretch="None" HorizontalAlignment="Left"/>
+                                    <Image Source="{Binding PreviewImage20}" Stretch="None" HorizontalAlignment="Left"/>
+                                    <Image Source="{Binding PreviewImage28}" Stretch="None" HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Sample Sizes - TextBlock when live preview is off -->
+                            <Border Background="{Binding PreviewBackground}" CornerRadius="4" Padding="8"
+                                    IsVisible="{Binding !IsLivePreviewEnabled}">
+                                <StackPanel Spacing="4">
+                                    <TextBlock Text="{Binding PreviewText}" Foreground="{Binding PreviewForeground}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding PreviewText}" Foreground="{Binding PreviewForeground}" FontSize="16" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding PreviewText}" Foreground="{Binding PreviewForeground}" FontSize="20" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding PreviewText}" Foreground="{Binding PreviewForeground}" FontSize="28" TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Available Variants (clickable for preview) -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Text="{loc:Localize Fonts_AvailableVariants_Header}" Classes="SectionHeader"/>
+                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding SelectedFont.Variants, FallbackValue={x:Null}}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="x:String">
+                                        <daisy:DaisyButton Content="{Binding}"
+                                                Command="{Binding $parent[UserControl].((vm:FontsViewerToolViewModel)DataContext).SelectVariantCommand}"
+                                                CommandParameter="{Binding}"
+                                                Size="Small" Variant="Ghost"
+                                                Margin="0,0,6,6"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Download Section -->
+                    <Border Classes="Card">
+                        <StackPanel Spacing="12">
+                            <TextBlock Text="{loc:Localize Fonts_DownloadFontFiles_Header}" Classes="SectionHeader"/>
+
+                            <!-- Loading Files Indicator -->
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        IsVisible="{Binding IsLoadingFiles}">
+                                <ProgressBar IsIndeterminate="True" Width="100" Height="4"/>
+                                <TextBlock Text="{loc:Localize Fonts_LoadingFiles_Text}" Opacity="0.7"/>
+                            </StackPanel>
+
+                            <!-- Error Message -->
+                            <Border Background="#44FF0000" CornerRadius="4" Padding="12"
+                                    IsVisible="{Binding HasError}">
+                                <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap"/>
+                            </Border>
+
+                            <!-- File List -->
+                            <ListBox ItemsSource="{Binding AvailableFiles}"
+                                     SelectedItem="{Binding SelectedFile}"
+                                     MaxHeight="200"
+                                     IsVisible="{Binding !IsLoadingFiles}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:FontFileInfo">
+                                        <Grid ColumnDefinitions="*,Auto,Auto">
+                                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Name}"
+                                                       VerticalAlignment="Center"/>
+                                            <daisy:DaisyBadge Grid.Column="1"
+                                                              Content="{Binding TypeDisplay}"
+                                                              Variant="Accent" Size="Small"
+                                                              Margin="8,0"/>
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding SizeDisplay}"
+                                                       Opacity="0.6"
+                                                       VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+
+                            <!-- Download Buttons -->
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        IsVisible="{Binding !IsLoadingFiles}">
+                                <daisy:DaisyButton Command="{Binding DownloadSelectedFilesCommand}"
+                                        IsEnabled="{Binding !IsDownloading}" Variant="Primary">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{DynamicResource DownloadIcon}"
+                                                   Width="14" Height="14"/>
+                                        <TextBlock Text="{loc:Localize Fonts_DownloadSelected_Button}"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                                <daisy:DaisyButton Command="{Binding DownloadAllFilesCommand}"
+                                        IsEnabled="{Binding !IsDownloading}" Variant="Secondary">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <PathIcon Data="{DynamicResource DownloadIcon}"
+                                                   Width="14" Height="14"/>
+                                        <TextBlock Text="{loc:Localize Fonts_DownloadAll_Button}"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                            </StackPanel>
+
+                            <!-- Download Progress -->
+                            <StackPanel Orientation="Horizontal" Spacing="8"
+                                        IsVisible="{Binding IsDownloading}">
+                                <ProgressBar IsIndeterminate="True" Width="150" Height="4"/>
+                                <TextBlock Text="{loc:Localize Fonts_Downloading_Text}" Opacity="0.7"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+        </Grid>
+
+        <!-- License Footer (fixed at bottom) -->
+        <daisy:DaisyCard Grid.Row="1" Variant="Compact" Margin="0">
+            <StackPanel Orientation="Horizontal" Spacing="4" HorizontalAlignment="Center">
+                <PathIcon Data="{DynamicResource LicenseIcon}"
+                           Width="14" Height="14" Opacity="0.8" Margin="0,0,4,0"/>
+                <TextBlock Text="{loc:Localize Fonts_LicenseInfo}" VerticalAlignment="Center" Opacity="0.8" FontSize="12"/>
+                <daisy:DaisyButton Command="{Binding OpenLicenseInfoCommand}"
+                                   Content="OFL"
+                                   Variant="Link" Size="Small"/>
+                <TextBlock Text="{loc:Localize Fonts_LicenseInfo2}" VerticalAlignment="Center" Opacity="0.8" FontSize="12"/>
+                <TextBlock Text="•" VerticalAlignment="Center" Opacity="0.5" FontSize="12" Margin="4,0"/>
+                <daisy:DaisyButton Command="{Binding OpenOflWebsiteCommand}"
+                                   Content="openfontlicense.org"
+                                   Variant="Link" Size="Small"/>
+            </StackPanel>
+        </daisy:DaisyCard>
+    </Grid>
+</UserControl>

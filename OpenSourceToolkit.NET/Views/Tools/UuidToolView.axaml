@@ -1,0 +1,82 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.UuidToolView"
+             x:DataType="vm:UuidToolViewModel">
+    <StackPanel Spacing="10">
+        <!-- Configuration Section -->
+        <daisy:DaisyCard Variant="Compact">
+            <StackPanel Spacing="10">
+                <TextBlock Text="{loc:Localize Label_Format}" FontWeight="SemiBold" FontSize="16"/>
+
+                <ListBox ItemsSource="{Binding AvailableFormats}"
+                         SelectedItem="{Binding SelectedFormat}"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:GuidFormatItem">
+                            <daisy:DaisyRadio GroupName="GuidFormat"
+                                              Content="{Binding DisplayName}"
+                                              IsChecked="{Binding $parent[ListBoxItem].IsSelected, Mode=TwoWay}"
+                                              Margin="0,2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="2"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.Styles>
+                        <Style Selector="ListBoxItem">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+                            <Setter Property="Background" Value="Transparent"/>
+                        </Style>
+                    </ListBox.Styles>
+                </ListBox>
+
+                <Grid ColumnDefinitions="Auto, 10, Auto, *, Auto" Margin="0,10,0,0">
+                    <TextBlock Grid.Column="0" Text="{loc:Localize Label_Count}" VerticalAlignment="Center"/>
+                    <daisy:DaisyNumericUpDown Grid.Column="2" Value="{Binding BatchCount}"
+                                   Minimum="1" Maximum="100"
+                                   Increment="1" FormatString="0"
+                                   Width="100" Size="Small"/>
+                    <daisy:DaisyButton Grid.Column="4"
+                                       Command="{Binding GenerateCommand}"
+                                       Content="{loc:Localize Button_Generate}"
+                                       Variant="Primary"/>
+                </Grid>
+            </StackPanel>
+        </daisy:DaisyCard>
+
+        <!-- Result Section -->
+        <daisy:DaisyCard Variant="Compact">
+            <StackPanel Spacing="10">
+                <Grid ColumnDefinitions="*, Auto">
+                    <TextBlock Grid.Column="0" Text="{loc:Localize Label_Result}" FontWeight="SemiBold" FontSize="16"/>
+                    <daisy:DaisyButton Grid.Column="1"
+                                       Command="{Binding CopyCommand}"
+                                       ToolTip.Tip="{loc:Localize Sidebar_AddToFavorites}"
+                                       Variant="Ghost"
+                                       Size="Small"
+                                       Shape="Square">
+                        <PathIcon Data="{DynamicResource CopyIcon}" Width="12" Height="12"/>
+                    </daisy:DaisyButton>
+                </Grid>
+
+                <daisy:DaisyTextArea Text="{Binding Output}"
+                                     IsReadOnly="True"
+                                     FontFamily="Consolas, Courier New, monospace"
+                                     MinHeight="150"
+                                     MaxHeight="400"/>
+            </StackPanel>
+        </daisy:DaisyCard>
+    </StackPanel>
+</UserControl>

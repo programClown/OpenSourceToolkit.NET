@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="OpenSourceToolkit.NET.Views.Tools.ImageFullscreenViewer"
+        Title="Image Viewer"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        SystemDecorations="None"
+        Background="#000000"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaChromeHints="NoChrome"
+        CanResize="False"
+        Topmost="True">
+
+    <!-- Zoomable image container -->
+    <Panel x:Name="ImageContainer"
+           Background="Transparent"
+           Cursor="Hand"
+           PointerPressed="OnPointerPressed"
+           PointerReleased="OnPointerReleased"
+           PointerMoved="OnPointerMoved"
+           PointerWheelChanged="OnPointerWheelChanged">
+
+        <Image x:Name="DisplayImage"
+               Stretch="Uniform"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    <TranslateTransform X="0" Y="0"/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+
+        <!-- Subtle hint text (fades out) -->
+        <TextBlock x:Name="HintText"
+                   Text="Scroll to zoom • Drag to pan • ESC or Enter to close"
+                   FontSize="12"
+                   Foreground="#666666"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Margin="0,0,0,20"
+                   Opacity="1">
+            <TextBlock.Transitions>
+                <Transitions>
+                    <DoubleTransition Property="Opacity" Duration="0:0:0.5"/>
+                </Transitions>
+            </TextBlock.Transitions>
+        </TextBlock>
+    </Panel>
+</Window>

@@ -1,0 +1,22 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+        xmlns:views="using:OpenSourceToolkit.NET.Views.Tools"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+        x:Class="OpenSourceToolkit.NET.Views.ThemeWindow"
+        x:DataType="vm:ThemeSelectionToolViewModel"
+        Title="Theme Selector"
+        Width="900" Height="700"
+        MinWidth="500" MinHeight="500"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:ThemeSelectionToolViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="10">
+        <views:ThemeSelectionToolView DataContext="{Binding}"/>
+    </Grid>
+</Window>

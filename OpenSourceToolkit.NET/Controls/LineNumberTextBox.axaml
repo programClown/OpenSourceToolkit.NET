@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="OpenSourceToolkit.NET.Controls.LineNumberTextBox"
+             x:Name="Root"
+             VerticalAlignment="Stretch"
+             HorizontalAlignment="Stretch">
+    <Border Background="{DynamicResource DaisyNeutralBrush}"
+            BorderBrush="{DynamicResource DaisyBase300Brush}"
+            BorderThickness="1" CornerRadius="4">
+        <Grid ColumnDefinitions="Auto,*">
+            <!-- Line Numbers Gutter -->
+            <Border x:Name="PART_LineNumberGutter" Grid.Column="0"
+                    Background="{DynamicResource DaisyBase300Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="0,0,1,0"
+                    IsVisible="{Binding ShowLineNumbers, ElementName=Root}">
+                <ScrollViewer x:Name="PART_LineNumberScroller"
+                              VerticalScrollBarVisibility="Hidden"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="PART_LineNumbersText"
+                               Text="{Binding LineNumbersText, ElementName=Root}"
+                               FontFamily="{Binding FontFamily, ElementName=Root}"
+                               FontSize="{Binding FontSize, ElementName=Root}"
+                               Foreground="{DynamicResource DaisyNeutralContentBrush}"
+                               TextAlignment="Right"
+                               Padding="8,1,8,0"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Text Editor -->
+            <TextBox x:Name="PART_TextBox" Grid.Column="1"
+                     Text="{Binding Text, ElementName=Root, Mode=TwoWay}"
+                     Watermark="{Binding Watermark, ElementName=Root}"
+                     AcceptsReturn="{Binding AcceptsReturn, ElementName=Root}"
+                     TextWrapping="{Binding TextWrapping, ElementName=Root}"
+                     FontFamily="{Binding FontFamily, ElementName=Root}"
+                     FontSize="{Binding FontSize, ElementName=Root}"
+                     VerticalContentAlignment="{Binding VerticalContentAlignment, ElementName=Root}"
+                     Padding="8,1"
+                     MinHeight="{Binding MinimumEditorHeight, ElementName=Root}"
+                     VerticalAlignment="Stretch"
+                     HorizontalAlignment="Stretch"
+                     Background="Transparent"
+                     BorderThickness="0"/>
+        </Grid>
+    </Border>
+</UserControl>

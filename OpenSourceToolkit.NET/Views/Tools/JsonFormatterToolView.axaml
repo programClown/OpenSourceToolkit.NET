@@ -1,0 +1,157 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.JsonFormatterToolView"
+             x:DataType="vm:JsonFormatterToolViewModel">
+
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Input Section (shared) -->
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="{loc:Localize JsonFormatter_Input_Label}" Classes="h3"/>
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Text="{loc:Localize JsonFormatter_Input_Hint}" Classes="muted"/>
+                                <TextBlock Text="{Binding InputSize, StringFormat='({0})'}" Classes="muted" IsVisible="{Binding !!InputText}"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <daisy:DaisyButton Grid.Column="1"
+                                Command="{Binding LoadFileCommand}"
+                                Content="{loc:Localize JsonFormatter_LoadFile_Button}"
+                                ButtonStyle="Outline"/>
+                    </Grid>
+                                    <controls:DragDropTextBox Text="{Binding InputText}"
+                                              Height="200"
+                                              AcceptsReturn="True"
+                                              TextWrapping="Wrap"
+                                              VerticalContentAlignment="Top"
+                                              DropTitle="{loc:Localize JsonFormatter_DropTitle}"
+                                              DropHint="{loc:Localize JsonFormatter_DropHint}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Output Tabs -->
+            <Border Classes="card">
+                <StackPanel Spacing="15">
+                    <daisy:DaisyTabs SelectedIndex="{Binding OperationIndex}" Variant="Boxed" Size="Small">
+
+                        <!-- FORMAT TAB -->
+                        <TabItem Header="{loc:Localize JsonFormatter_FormatTab}">
+                            <StackPanel Margin="0,15,0,0" Spacing="15">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <StackPanel Grid.Column="0" Spacing="5">
+                                        <Label Content="{loc:Localize JsonFormatter_InputFormat_Label}"/>
+                                        <daisy:DaisySelect ItemsSource="{Binding Formats}" SelectedItem="{Binding InputFormat}" MaxWidth="200" HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom">
+                                        <daisy:DaisyButton Command="{Binding FormatCommand}" Content="{loc:Localize JsonFormatter_Format_Button}" Variant="Primary"/>
+                                        <daisy:DaisyButton Command="{Binding ClearCommand}" Content="{loc:Localize JsonFormatter_ClearAll_Button}" ButtonStyle="Outline"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Spacing="5">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{loc:Localize JsonFormatter_FormattedOutput_Label}" Classes="h4"/>
+                                        <TextBlock Text="{Binding FormatOutputSize, StringFormat='({0})'}" Classes="muted" IsVisible="{Binding !!FormatOutput}"/>
+                                    </StackPanel>
+                                    <SelectableTextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}" IsVisible="{Binding !!Error}"/>
+                                    <daisy:DaisyTextArea Text="{Binding FormatOutput}"
+                                             Height="300"
+                                             IsReadOnly="True" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                        <!-- MINIFY TAB -->
+                        <TabItem Header="{loc:Localize JsonFormatter_MinifyTab}">
+                            <StackPanel Margin="0,15,0,0" Spacing="15">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <StackPanel Grid.Column="0" Spacing="5">
+                                        <Label Content="{loc:Localize JsonFormatter_InputFormat_Label}"/>
+                                        <daisy:DaisySelect ItemsSource="{Binding Formats}" SelectedItem="{Binding InputFormat}" MaxWidth="200" HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom">
+                                        <daisy:DaisyButton Command="{Binding MinifyCommand}" Content="{loc:Localize JsonFormatter_Minify_Button}" Variant="Primary"/>
+                                        <daisy:DaisyButton Command="{Binding ClearCommand}" Content="{loc:Localize JsonFormatter_ClearAll_Button}" ButtonStyle="Outline"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Spacing="5">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{loc:Localize JsonFormatter_MinifiedOutput_Label}" Classes="h4"/>
+                                        <TextBlock Text="{Binding MinifyOutputSize, StringFormat='({0})'}" Classes="muted" IsVisible="{Binding !!MinifyOutput}"/>
+                                    </StackPanel>
+                                    <SelectableTextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}" IsVisible="{Binding !!Error}"/>
+                                    <daisy:DaisyTextArea Text="{Binding MinifyOutput}"
+                                             Height="300"
+                                             IsReadOnly="True" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                        <!-- CONVERT TAB -->
+                        <TabItem Header="{loc:Localize JsonFormatter_ConvertTab}">
+                            <StackPanel Margin="0,15,0,0" Spacing="15">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <StackPanel Grid.Column="0" Spacing="5">
+                                        <Label Content="{loc:Localize JsonFormatter_ConvertFrom_Label}"/>
+                                        <daisy:DaisySelect ItemsSource="{Binding Formats}" SelectedItem="{Binding InputFormat}" MaxWidth="200" HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2" Spacing="5">
+                                        <Label Content="{loc:Localize JsonFormatter_ConvertTo_Label}"/>
+                                        <daisy:DaisySelect ItemsSource="{Binding Formats}" SelectedItem="{Binding OutputFormat}" MaxWidth="200" HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="10" VerticalAlignment="Bottom">
+                                        <daisy:DaisyButton Command="{Binding ConvertCommand}" Content="{loc:Localize JsonFormatter_Convert_Button}" Variant="Primary"/>
+                                        <daisy:DaisyButton Command="{Binding ClearCommand}" Content="{loc:Localize JsonFormatter_ClearAll_Button}" ButtonStyle="Outline"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <StackPanel Spacing="5">
+                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                        <TextBlock Text="{loc:Localize JsonFormatter_ConvertedOutput_Label}" Classes="h4"/>
+                                        <TextBlock Text="{Binding ConvertOutputSize, StringFormat='({0})'}" Classes="muted" IsVisible="{Binding !!ConvertOutput}"/>
+                                    </StackPanel>
+                                    <SelectableTextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}" IsVisible="{Binding !!Error}"/>
+                                    <daisy:DaisyTextArea Text="{Binding ConvertOutput}"
+                                             Height="300"
+                                             IsReadOnly="True" />
+                                </StackPanel>
+                            </StackPanel>
+                        </TabItem>
+
+                    </daisy:DaisyTabs>
+                </StackPanel>
+            </Border>
+
+            <!-- Guide -->
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{loc:Localize JsonFormatter_Guide_Label}" Classes="h3"/>
+                    <Grid ColumnDefinitions="*,10,*,10,*">
+                        <StackPanel Grid.Column="0" Spacing="5">
+                            <TextBlock Text="JSON" FontWeight="Bold"/>
+                            <TextBlock Text="{loc:Localize JsonFormatter_Json_Desc}" TextWrapping="Wrap" Classes="muted"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="5">
+                            <TextBlock Text="XML" FontWeight="Bold"/>
+                            <TextBlock Text="{loc:Localize JsonFormatter_Xml_Desc}" TextWrapping="Wrap" Classes="muted"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4" Spacing="5">
+                            <TextBlock Text="YAML" FontWeight="Bold"/>
+                            <TextBlock Text="{loc:Localize JsonFormatter_Yaml_Desc}" TextWrapping="Wrap" Classes="muted"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

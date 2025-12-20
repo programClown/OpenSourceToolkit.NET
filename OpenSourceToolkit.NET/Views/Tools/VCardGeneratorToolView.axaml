@@ -1,0 +1,118 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.VCardGeneratorToolView"
+             x:DataType="vm:VCardGeneratorToolViewModel">
+    <Grid RowDefinitions="Auto,*">
+        <!-- Input Fields -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,20,*,20,*" Margin="0,0,0,15">
+            <!-- Personal Information -->
+            <StackPanel Grid.Column="0" Spacing="8">
+                <TextBlock Text="{loc:Localize VCard_PersonalInfo_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="10">
+                        <Grid ColumnDefinitions="*,10,*">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_FirstName_Label}"/>
+                                <TextBox Text="{Binding FirstName}" Watermark="John"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_LastName_Label}"/>
+                                <TextBox Text="{Binding LastName}" Watermark="Doe"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_Email_Label}"/>
+                            <TextBox Text="{Binding Email}" Watermark="john.doe@example.com"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_Phone_Label}"/>
+                            <TextBox Text="{Binding Phone}" Watermark="+1 555 123 4567"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Work Information -->
+            <StackPanel Grid.Column="2" Spacing="8">
+                <TextBlock Text="{loc:Localize VCard_WorkInfo_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_Organization_Label}"/>
+                            <TextBox Text="{Binding Organization}" Watermark="Acme Inc."/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_JobTitle_Label}"/>
+                            <TextBox Text="{Binding Title}" Watermark="Software Developer"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_Website_Label}"/>
+                            <TextBox Text="{Binding Website}" Watermark="https://example.com"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Address & Notes -->
+            <StackPanel Grid.Column="4" Spacing="8">
+                <TextBlock Text="{loc:Localize VCard_Address_Label}" FontWeight="SemiBold" FontSize="14"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="4" Padding="12">
+                    <StackPanel Spacing="10">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{loc:Localize VCard_Street_Label}"/>
+                            <TextBox Text="{Binding Street}" Watermark="123 Main Street"/>
+                        </StackPanel>
+                        <Grid ColumnDefinitions="*,10,*">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_City_Label}"/>
+                                <TextBox Text="{Binding City}" Watermark="New York"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_State_Label}"/>
+                                <TextBox Text="{Binding State}" Watermark="NY"/>
+                            </StackPanel>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,10,*">
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_PostalCode_Label}"/>
+                                <TextBox Text="{Binding PostalCode}" Watermark="10001"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Spacing="4">
+                                <TextBlock Text="{loc:Localize VCard_Country_Label}"/>
+                                <TextBox Text="{Binding Country}" Watermark="USA"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+                <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+                    <daisy:DaisyCheckBox Grid.Column="0"
+                              IsChecked="{Binding UseTestData}"
+                              Content="{loc:Localize VCard_UseTestData_Label}"
+                              VerticalAlignment="Center"/>
+                    <daisy:DaisyButton Grid.Column="1"
+                            Command="{Binding GenerateCommand}"
+                            Content="{loc:Localize VCard_Generate_Button}"
+                            Variant="Primary"
+                            MinWidth="120"/>
+                </Grid>
+            </StackPanel>
+        </Grid>
+
+        <!-- Output -->
+        <controls:CopyableTextBox Grid.Row="1"
+                                  Text="{Binding Output}"
+                                  IsReadOnly="True"
+                                  AcceptsReturn="True"
+                                  FontFamily="Consolas,Monospace"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+             x:Class="OpenSourceToolkit.NET.Controls.ImageComparisonControl"
+             x:Name="Root"
+             ClipToBounds="True">
+
+    <Grid x:Name="MainGrid">
+        <!-- After Image (Processed) - Full container, shows on right/bottom -->
+        <Image x:Name="AfterImage"
+               Source="{Binding AfterSource, ElementName=Root}"
+               Stretch="Uniform"/>
+
+        <!-- Before Image (Original) - Clipped, shows on left/top -->
+        <Border x:Name="BeforeClipBorder" ClipToBounds="True">
+            <Image x:Name="BeforeImage"
+                   Source="{Binding BeforeSource, ElementName=Root}"
+                   Stretch="Uniform"/>
+        </Border>
+
+        <!-- Slider Handle -->
+        <Canvas x:Name="SliderCanvas" Background="Transparent">
+            <Border x:Name="SliderHandle"
+                    Width="4"
+                    Background="{DynamicResource DaisyNeutralContentBrush}"
+                    BorderBrush="{DynamicResource DaisyNeutralBrush}"
+                    BorderThickness="1"
+                    Cursor="SizeWestEast"
+                    CornerRadius="2">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="4" Opacity="0.5" OffsetX="0" OffsetY="0"/>
+                </Border.Effect>
+            </Border>
+
+            <!-- Slider Grip Icon -->
+            <Border x:Name="SliderGrip"
+                    Width="24"
+                    Height="40"
+                    Background="{DynamicResource DaisyNeutralContentBrush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Cursor="SizeWestEast">
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="2">
+                    <Border Width="2" Height="2" Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="1"/>
+                    <Border Width="2" Height="2" Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="1"/>
+                    <Border Width="2" Height="2" Background="{DynamicResource DaisyNeutralBrush}" CornerRadius="1"/>
+                </StackPanel>
+            </Border>
+        </Canvas>
+
+        <!-- Labels -->
+        <!-- "Before" label: top-left in horizontal mode, bottom-left in vertical mode -->
+        <TextBlock x:Name="BeforeLabel"
+                   Text="Before"
+                   Foreground="{DynamicResource DaisyNeutralContentBrush}"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   Margin="10"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   IsVisible="{Binding ShowLabels, ElementName=Root}">
+            <TextBlock.Effect>
+                <DropShadowEffect BlurRadius="3" Opacity="0.8" OffsetX="1" OffsetY="1"/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <!-- "After" label: top-right in horizontal mode, bottom-left in vertical mode -->
+        <TextBlock x:Name="AfterLabel"
+                   Text="After"
+                   Foreground="{DynamicResource DaisyNeutralContentBrush}"
+                   FontWeight="Bold"
+                   FontSize="12"
+                   Margin="10"
+                   HorizontalAlignment="Right"
+                   VerticalAlignment="Top"
+                   IsVisible="{Binding ShowLabels, ElementName=Root}">
+            <TextBlock.Effect>
+                <DropShadowEffect BlurRadius="3" Opacity="0.8" OffsetX="1" OffsetY="1"/>
+            </TextBlock.Effect>
+        </TextBlock>
+    </Grid>
+</UserControl>

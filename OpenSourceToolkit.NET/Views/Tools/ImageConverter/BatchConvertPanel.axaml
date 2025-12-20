@@ -1,0 +1,197 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:imgvm="using:OpenSourceToolkit.NET.ViewModels.Tools.ImageConverter"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ImageConverter.BatchConvertPanel"
+             x:Name="BatchPanel"
+             x:DataType="imgvm:BatchConversionViewModel">
+
+    <!-- Batch Convert Panel - extracted from ImageConverterToolView for maintainability -->
+    <Grid ColumnDefinitions="*,320">
+
+        <!-- Left: File List -->
+        <Grid Grid.Column="0" RowDefinitions="Auto,*" Margin="0,0,10,0">
+
+            <!-- Toolbar -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                <daisy:DaisyButton Command="{Binding SelectFilesCommand}" Content="Add Images"/>
+                <daisy:DaisyButton Command="{Binding ClearAllCommand}" Content="Clear All"/>
+                <TextBlock Text="{Binding Files.Count, StringFormat='{}{0} image(s)'}"
+                           VerticalAlignment="Center" Opacity="0.7" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <!-- List -->
+            <Border Grid.Row="1" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1" CornerRadius="4">
+                <Grid>
+                    <ListBox ItemsSource="{Binding Files}" SelectedItem="{Binding SelectedFile}" Background="Transparent">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto,*,Auto" Margin="5">
+                                    <Border CornerRadius="4" ClipToBounds="True" Margin="0,0,10,0" BorderBrush="Gray" BorderThickness="1" Width="56" Height="56">
+                                        <Image Source="{Binding Preview}" Stretch="UniformToFill"/>
+                                    </Border>
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{Binding FileName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="5" Opacity="0.7">
+                                            <TextBlock Text="{Binding OriginalFormat}" FontSize="11"/>
+                                            <TextBlock Text="•" FontSize="11"/>
+                                            <TextBlock Text="{Binding DimensionsDisplay}" FontSize="11"/>
+                                            <TextBlock Text="•" FontSize="11"/>
+                                            <TextBlock Text="{Binding SizeDisplay}" FontSize="11"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold"
+                                                   Foreground="{Binding Status, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                        <TextBlock Text="{Binding ErrorMessage}" FontSize="10" Foreground="{DynamicResource DaisyErrorBrush}"
+                                                   IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                                    </StackPanel>
+
+                                    <daisy:DaisyButton Grid.Column="2" Content="✕"
+                                            Command="{Binding #BatchPanel.((imgvm:BatchConversionViewModel)DataContext).RemoveFileCommand}"
+                                            CommandParameter="{Binding}"
+                                            Size="Small" Variant="Ghost"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <!-- Empty State -->
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                                IsVisible="{Binding !Files.Count}" Spacing="10" Opacity="0.5">
+                        <PathIcon Data="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" Width="32" Height="32"/>
+                        <TextBlock Text="No images added" HorizontalAlignment="Center"/>
+                        <daisy:DaisyButton Command="{Binding SelectFilesCommand}" Content="Add Images"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Right: Batch Settings -->
+        <Border Grid.Column="1"
+                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                BorderThickness="1"
+                CornerRadius="4"
+                Padding="15"
+                IsEnabled="{Binding !IsProcessing}">
+            <ScrollViewer>
+                <StackPanel Spacing="15" Margin="0,0,20,0">
+                    <TextBlock Text="Batch Settings" FontWeight="Bold" FontSize="14"/>
+
+                    <!-- Format -->
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="Output Format" FontSize="12" Opacity="0.7"/>
+                        <ComboBox ItemsSource="{Binding AvailableFormats}"
+                                  SelectedItem="{Binding OutputFormat}"
+                                  HorizontalAlignment="Stretch"/>
+                    </StackPanel>
+
+                    <!-- Quality -->
+                    <StackPanel Spacing="5" IsVisible="{Binding IsQualityVisible}">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Quality" FontSize="12" Opacity="0.7"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Quality, StringFormat='{}{0}%'}" FontSize="12"/>
+                        </Grid>
+                        <Slider Value="{Binding Quality}" Minimum="1" Maximum="100"/>
+                    </StackPanel>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- Resize -->
+                    <TextBlock Text="Resize" FontWeight="Bold" FontSize="14"/>
+                    <daisy:DaisyCheckBox Content="Enable Resize" IsChecked="{Binding ResizeEnabled}"/>
+
+                    <StackPanel Spacing="8" IsVisible="{Binding ResizeEnabled}">
+                        <Grid ColumnDefinitions="50,*">
+                            <TextBlock Text="Width" VerticalAlignment="Center" FontSize="12"/>
+                            <NumericUpDown Grid.Column="1" Value="{Binding ResizeWidth}" Minimum="1" Maximum="10000" FormatString="0" Watermark="Auto"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="50,*">
+                            <TextBlock Text="Height" VerticalAlignment="Center" FontSize="12"/>
+                            <NumericUpDown Grid.Column="1" Value="{Binding ResizeHeight}" Minimum="1" Maximum="10000" FormatString="0" Watermark="Auto"/>
+                        </Grid>
+                        <daisy:DaisyCheckBox Content="Keep Aspect Ratio" IsChecked="{Binding MaintainAspectRatio}" FontSize="12"/>
+                    </StackPanel>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- Options (Phase 2) -->
+                    <TextBlock Text="Options" FontWeight="Bold" FontSize="14"/>
+                    <daisy:DaisyCheckBox Content="Strip EXIF/Metadata" IsChecked="{Binding StripMetadata}" FontSize="12"/>
+
+                    <StackPanel Spacing="8" IsVisible="{Binding IsIcoFormat}">
+                        <daisy:DaisyCheckBox Content="Multi-size ICO" IsChecked="{Binding GenerateMultiSizeIco}" FontSize="12"/>
+                        <StackPanel Spacing="5" IsVisible="{Binding GenerateMultiSizeIco}" Margin="20,0,0,0">
+                            <ComboBox ItemsSource="{Binding IcoSizePresets}"
+                                      SelectedItem="{Binding SelectedIcoPreset}"
+                                      HorizontalAlignment="Stretch"
+                                      FontSize="11"/>
+                            <TextBlock Text="{Binding SelectedIcoSizesDisplay}" FontSize="10" Opacity="0.6"
+                                       IsVisible="{Binding SelectedIcoPreset, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- Rename Pattern (Medium Effort) -->
+                    <TextBlock Text="Output Naming" FontWeight="Bold" FontSize="14"/>
+                    <daisy:DaisyCheckBox Content="Use Custom Pattern" IsChecked="{Binding UseRenamePattern}" FontSize="12"/>
+
+                    <StackPanel Spacing="5" IsVisible="{Binding UseRenamePattern}">
+                        <TextBox Text="{Binding RenamePattern}" Watermark="{}{name}_{width}x{height}"/>
+                        <TextBlock Text="{Binding RenamePatternPreview}" FontSize="10" Opacity="0.6" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="Placeholders: {name} {ext} {width} {height} {date} {time} {index} {format}"
+                                   FontSize="9" Opacity="0.5" TextWrapping="Wrap"/>
+                    </StackPanel>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- Convert Action -->
+                    <daisy:DaisyButton Command="{Binding ConvertAllCommand}"
+                            Shape="Block" Variant="Primary"
+                            IsEnabled="{Binding CanConvertBatch}">
+                        <TextBlock Text="{Binding Files.Count, StringFormat='Convert {0} Image(s)'}"/>
+                    </daisy:DaisyButton>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- GIF Creation (Medium Effort) -->
+                    <TextBlock Text="Create Animated GIF" FontWeight="Bold" FontSize="14"/>
+                    <StackPanel Spacing="8">
+                        <Grid ColumnDefinitions="70,*,40">
+                            <TextBlock Text="Frame Delay" FontSize="11" VerticalAlignment="Center"/>
+                            <Slider Grid.Column="1" Value="{Binding GifFrameDelay}" Minimum="20" Maximum="2000"/>
+                            <TextBlock Grid.Column="2" Text="{Binding GifFrameDelay, StringFormat='{}{0}ms'}" FontSize="10" VerticalAlignment="Center"/>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <daisy:DaisyCheckBox Content="Loop" IsChecked="{Binding GifLoop}" FontSize="11"/>
+                            <daisy:DaisyCheckBox Content="Optimize" IsChecked="{Binding GifOptimize}" FontSize="11"/>
+                        </StackPanel>
+                        <daisy:DaisyButton Command="{Binding CreateGifCommand}" Content="Create GIF from Images"
+                                Shape="Block" IsEnabled="{Binding CanConvertBatch}"/>
+                    </StackPanel>
+
+                    <Separator Height="1" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                    <!-- PDF Operations (Medium Effort) -->
+                    <TextBlock Text="PDF Operations" FontWeight="Bold" FontSize="14"/>
+                    <StackPanel Spacing="8">
+                        <daisy:DaisyButton Command="{Binding CreatePdfCommand}" Content="Create PDF from Images"
+                                Shape="Block" IsEnabled="{Binding CanConvertBatch}"/>
+                        <Grid ColumnDefinitions="*,80">
+                            <daisy:DaisyButton Grid.Column="0" Command="{Binding ExtractPdfPagesCommand}" Content="Extract PDF Pages..."
+                                    Shape="Block"/>
+                            <NumericUpDown Grid.Column="1" Value="{Binding PdfDpi}" Minimum="72" Maximum="600"
+                                           FormatString="0" Watermark="DPI" Margin="5,0,0,0"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsProcessing}" Height="4"/>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

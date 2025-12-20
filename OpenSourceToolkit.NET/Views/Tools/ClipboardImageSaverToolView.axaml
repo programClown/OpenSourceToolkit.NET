@@ -1,0 +1,132 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ClipboardImageSaverToolView"
+             x:DataType="vm:ClipboardImageSaverToolViewModel">
+
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Spacing="10">
+                <daisy:DaisyTabs Variant="Boxed" Size="Small">
+                    <TabItem Header="{loc:Localize Clipboard_PasteImage_Tab}">
+                        <StackPanel Spacing="20" Margin="0,20,0,0">
+                            <Button HorizontalAlignment="Stretch"
+                                    Height="80"
+                                    Click="Paste_Click"
+                                    Background="Transparent"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="10">
+                                    <TextBlock Text="{loc:Localize Clipboard_ClickToPaste_Text}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{loc:Localize Clipboard_CtrlV_Hint}" FontSize="12" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Border IsVisible="{Binding CurrentImage, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                    BorderBrush="Gray"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="10">
+                                <StackPanel Spacing="10">
+                                    <Image Source="{Binding CurrentImage.DisplayBitmap}"
+                                           MaxHeight="400"
+                                           Stretch="Uniform"/>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                                        <TextBlock Text="{Binding CurrentImage.Dimensions}" />
+                                        <TextBlock Text="|" />
+                                        <TextBlock Text="{Binding CurrentImage.Format}" />
+                                        <TextBlock Text="|" />
+                                        <TextBlock Text="{Binding CurrentImage.SizeDisplay}" />
+                                    </StackPanel>
+
+                                    <Separator Height="1" Background="Gray" Margin="0,10"/>
+
+                                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" Margin="0,10">
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0" Spacing="5">
+                                            <TextBlock Text="{loc:Localize Clipboard_Format_Label}"/>
+                                            <ComboBox ItemsSource="{Binding AvailableFormats}"
+                                                      SelectedItem="{Binding OutputFormat}"
+                                                      HorizontalAlignment="Stretch"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" Margin="0,0,10,0" Spacing="5"
+                                                    IsVisible="{Binding IsQualityVisible}">
+                                            <TextBlock Text="{loc:Localize Clipboard_Quality_Label}"/>
+                                            <Slider Value="{Binding Quality}" Minimum="1" Maximum="100" />
+                                            <TextBlock Text="{Binding Quality, StringFormat='{}{0}%'}" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="Auto,Auto,Auto" RowDefinitions="Auto,Auto" Margin="0,10">
+                                        <StackPanel Grid.Column="0" Margin="0,0,10,0" Spacing="5">
+                                            <TextBlock Text="{loc:Localize Clipboard_Width_Label}"/>
+                                            <daisy:DaisyNumericUpDown Value="{Binding ResizeWidth}" Watermark="Original" Minimum="1" Maximum="10000" FormatString="0" MinWidth="120" Size="Small"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="0,0,10,0" Spacing="5">
+                                            <TextBlock Text="{loc:Localize Clipboard_Height_Label}"/>
+                                            <daisy:DaisyNumericUpDown Value="{Binding ResizeHeight}" Watermark="Original" Minimum="1" Maximum="10000" FormatString="0" MinWidth="120" Size="Small"/>
+                                        </StackPanel>
+                                        <daisy:DaisyCheckBox Grid.Column="2" Content="{loc:Localize Clipboard_MaintainAspect_Label}"
+                                                  IsChecked="{Binding MaintainAspectRatio}"
+                                                  VerticalAlignment="Bottom"/>
+                                    </Grid>
+
+                                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Left">
+                                        <daisy:DaisyButton Content="{loc:Localize Clipboard_Download_Button}" Command="{Binding DownloadCurrentImageCommand}" Variant="Primary" HorizontalAlignment="Left"/>
+                                        <daisy:DaisyButton Content="{loc:Localize Button_Clear}" Command="{Binding ClearAllCommand}"/>
+                                        <TextBlock Text="{loc:Localize Clipboard_SettingsApplied_Text}" VerticalAlignment="Center" Classes="muted" FontSize="12"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </TabItem>
+
+                    <TabItem Header="{loc:Localize Clipboard_History_Tab}">
+                        <ListBox ItemsSource="{Binding Images}" SelectedItem="{Binding CurrentImage}" Height="400">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="Auto,*,Auto" Margin="5">
+                                        <Border CornerRadius="4" ClipToBounds="True" Margin="0,0,10,0" BorderBrush="Gray" BorderThickness="1">
+                                            <Image Source="{Binding DisplayBitmap}" Width="64" Height="64" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{Binding TimestampDisplay}" FontWeight="Bold"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="5" Opacity="0.7">
+                                                <TextBlock Text="{Binding Dimensions}" FontSize="12"/>
+                                                <TextBlock Text="|" FontSize="12"/>
+                                                <TextBlock Text="{Binding SizeDisplay}" FontSize="12"/>
+                                                <TextBlock Text="|" FontSize="12"/>
+                                                <TextBlock Text="{Binding Format}" FontSize="12"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <daisy:DaisyButton Grid.Column="2" Content="{loc:Localize Clipboard_Delete_Button}" Variant="Error" Size="Small"
+                                                Command="{Binding $parent[UserControl].((vm:ClipboardImageSaverToolViewModel)DataContext).DeleteImageCommand}"
+                                                CommandParameter="{Binding}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </TabItem>
+                </daisy:DaisyTabs>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Notification Overlay -->
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,40"
+                Background="{DynamicResource DaisyNeutralBrush}"
+                CornerRadius="4"
+                Padding="15,10"
+                IsVisible="{Binding IsNotificationVisible}"
+                IsHitTestVisible="False">
+            <TextBlock Text="{Binding NotificationMessage}" Foreground="{DynamicResource DaisyNeutralContentBrush}" FontWeight="SemiBold"/>
+        </Border>
+    </Grid>
+</UserControl>

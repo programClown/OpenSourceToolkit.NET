@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.TextCaseToolView"
+             x:DataType="vm:TextCaseToolViewModel">
+    <StackPanel Spacing="10" Margin="0,10,0,0">
+        <controls:DragDropTextBox Text="{Binding Input}"
+                                  Watermark="{loc:Localize TextCase_Input_Watermark}"
+                                  AcceptsReturn="True"
+                                  TextWrapping="Wrap"
+                                  VerticalContentAlignment="Top"
+                                  DropTitle="{loc:Localize TextCase_Drop_Title}"
+                                  DropHint="{loc:Localize TextCase_Drop_Hint}"/>
+
+        <TextBlock Text="{loc:Localize TextCase_UpperCase_Label}" FontWeight="SemiBold"/>
+        <controls:CopyableTextBox Text="{Binding Upper}" IsReadOnly="True"/>
+
+        <TextBlock Text="{loc:Localize TextCase_LowerCase_Label}" FontWeight="SemiBold"/>
+        <controls:CopyableTextBox Text="{Binding Lower}" IsReadOnly="True"/>
+
+        <TextBlock Text="{loc:Localize TextCase_TitleCase_Label}" FontWeight="SemiBold"/>
+        <controls:CopyableTextBox Text="{Binding Title}" IsReadOnly="True"/>
+
+        <TextBlock Text="{loc:Localize TextCase_SentenceCase_Label}" FontWeight="SemiBold"/>
+        <controls:CopyableTextBox Text="{Binding Sentence}" IsReadOnly="True"/>
+    </StackPanel>
+</UserControl>

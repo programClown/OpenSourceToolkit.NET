@@ -1,0 +1,686 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels"
+             xmlns:toolsvm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:services="clr-namespace:Flowery.Services;assembly=Flowery.NET"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ThemeTestingToolView"
+             x:DataType="toolsvm:ThemeTestingToolViewModel">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0,10,0,0">
+        <StackPanel Spacing="20" Margin="0,0,20,20">
+            <!-- Semi Color Resources -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Semi Theme Colors (DynamicResource)" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyPrimaryBrush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="AppColorPrimary"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyPrimaryFocusBrush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"/>
+                            <TextBlock Text="DaisyPrimaryFocusBrush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase100Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBase100Brush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBase200Brush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBase200Brush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase300Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBase300Brush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBaseContentBrush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBaseContentBrush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase300Brush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="DaisyBase300Brush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Custom Theme Resources -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Custom Theme Resources (ThemeResources.axaml)" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="CardBackgroundBrush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBase300Brush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="CardBorderBrush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource DaisyBaseContentBrush}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="MutedForegroundBrush"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource SemiBlue}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="SemiBlue"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource SemiOrange}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="SemiOrange"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Margin="0,0,20,12"
+                                    Width="{services:Scale IconContainerLarge}">
+                            <Border Background="{DynamicResource SemiGreen}"
+                                    Height="{services:Scale IconContainerMedium}"
+                                    CornerRadius="4"/>
+                            <TextBlock Text="SemiGreen"
+                                       FontSize="{services:Scale FontSmall}"
+                                       HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Buttons -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Buttons" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Standard Buttons" FontWeight="SemiBold" FontSize="13"/>
+                            <Button Content="Default Button"/>
+                            <Button Content="Primary" Classes="primary"/>
+                            <Button Content="Accent" />
+                            <Button Content="Disabled" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Toggle Buttons" FontWeight="SemiBold" FontSize="13"/>
+                            <ToggleButton Content="Toggle Off"/>
+                            <ToggleButton Content="Toggle On" IsChecked="True"/>
+                            <ToggleButton Content="Disabled" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Repeat Button" FontWeight="SemiBold" FontSize="13"/>
+                            <RepeatButton Content="Hold to Repeat" Delay="500" Interval="100"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Hyperlink Button" FontWeight="SemiBold" FontSize="13"/>
+                            <HyperlinkButton Content="Click me" NavigateUri="https://example.com"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Split Button" FontWeight="SemiBold" FontSize="13"/>
+                            <SplitButton Content="Split Button">
+                                <SplitButton.Flyout>
+                                    <MenuFlyout>
+                                        <MenuItem Header="Option 1"/>
+                                        <MenuItem Header="Option 2"/>
+                                        <MenuItem Header="Option 3"/>
+                                    </MenuFlyout>
+                                </SplitButton.Flyout>
+                            </SplitButton>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="DropDown Button" FontWeight="SemiBold" FontSize="13"/>
+                            <DropDownButton Content="DropDown">
+                                <DropDownButton.Flyout>
+                                    <MenuFlyout>
+                                        <MenuItem Header="Item 1"/>
+                                        <MenuItem Header="Item 2"/>
+                                    </MenuFlyout>
+                                </DropDownButton.Flyout>
+                            </DropDownButton>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Text Input Controls -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Text Input Controls" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="TextBox" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBox Watermark="Enter text..." Width="200" Height="32"/>
+                            <TextBox Text="With content" Width="200" Height="32"/>
+                            <TextBox Watermark="Disabled" IsEnabled="False" Width="200" Height="32"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="TextBox (Multiline)" FontWeight="SemiBold" FontSize="13"/>
+                            <TextBox AcceptsReturn="True" TextWrapping="Wrap" Width="200" Height="80"
+                                     Text="Multi-line&#x0a;text box&#x0a;content"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="AutoCompleteBox" FontWeight="SemiBold" FontSize="13"/>
+                            <AutoCompleteBox Watermark="Type to search..." Width="200"
+                                             ItemsSource="Apple,Banana,Cherry,Date"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="DaisyNumericUpDown" FontWeight="SemiBold" FontSize="13"/>
+                            <daisy:DaisyNumericUpDown Value="42" Minimum="0" Maximum="100" Width="150" Size="Small"/>
+                            <daisy:DaisyNumericUpDown Value="3.14" Increment="0.1" FormatString="F2" Width="150" Size="Small"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Selection Controls -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Selection Controls" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="CheckBox" FontWeight="SemiBold" FontSize="13"/>
+                            <CheckBox Content="Unchecked"/>
+                            <CheckBox Content="Checked" IsChecked="True"/>
+                            <CheckBox Content="Indeterminate" IsChecked="{x:Null}" IsThreeState="True"/>
+                            <CheckBox Content="Disabled" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="RadioButton" FontWeight="SemiBold" FontSize="13"/>
+                            <RadioButton Content="Option A" GroupName="Group1" IsChecked="True"/>
+                            <RadioButton Content="Option B" GroupName="Group1"/>
+                            <RadioButton Content="Option C" GroupName="Group1"/>
+                            <RadioButton Content="Disabled" GroupName="Group1" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="ToggleSwitch" FontWeight="SemiBold" FontSize="13"/>
+                            <ToggleSwitch Content="Off"/>
+                            <ToggleSwitch Content="On" IsChecked="True"/>
+                            <ToggleSwitch Content="Disabled" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16" Width="200">
+                            <TextBlock Text="ComboBox" FontWeight="SemiBold" FontSize="13"/>
+                            <ComboBox SelectedIndex="0" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Option 1"/>
+                                <ComboBoxItem Content="Option 2"/>
+                                <ComboBoxItem Content="Option 3"/>
+                            </ComboBox>
+                            <ComboBox PlaceholderText="Select..." HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Apple"/>
+                                <ComboBoxItem Content="Banana"/>
+                                <ComboBoxItem Content="Cherry"/>
+                            </ComboBox>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Sliders and Progress -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Sliders &amp; Progress" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16" Width="200">
+                            <TextBlock Text="Slider (Horizontal)" FontWeight="SemiBold" FontSize="13"/>
+                            <Slider Minimum="0" Maximum="100" Value="50"/>
+                            <Slider Minimum="0" Maximum="100" Value="75" IsEnabled="False"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16" Width="200">
+                            <TextBlock Text="ProgressBar" FontWeight="SemiBold" FontSize="13"/>
+                            <ProgressBar Value="65" Maximum="100" Height="8"/>
+                            <ProgressBar IsIndeterminate="True" Height="8"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Slider (Vertical)" FontWeight="SemiBold" FontSize="13"/>
+                            <Slider Orientation="Vertical" Minimum="0" Maximum="100" Value="60" Height="100"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Slider (Ticks)" FontWeight="SemiBold" FontSize="13"/>
+                            <Slider Minimum="0" Maximum="10" Value="5" Width="150"
+                                    TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Date and Time Pickers -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Date &amp; Time Pickers" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="DatePicker" FontWeight="SemiBold" FontSize="13"/>
+                            <DatePicker Width="200"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="TimePicker" FontWeight="SemiBold" FontSize="13"/>
+                            <TimePicker Width="200"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="CalendarDatePicker" FontWeight="SemiBold" FontSize="13"/>
+                            <CalendarDatePicker Width="200"/>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Calendar" FontWeight="SemiBold" FontSize="13"/>
+                            <Calendar/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Lists and Items -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Lists &amp; Items" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="ListBox" FontWeight="SemiBold" FontSize="13"/>
+                            <ListBox Width="180" Height="120" SelectedIndex="1">
+                                <ListBoxItem Content="Item 1"/>
+                                <ListBoxItem Content="Item 2 (Selected)"/>
+                                <ListBoxItem Content="Item 3"/>
+                                <ListBoxItem Content="Item 4"/>
+                            </ListBox>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="TreeView" FontWeight="SemiBold" FontSize="13"/>
+                            <TreeView Width="200" Height="150">
+                                <TreeViewItem Header="Root 1" IsExpanded="True">
+                                    <TreeViewItem Header="Child 1.1"/>
+                                    <TreeViewItem Header="Child 1.2">
+                                        <TreeViewItem Header="Grandchild"/>
+                                    </TreeViewItem>
+                                </TreeViewItem>
+                                <TreeViewItem Header="Root 2">
+                                    <TreeViewItem Header="Child 2.1"/>
+                                </TreeViewItem>
+                            </TreeView>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Carousel" FontWeight="SemiBold" FontSize="13"/>
+                            <Carousel Width="200" Height="100">
+                                <Border Background="{DynamicResource DaisyPrimaryBrush}" CornerRadius="4">
+                                    <TextBlock Text="Slide 1" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource DaisyPrimaryContentBrush}"/>
+                                </Border>
+                                <Border Background="{DynamicResource SemiBlue}" CornerRadius="4">
+                                    <TextBlock Text="Slide 2" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource DaisyInfoContentBrush}"/>
+                                </Border>
+                                <Border Background="{DynamicResource SemiGreen}" CornerRadius="4">
+                                    <TextBlock Text="Slide 3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource DaisySuccessContentBrush}"/>
+                                </Border>
+                            </Carousel>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Tabs and Navigation -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Tabs &amp; Navigation" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="DaisyTabs" FontWeight="SemiBold" FontSize="13"/>
+                            <daisy:DaisyTabs Width="300" Height="120" Variant="Boxed" Size="Small">
+                                <TabItem Header="Tab 1">
+                                    <TextBlock Text="Content for Tab 1" Margin="10"/>
+                                </TabItem>
+                                <TabItem Header="Tab 2">
+                                    <TextBlock Text="Content for Tab 2" Margin="10"/>
+                                </TabItem>
+                                <TabItem Header="Tab 3">
+                                    <TextBlock Text="Content for Tab 3" Margin="10"/>
+                                </TabItem>
+                            </daisy:DaisyTabs>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="TabStrip" FontWeight="SemiBold" FontSize="13"/>
+                            <TabStrip SelectedIndex="0">
+                                <TabStripItem Content="Strip 1"/>
+                                <TabStripItem Content="Strip 2"/>
+                                <TabStripItem Content="Strip 3"/>
+                            </TabStrip>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Expanders and Containers -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Expanders &amp; Containers" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16" Width="300">
+                            <TextBlock Text="Expander" FontWeight="SemiBold" FontSize="13"/>
+                            <Expander Header="Click to expand" IsExpanded="True">
+                                <StackPanel Margin="10">
+                                    <TextBlock Text="Expanded content goes here."/>
+                                    <TextBlock Text="Can contain any controls."/>
+                                </StackPanel>
+                            </Expander>
+                            <Expander Header="Collapsed expander">
+                                <TextBlock Text="Hidden content" Margin="10"/>
+                            </Expander>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Border Styles" FontWeight="SemiBold" FontSize="13"/>
+                            <Border Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                    BorderThickness="1" CornerRadius="4" Padding="12" Width="180">
+                                <TextBlock Text="Standard Border"/>
+                            </Border>
+                            <Border Background="{DynamicResource DaisyBase300Brush}" BorderBrush="{DynamicResource DaisyPrimaryBrush}"
+                                    BorderThickness="2" CornerRadius="8" Padding="12" Width="180">
+                                <TextBlock Text="Primary Border"/>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="HeaderedContentControl" FontWeight="SemiBold" FontSize="13"/>
+                            <HeaderedContentControl Header="Section Header" Width="200">
+                                <Border Background="{DynamicResource DaisyBase200Brush}" Padding="10" CornerRadius="4">
+                                    <TextBlock Text="Content area"/>
+                                </Border>
+                            </HeaderedContentControl>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Menus -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Menus" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Menu" FontWeight="SemiBold" FontSize="13"/>
+                            <Menu>
+                                <MenuItem Header="File">
+                                    <MenuItem Header="New"/>
+                                    <MenuItem Header="Open"/>
+                                    <Separator/>
+                                    <MenuItem Header="Exit"/>
+                                </MenuItem>
+                                <MenuItem Header="Edit">
+                                    <MenuItem Header="Cut"/>
+                                    <MenuItem Header="Copy"/>
+                                    <MenuItem Header="Paste"/>
+                                </MenuItem>
+                                <MenuItem Header="Help">
+                                    <MenuItem Header="About"/>
+                                </MenuItem>
+                            </Menu>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Context Menu (Right-click)" FontWeight="SemiBold" FontSize="13"/>
+                            <Border Background="{DynamicResource DaisyBase200Brush}" Padding="20" CornerRadius="4">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Cut"/>
+                                        <MenuItem Header="Copy"/>
+                                        <MenuItem Header="Paste"/>
+                                        <Separator/>
+                                        <MenuItem Header="Select All"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
+                                <TextBlock Text="Right-click here"/>
+                            </Border>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Typography -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Typography" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"
+                               Margin="0,0,0,8"/>
+                    <TextBlock Text="FontSize 12 - The quick brown fox" FontSize="12"/>
+                    <TextBlock Text="FontSize 14 - The quick brown fox" FontSize="14"/>
+                    <TextBlock Text="FontSize 16 - The quick brown fox" FontSize="16"/>
+                    <TextBlock Text="FontSize 24 - Heading" FontSize="24" FontWeight="Bold"/>
+                    <Separator Background="{DynamicResource DaisyBase300Brush}" Height="1" Margin="0,8"/>
+                    <TextBlock Text="Font Weights" FontSize="13"/>
+                    <StackPanel Orientation="Horizontal" Spacing="20">
+                        <TextBlock Text="Light" FontWeight="Light"/>
+                        <TextBlock Text="Normal" FontWeight="Normal"/>
+                        <TextBlock Text="SemiBold" FontWeight="SemiBold"/>
+                        <TextBlock Text="Bold" FontWeight="Bold"/>
+                    </StackPanel>
+                    <Separator Background="{DynamicResource DaisyBase300Brush}" Height="1" Margin="0,8"/>
+                    <TextBlock Text="SelectableTextBlock" FontWeight="SemiBold" FontSize="13"/>
+                    <SelectableTextBlock Text="This text can be selected and copied." FontSize="14"/>
+                    <Separator Background="{DynamicResource DaisyBase300Brush}" Height="1" Margin="0,8"/>
+                    <TextBlock Text="Label" FontWeight="SemiBold" FontSize="13"/>
+                    <Label Content="This is a Label control" Target="{Binding #labelTarget}"/>
+                    <TextBox x:Name="labelTarget" Watermark="Target of label" Width="200" HorizontalAlignment="Left"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Tooltips and Flyouts -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Tooltips &amp; Flyouts" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Tooltip" FontWeight="SemiBold" FontSize="13"/>
+                            <Button Content="Hover for tooltip">
+                                <ToolTip.Tip>
+                                    <StackPanel>
+                                        <TextBlock Text="Tooltip Title" FontWeight="Bold"/>
+                                        <TextBlock Text="This is a tooltip with rich content."/>
+                                    </StackPanel>
+                                </ToolTip.Tip>
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="Flyout" FontWeight="SemiBold" FontSize="13"/>
+                            <Button Content="Click for flyout">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <StackPanel Spacing="8" Width="200">
+                                            <TextBlock Text="Flyout Content" FontWeight="Bold"/>
+                                            <TextBlock Text="Flyouts can contain any content." TextWrapping="Wrap"/>
+                                            <Button Content="Action"/>
+                                        </StackPanel>
+                                    </Flyout>
+                                </Button.Flyout>
+                            </Button>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Scroll and Split Views -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Scroll &amp; Split Views" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="ScrollViewer" FontWeight="SemiBold" FontSize="13"/>
+                            <Border BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1" CornerRadius="4">
+                                <ScrollViewer Width="200" Height="100" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel>
+                                        <TextBlock Text="Line 1"/>
+                                        <TextBlock Text="Line 2"/>
+                                        <TextBlock Text="Line 3"/>
+                                        <TextBlock Text="Line 4"/>
+                                        <TextBlock Text="Line 5"/>
+                                        <TextBlock Text="Line 6"/>
+                                        <TextBlock Text="Line 7"/>
+                                        <TextBlock Text="Line 8"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel Spacing="8" Margin="0,0,30,16">
+                            <TextBlock Text="GridSplitter" FontWeight="SemiBold" FontSize="13"/>
+                            <Border BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1" CornerRadius="4" Width="300" Height="100">
+                                <Grid ColumnDefinitions="*,5,*">
+                                    <Border Grid.Column="0" Background="{DynamicResource DaisyBase200Brush}">
+                                        <TextBlock Text="Left" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <GridSplitter Grid.Column="1" Background="{DynamicResource DaisyBase300Brush}"/>
+                                    <Border Grid.Column="2" Background="{DynamicResource DaisyBase300Brush}">
+                                        <TextBlock Text="Right" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Icons -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8"
+                    Padding="{services:Scale SpacingMedium}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="PathIcon" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <WrapPanel Orientation="Horizontal">
+                        <StackPanel Spacing="4" Margin="0,0,20,12" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource FolderIcon}" Width="24" Height="24"/>
+                            <TextBlock Text="FolderIcon" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,20,12" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource SettingsIcon}" Width="24" Height="24"/>
+                            <TextBlock Text="SettingsIcon" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,20,12" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource SearchIcon}" Width="24" Height="24"/>
+                            <TextBlock Text="SearchIcon" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,20,12" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource CopyIcon}" Width="24" Height="24"/>
+                            <TextBlock Text="CopyIcon" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,20,12" HorizontalAlignment="Center">
+                            <PathIcon Data="{StaticResource SaveIcon}" Width="24" Height="24"/>
+                            <TextBlock Text="SaveIcon" FontSize="11" HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

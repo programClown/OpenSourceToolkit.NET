@@ -1,0 +1,187 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.StopwatchTimerToolView"
+             x:DataType="vm:StopwatchTimerToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Tab Selector -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                <RadioButton GroupName="Tabs" Content="{loc:Localize StopwatchTimer_Stopwatch_Tab}"
+                             IsChecked="{Binding IsStopwatchTabSelected}"
+                             Classes="TabButton"/>
+                <RadioButton GroupName="Tabs" Content="{loc:Localize StopwatchTimer_Timer_Tab}"
+                             IsChecked="{Binding IsTimerTabSelected}"
+                             Classes="TabButton"/>
+            </StackPanel>
+
+            <!-- Stopwatch Panel -->
+            <StackPanel IsVisible="{Binding IsStopwatchTabSelected}" Spacing="20">
+                <Grid ColumnDefinitions="2*,*">
+                    <!-- Stopwatch Display -->
+                    <Border Grid.Column="0" Background="{DynamicResource DaisyBase200Brush}"
+                            BorderBrush="{DynamicResource DaisyBase300Brush}"
+                            BorderThickness="1" CornerRadius="8" Padding="30" Margin="0,0,10,0">
+                        <StackPanel Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <PathIcon Data="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"
+                                          Width="24" Height="24" Foreground="{DynamicResource SemiBlue}"/>
+                                <TextBlock Text="{loc:Localize StopwatchTimer_Stopwatch_Label}" FontWeight="SemiBold" FontSize="18"/>
+                            </StackPanel>
+
+                            <TextBlock Text="{Binding StopwatchDisplay}"
+                                       FontSize="64" FontWeight="Bold" FontFamily="Consolas"
+                                       HorizontalAlignment="Center"/>
+
+                            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                                <daisy:DaisyButton Content="{loc:Localize StopwatchTimer_Start_Button}" Command="{Binding StartStopwatchCommand}"
+                                        IsVisible="{Binding !StopwatchRunning}"
+                                        Variant="Success"/>
+                                <daisy:DaisyButton Content="{loc:Localize StopwatchTimer_Pause_Button}" Command="{Binding PauseStopwatchCommand}"
+                                        IsVisible="{Binding StopwatchRunning}"
+                                        Variant="Warning"/>
+                                <daisy:DaisyButton Content="{loc:Localize StopwatchTimer_Lap_Button}" Command="{Binding LapCommand}"
+                                        IsEnabled="{Binding StopwatchRunning}"/>
+                                <daisy:DaisyButton Content="{loc:Localize StopwatchTimer_Reset_Button}" Command="{Binding ResetStopwatchCommand}"
+                                        Variant="Error" ButtonStyle="Outline"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Lap Times -->
+                    <Border Grid.Column="1" Background="{DynamicResource DaisyBase200Brush}"
+                            BorderBrush="{DynamicResource DaisyBase300Brush}"
+                            BorderThickness="1" CornerRadius="8" Padding="15" Margin="10,0,0,0">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Lap Times" FontWeight="SemiBold"/>
+                                <daisy:DaisyButton Grid.Column="1" Content="🗑" Command="{Binding ClearLapsCommand}"
+                                        Size="Small" Variant="Ghost"/>
+                            </Grid>
+
+                            <ScrollViewer MaxHeight="250">
+                                <ItemsControl ItemsSource="{Binding LapTimes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{DynamicResource SidebarBackgroundBrush}"
+                                                    CornerRadius="4" Padding="10" Margin="0,2">
+                                                <Grid ColumnDefinitions="Auto,*">
+                                                    <TextBlock Text="{Binding Id, StringFormat='Lap {0}'}"
+                                                               FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                                        <TextBlock Text="{Binding LapDuration, StringFormat='{}{0:mm\\:ss\\.ff}'}"
+                                                                   FontFamily="Consolas" FontSize="13"/>
+                                                        <TextBlock Text="{Binding TotalTime, StringFormat='Total: {0:mm\\:ss\\.ff}'}"
+                                                                   FontFamily="Consolas" FontSize="11"
+                                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+
+            <!-- Timer Panel -->
+            <StackPanel IsVisible="{Binding IsTimerTabSelected}" Spacing="20">
+                <Border Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="30">
+                    <StackPanel Spacing="20">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"
+                                      Width="24" Height="24" Foreground="{DynamicResource SemiOrange}"/>
+                            <TextBlock Text="Timer" FontWeight="SemiBold" FontSize="18"/>
+                            <Border IsVisible="{Binding TimerFinished}" Background="{DynamicResource DaisyWarningBrush}"
+                                    CornerRadius="4" Padding="8,4">
+                                <TextBlock Text="Finished!" Foreground="{DynamicResource DaisyWarningContentBrush}" FontSize="12"/>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Time Input -->
+                        <Grid ColumnDefinitions="*,*,*" IsVisible="{Binding ShowTimerSetup}" MaxWidth="400" HorizontalAlignment="Center">
+                            <StackPanel Grid.Column="0" Margin="5">
+                                <TextBlock Text="Hours" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <daisy:DaisyNumericUpDown Value="{Binding TimerHours}" Minimum="0" Maximum="23"
+                                               FormatString="0" HorizontalAlignment="Stretch" Size="Small"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="5">
+                                <TextBlock Text="Minutes" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <daisy:DaisyNumericUpDown Value="{Binding TimerMinutes}" Minimum="0" Maximum="59"
+                                               FormatString="0" HorizontalAlignment="Stretch" Size="Small"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="5">
+                                <TextBlock Text="Seconds" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                <daisy:DaisyNumericUpDown Value="{Binding TimerSeconds}" Minimum="0" Maximum="59"
+                                               FormatString="0" HorizontalAlignment="Stretch" Size="Small"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Timer Display -->
+                        <TextBlock Text="{Binding TimerDisplay}"
+                                   FontSize="64" FontWeight="Bold" FontFamily="Consolas"
+                                   HorizontalAlignment="Center"/>
+
+                        <!-- Progress Bar -->
+                        <ProgressBar Value="{Binding TimerProgress}" Maximum="100" Height="8"
+                                     IsVisible="{Binding !ShowTimerSetup}"/>
+
+                        <!-- Controls -->
+                        <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                            <daisy:DaisyButton Content="▶ Start" Command="{Binding StartTimerCommand}"
+                                    IsVisible="{Binding !TimerRunning}"
+                                    Variant="Success"/>
+                            <daisy:DaisyButton Content="⏸ Pause" Command="{Binding PauseTimerCommand}"
+                                    IsVisible="{Binding TimerRunning}"
+                                    Variant="Warning"/>
+                            <daisy:DaisyButton Content="■ Stop" Command="{Binding ResetTimerCommand}"
+                                    IsVisible="{Binding !ShowTimerSetup}"
+                                    Variant="Error" ButtonStyle="Outline"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Timer Presets -->
+                <Border Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Quick Presets" FontWeight="SemiBold"/>
+                        <WrapPanel>
+                            <daisy:DaisyButton Content="1 min" Command="{Binding ApplyPresetCommand}" CommandParameter="1min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="5 min" Command="{Binding ApplyPresetCommand}" CommandParameter="5min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="10 min" Command="{Binding ApplyPresetCommand}" CommandParameter="10min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="15 min" Command="{Binding ApplyPresetCommand}" CommandParameter="15min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="25 min" Command="{Binding ApplyPresetCommand}" CommandParameter="25min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="30 min" Command="{Binding ApplyPresetCommand}" CommandParameter="30min" Margin="5" Size="Small"/>
+                            <daisy:DaisyButton Content="1 hour" Command="{Binding ApplyPresetCommand}" CommandParameter="1hour" Margin="5" Size="Small"/>
+                        </WrapPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Settings -->
+                <Border Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="20">
+                    <StackPanel Spacing="15">
+                        <TextBlock Text="Settings" FontWeight="SemiBold"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Sound Enabled" VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding SoundEnabled}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Auto Restart Timer" VerticalAlignment="Center"/>
+                            <ToggleSwitch Grid.Column="1" IsChecked="{Binding AutoRestart}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

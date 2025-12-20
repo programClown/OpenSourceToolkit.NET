@@ -1,0 +1,138 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels"
+             xmlns:materialIcons="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+             xmlns:converters="using:OpenSourceToolkit.NET.Converters"
+             xmlns:controls="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:services="clr-namespace:Flowery.Services;assembly=Flowery.NET"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenSourceToolkit.NET.Views.HomeView"
+             x:DataType="vm:HomeViewModel"
+             x:Name="HomeViewRoot">
+
+    <UserControl.Styles>
+        <!-- Quick Action button base style - dimensions are set via ScaleExtension -->
+        <Style Selector="Button.QuickAction">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyBase300Brush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+        <Style Selector="Button.QuickAction:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource DaisyBase300Brush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyPrimaryBrush}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Spacing="10">
+            <!-- Hero Section -->
+            <StackPanel Spacing="6" HorizontalAlignment="Center" Margin="0,10,0,10">
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <!-- Toolbox Icon with .NET Purple Gradient -->
+                    <Border Width="56" Height="56" CornerRadius="12" VerticalAlignment="Center">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                                <GradientStop Color="#1D4ED8" Offset="0"/>
+                                <GradientStop Color="#3B82F6" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <materialIcons:MaterialIcon Kind="Toolbox" Width="32" Height="32" Foreground="{DynamicResource DaisyPrimaryContentBrush}"
+                                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding AppTitle}"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="{Binding AppSubtitle}"
+                                   FontSize="14"
+                                   Opacity="0.6"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Theme Selector -->
+            <controls:DaisyThemeDropdown Width="220" HorizontalAlignment="Center"/>
+
+            <!-- Quick Actions (Favorites) -->
+            <StackPanel Spacing="10" IsVisible="{Binding QuickActions.Count}">
+                <ItemsControl ItemsSource="{Binding QuickActions}" Margin="0,0,0,10" HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:QuickActionItem">
+                            <Button Classes="QuickAction"
+                                    Width="{services:Scale CardWidth}"
+                                    MinHeight="{services:Scale CardHeight}"
+                                    Padding="{services:Scale SpacingMedium}"
+                                    Command="{Binding $parent[UserControl].((vm:HomeViewModel)DataContext).NavigateCommand, FallbackValue={x:Null}}"
+                                    CommandParameter="{Binding ToolType}">
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border Grid.Column="0"
+                                            Width="{services:Scale IconContainerMedium}"
+                                            Height="{services:Scale IconContainerMedium}"
+                                            CornerRadius="8" Margin="0,0,15,0"
+                                            Background="{Binding IconBrush}">
+                                        <PathIcon Data="{Binding Converter={x:Static converters:IconKeyToGeometryConverter.Instance}}" Foreground="{DynamicResource DaisyPrimaryContentBrush}"
+                                                  Width="{services:Scale IconMedium}"
+                                                  Height="{services:Scale IconMedium}"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}" FontWeight="Bold"
+                                                   FontSize="{services:Scale FontSubheading}"
+                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                        <TextBlock Text="{Binding Description}"
+                                                   FontSize="{services:Scale FontBody}"
+                                                   Opacity="0.6"
+                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                   TextWrapping="Wrap" TextTrimming="CharacterEllipsis" MaxLines="3"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- No Favorites Message -->
+            <StackPanel Spacing="10" IsVisible="{Binding !QuickActions.Count}" HorizontalAlignment="Center" Margin="0,0,0,5">
+                <TextBlock Text="{Binding NoFavoritesTitle}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                <TextBlock Text="{Binding NoFavoritesHint}"
+                           FontSize="14" Opacity="0.6"
+                           HorizontalAlignment="Center" TextWrapping="Wrap" MaxWidth="400" TextAlignment="Center"
+                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+            </StackPanel>
+
+            <!-- Footer with Repository Link -->
+            <Border Background="{DynamicResource DaisyBase200Brush}" 
+                    CornerRadius="8" Padding="16,12" 
+                    HorizontalAlignment="Center" Margin="0,10,0,10">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                        <materialIcons:MaterialIcon Kind="Github" Width="18" Height="18" Opacity="0.7"
+                                                    Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="{Binding ViewOnGitHub}" FontSize="13" Opacity="0.7"
+                                   VerticalAlignment="Center"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+                    <controls:DaisyButton HorizontalAlignment="Center"
+                            Command="{Binding OpenRepoCommand}"
+                            Variant="Link" Size="Small">
+                        <TextBlock Text="github.com/tobitege/OpenSourceToolkit.NET"
+                                   FontSize="13" TextDecorations="Underline"/>
+                    </controls:DaisyButton>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

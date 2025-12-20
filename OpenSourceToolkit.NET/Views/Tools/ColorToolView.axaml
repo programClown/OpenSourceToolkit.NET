@@ -1,0 +1,274 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:daisyColorPicker="clr-namespace:Flowery.Controls.ColorPicker;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ColorToolView"
+             x:DataType="vm:ColorToolViewModel"
+             FontSize="12">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock.Label">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+        <!-- Target TextBox anywhere in the visual tree, including inside CopyableInput -->
+        <Style Selector=":is(TextBox)">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="Border.ColorCard">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyBase300Brush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Spacing="5" Margin="0,0,5,0">
+            <!-- Main Picker -->
+            <Border Classes="ColorCard">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="{loc:Localize Color_Picker_Label}" Classes="Label"/>
+                    <Grid ColumnDefinitions="Auto, Auto" RowDefinitions="Auto">
+                        <!-- Color View/Picker -->
+                        <StackPanel Orientation="Horizontal" Spacing="15" Grid.Column="0" VerticalAlignment="Center">
+                            <daisyColorPicker:DaisyColorWheel Color="{Binding CurrentColor, Mode=TwoWay}" Width="150" Height="150" />
+                            <daisyColorPicker:DaisyColorEditor Color="{Binding CurrentColor, Mode=TwoWay}" ShowAlphaChannel="False" ShowHexInput="False" Width="280" />
+                        </StackPanel>
+
+                        <!-- Result, Hex Input & Random Button -->
+                        <StackPanel Grid.Column="1" Margin="20,0" Spacing="10" VerticalAlignment="Top" HorizontalAlignment="Left">
+                            <!-- Color Preview -->
+                            <Border Width="80" Height="80" CornerRadius="8" Background="{Binding PreviewBrush}" BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1"/>
+
+                            <!-- Hex Value -->
+                            <StackPanel>
+                                <TextBlock Text="{loc:Localize Color_HexValue_Label}" Classes="Label"/>
+                                <daisy:DaisyInput Name="HexInputBox" Text="{Binding Hex}" Watermark="#RRGGBB" MinWidth="120">
+                                    <daisy:DaisyInput.KeyBindings>
+                                        <KeyBinding Gesture="Enter" Command="{Binding UpdateFromHexInputCommand}" CommandParameter="{Binding #HexInputBox.Text}"/>
+                                    </daisy:DaisyInput.KeyBindings>
+                                </daisy:DaisyInput>
+                            </StackPanel>
+
+                            <!-- Random Button -->
+                            <daisy:DaisyButton Content="{loc:Localize Color_Random_Button}" Command="{Binding RandomizeColorCommand}" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Current Color Values (always visible) -->
+            <Border Classes="ColorCard">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{loc:Localize Color_CurrentValues_Label}" Classes="Label"/>
+                    <StackPanel Orientation="Horizontal" Spacing="15">
+                        <Border Background="{DynamicResource DaisyBase300Brush}" CornerRadius="4" Padding="12,8" MinWidth="150">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="{loc:Localize Color_ValuePrefix_Hex}" FontWeight="SemiBold"/>
+                                    <Run Text="{Binding Hex}" FontFamily="Consolas"/>
+                                </TextBlock>
+                                <daisy:DaisyButton Command="{Binding CopyHexCommand}" ToolTip.Tip="{loc:Localize Color_CopyHex_Tooltip}" Variant="Ghost" Size="Small">
+                                    <PathIcon Data="{DynamicResource CopyIcon}" Width="12" Height="12"/>
+                                </daisy:DaisyButton>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{DynamicResource DaisyBase300Brush}" CornerRadius="4" Padding="12,8" MinWidth="200">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="{loc:Localize Color_ValuePrefix_Rgb}" FontWeight="SemiBold"/>
+                                    <Run Text="{Binding RgbFormatted}" FontFamily="Consolas"/>
+                                </TextBlock>
+                                <daisy:DaisyButton Command="{Binding CopyRgbCommand}" ToolTip.Tip="{loc:Localize Color_CopyRgb_Tooltip}" Variant="Ghost" Size="Small">
+                                    <PathIcon Data="{DynamicResource CopyIcon}" Width="12" Height="12"/>
+                                </daisy:DaisyButton>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{DynamicResource DaisyBase300Brush}" CornerRadius="4" Padding="12,8" MinWidth="200">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock VerticalAlignment="Center">
+                                    <Run Text="{loc:Localize Color_ValuePrefix_Hsl}" FontWeight="SemiBold"/>
+                                    <Run Text="{Binding HslFormatted}" FontFamily="Consolas"/>
+                                </TextBlock>
+                                <daisy:DaisyButton Command="{Binding CopyHslCommand}" ToolTip.Tip="{loc:Localize Color_CopyHsl_Tooltip}" Variant="Ghost" Size="Small">
+                                    <PathIcon Data="{DynamicResource CopyIcon}" Width="12" Height="12"/>
+                                </daisy:DaisyButton>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Tabs -->
+            <daisy:DaisyTabs Variant="Boxed" Size="Small">
+                <!-- Converter Tab -->
+                <TabItem Header="{loc:Localize Color_Converter_Tab}">
+                    <StackPanel Spacing="15" Margin="0,10">
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto" >
+                            <Grid.Styles>
+                                <Style Selector="controls|CopyableInput">
+                                    <Setter Property="MaxWidth" Value="200"/>
+                                </Style>
+                            </Grid.Styles>
+                            <!-- Row 1 -->
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5">
+                                <TextBlock Text="{loc:Localize Color_ConverterSection_RGB_Label}" Classes="Label"/>
+                                <controls:CopyableInput Text="{Binding R, StringFormat='R: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding G, StringFormat='G: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding B, StringFormat='B: {0}'}" IsReadOnly="True"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5">
+                                <TextBlock Text="{loc:Localize Color_ConverterSection_HSL_Label}" Classes="Label"/>
+                                <controls:CopyableInput Text="{Binding HslH, StringFormat='H: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding HslS, StringFormat='S: {0}%'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding HslL, StringFormat='L: {0}%'}" IsReadOnly="True"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="0" Grid.Column="2" Margin="5">
+                                <TextBlock Text="{loc:Localize Color_ConverterSection_HSV_Label}" Classes="Label"/>
+                                <controls:CopyableInput Text="{Binding HsvH, StringFormat='H: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding HsvS, StringFormat='S: {0}%'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding HsvV, StringFormat='V: {0}%'}" IsReadOnly="True"/>
+                            </StackPanel>
+
+                            <!-- Row 2 -->
+                            <StackPanel Grid.Row="1" Grid.Column="0" Margin="5">
+                                <TextBlock Text="{loc:Localize Color_ConverterSection_CMYK_Label}" Classes="Label"/>
+                                <controls:CopyableInput Text="{Binding CmykC, StringFormat='C: {0}%'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding CmykM, StringFormat='M: {0}%'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding CmykY, StringFormat='Y: {0}%'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding CmykK, StringFormat='K: {0}%'}" IsReadOnly="True"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5">
+                                <TextBlock Text="{loc:Localize Color_ConverterSection_LAB_Label}" Classes="Label"/>
+                                <controls:CopyableInput Text="{Binding LabL, StringFormat='L: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding LabA, StringFormat='A: {0}'}" IsReadOnly="True" Margin="0,0,0,5"/>
+                                <controls:CopyableInput Text="{Binding LabB, StringFormat='B: {0}'}" IsReadOnly="True"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Palette Tab -->
+                <TabItem Header="{loc:Localize Color_Palette_Tab}">
+                    <StackPanel Spacing="15" Margin="0,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="{loc:Localize Color_Harmony_Label}" VerticalAlignment="Center"/>
+                            <daisy:DaisySelect ItemsSource="{Binding HarmonyTypes}" SelectedItem="{Binding SelectedHarmonyType}" Width="200"/>
+                            <daisy:DaisyButton Content="{loc:Localize Color_Generate_Button}" Command="{Binding UpdatePaletteCommand}" Variant="Primary" HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                        <ItemsControl ItemsSource="{Binding Palette}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="10" Width="180">
+                                        <Border Height="80" Background="{Binding Brush}" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,5">
+                                            <ToolTip.Tip>
+                                                <TextBlock Text="{Binding Hex}"/>
+                                            </ToolTip.Tip>
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <controls:CopyableInput Text="{Binding Hex}" IsReadOnly="True" FontSize="12"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Gradients Tab -->
+                <TabItem Header="{loc:Localize Color_Gradients_Tab}">
+                    <StackPanel Spacing="15" Margin="0,10">
+                        <TextBlock Text="{loc:Localize Color_GradientGenerator_Label}" Classes="Label"/>
+
+                        <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto" Margin="0,0,0,10">
+                            <TextBlock Text="{loc:Localize Color_StartColor_Label}" VerticalAlignment="Center" Margin="0,0,10,10"/>
+                            <daisyColorPicker:DaisyColorEditor Grid.Column="1" Color="{Binding GradientStartColor, Mode=TwoWay}" ShowAlphaChannel="False" ShowHslSliders="False" />
+
+                            <TextBlock Grid.Row="1" Text="{loc:Localize Color_EndColor_Label}" VerticalAlignment="Center" Margin="0,10,10,0"/>
+                            <daisyColorPicker:DaisyColorEditor Grid.Row="1" Grid.Column="1" Color="{Binding GradientEndColor, Mode=TwoWay}" ShowAlphaChannel="False" ShowHslSliders="False" Margin="0,10,0,0" />
+                        </Grid>
+
+                        <Border Height="100" Background="{Binding GradientPreviewBrush}" CornerRadius="8" BorderBrush="Gray" BorderThickness="1"/>
+
+                        <TextBlock Text="{loc:Localize Color_CssCode_Label}" Classes="Label"/>
+                        <controls:CopyableInput Text="{Binding GradientCss}" IsReadOnly="True"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Accessibility Tab -->
+                <TabItem Header="{loc:Localize Color_Accessibility_Tab}">
+                    <StackPanel Spacing="15" Margin="0,10">
+                        <Grid ColumnDefinitions="*,*" ShowGridLines="False">
+                            <StackPanel Grid.Column="0" Spacing="10" Margin="0,0,10,0">
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,5">
+                                    <TextBlock Text="{loc:Localize Color_TextColor1_Label}" Classes="Label" VerticalAlignment="Center"/>
+                                    <daisyColorPicker:DaisyColorEditor Grid.Column="1" Color="{Binding AccessibilityLeftColor, Mode=TwoWay}" ShowAlphaChannel="False" ShowHslSliders="False" HorizontalAlignment="Right" MaxWidth="320" />
+                                </Grid>
+                                <Border Height="60" Background="{Binding PreviewBrush}" CornerRadius="5">
+                                    <TextBlock Text="{loc:Localize Color_SampleText}" Foreground="{Binding AccessibilityLeftBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                                </Border>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{loc:Localize Color_Ratio_Label}"/>
+                                    <TextBlock Text="{Binding ContrastRatioLeft}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding ContrastLevelLeft}" FontWeight="Bold" Foreground="{Binding ContrastColorLeft}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Spacing="10" Margin="10,0,0,0">
+                                <Grid ColumnDefinitions="Auto,*" Margin="0,0,0,5">
+                                    <TextBlock Text="{loc:Localize Color_TextColor2_Label}" Classes="Label" VerticalAlignment="Center"/>
+                                    <daisyColorPicker:DaisyColorEditor Grid.Column="1" Color="{Binding AccessibilityRightColor, Mode=TwoWay}" ShowAlphaChannel="False" ShowHslSliders="False" HorizontalAlignment="Right" MaxWidth="320" />
+                                </Grid>
+                                <Border Height="60" Background="{Binding PreviewBrush}" CornerRadius="5">
+                                    <TextBlock Text="{loc:Localize Color_SampleText}" Foreground="{Binding AccessibilityRightBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                                </Border>
+                                <StackPanel Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{loc:Localize Color_Ratio_Label}"/>
+                                    <TextBlock Text="{Binding ContrastRatioRight}" FontWeight="Bold"/>
+                                    <TextBlock Text="{Binding ContrastLevelRight}" FontWeight="Bold" Foreground="{Binding ContrastColorRight}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock Text="{loc:Localize Color_Guidelines_Text}" FontStyle="Italic" HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </TabItem>
+
+                <!-- Shades Tab -->
+                <TabItem Header="{loc:Localize Color_Shades_Tab}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding Shades}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="5" Width="80">
+                                        <Border Height="150" Background="{Binding Brush}" CornerRadius="5" BorderBrush="Gray" BorderThickness="1" Margin="0,0,0,5"/>
+                                        <TextBlock Text="{Binding Name}" HorizontalAlignment="Center" FontSize="10"/>
+                                        <TextBlock Text="{Binding Hex}" HorizontalAlignment="Center" FontSize="10" FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+
+            </daisy:DaisyTabs>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,0 +1,100 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="700"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.RegexTesterToolView"
+             x:DataType="vm:RegexTesterToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Pattern Section -->
+            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="{loc:Localize Regex_Pattern_Label}" FontWeight="SemiBold"/>
+                    <daisy:DaisyInput Text="{Binding Pattern}" />
+                </StackPanel>
+
+                <!-- Options -->
+                <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="15" Margin="0,10">
+                    <daisy:DaisyCheckBox IsChecked="{Binding IgnoreCase}" Content="{loc:Localize Regex_IgnoreCase_Label}" />
+                    <daisy:DaisyCheckBox IsChecked="{Binding Multiline}" Content="{loc:Localize Regex_Multiline_Label}" />
+                    <daisy:DaisyCheckBox IsChecked="{Binding Singleline}" Content="{loc:Localize Regex_Singleline_Label}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Input Section -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="{loc:Localize Regex_TestInput_Label}" FontWeight="SemiBold"/>
+                <daisy:DaisyTextArea Text="{Binding Input}" Height="100" />
+            </StackPanel>
+
+            <!-- Action -->
+            <daisy:DaisyButton Command="{Binding TestCommand}" Content="{loc:Localize Regex_TestButton}" Variant="Primary" HorizontalAlignment="Left" />
+
+            <!-- Error Display -->
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DaisyErrorBrush}" FontWeight="Bold"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+            <!-- Results Section -->
+            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, *" Margin="0,10,0,0">
+                <!-- Matches -->
+                <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,10,0">
+                    <TextBlock Text="{loc:Localize Regex_Matches_Label}" FontWeight="SemiBold" FontSize="16"/>
+                    <Border BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1" CornerRadius="4">
+                        <ListBox ItemsSource="{Binding Matches}" Height="200">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Spacing="2">
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <TextBlock Text="{Binding Value}" FontWeight="Bold" Foreground="{DynamicResource DaisyPrimaryBrush}"/>
+                                            <TextBlock Text="{Binding Index, StringFormat='Index: {0}'}" FontSize="12" Opacity="0.7"/>
+                                            <TextBlock Text="{Binding Length, StringFormat='Len: {0}'}" FontSize="12" Opacity="0.7"/>
+                                        </StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Groups}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Display}" FontSize="11" Margin="10,0,0,0"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Border>
+                </StackPanel>
+
+                <!-- Replacement -->
+                <StackPanel Grid.Column="1" Spacing="5">
+                    <TextBlock Text="{loc:Localize Regex_Replacement_Label}" FontWeight="SemiBold" FontSize="16"/>
+                    <TextBlock Text="{loc:Localize Regex_ReplacementPattern_Label}"/>
+                    <daisy:DaisyInput Text="{Binding ReplacementText}" />
+
+                    <TextBlock Text="{loc:Localize Regex_Result_Label}" Margin="0,10,0,0"/>
+                    <controls:CopyableTextBox Text="{Binding ReplaceResult}" IsReadOnly="True" Height="100" AcceptsReturn="True"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Examples Section -->
+            <StackPanel Spacing="5" Margin="0,15,0,0">
+                <TextBlock Text="{loc:Localize Regex_LoadExample_Label}" FontWeight="SemiBold" FontSize="16"/>
+                <Border BorderBrush="{DynamicResource DaisyBase300Brush}" BorderThickness="1" CornerRadius="4">
+                    <ListBox ItemsSource="{Binding Examples}" SelectedItem="{Binding SelectedExample}" Height="150">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Spacing="2" Margin="0,5">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding Description}" FontSize="12" Opacity="0.7" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

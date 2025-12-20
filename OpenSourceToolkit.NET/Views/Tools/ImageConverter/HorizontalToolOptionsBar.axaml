@@ -1,0 +1,408 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="36"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ImageConverter.HorizontalToolOptionsBar"
+             x:DataType="vm:ImageConverterToolViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        <Style Selector="ToggleButton">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Padding" Value="6,3"/>
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Padding" Value="4,2"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Background="{DynamicResource DaisyBase200Brush}"
+            Padding="6,4"
+            BorderBrush="{DynamicResource DaisyBase300Brush}"
+            BorderThickness="0,0,0,1">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- OUTPUT CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsOutputCategorySelected}">
+                    <TextBlock Text="Output" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <TextBlock Text="Format:"/>
+                    <ComboBox ItemsSource="{Binding Workspace.AvailableFormats}"
+                              SelectedItem="{Binding Workspace.OutputFormat}"
+                              MinWidth="80"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"
+                            IsVisible="{Binding Workspace.IsQualityVisible}"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding Workspace.IsQualityVisible}">
+                        <TextBlock Text="Quality:"/>
+                        <Slider Value="{Binding Workspace.Quality}" Minimum="1" Maximum="100" Width="80" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.Quality, StringFormat='{}{0}%'}" Width="30"/>
+                    </StackPanel>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"
+                            IsVisible="{Binding Workspace.IsIcoFormat}"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="4" IsVisible="{Binding Workspace.IsIcoFormat}">
+                        <CheckBox Content="Multi-size" IsChecked="{Binding Workspace.GenerateMultiSizeIco}"/>
+                        <ComboBox ItemsSource="{Binding Workspace.IcoSizePresets}"
+                                  SelectedItem="{Binding Workspace.SelectedIcoPreset}"
+                                  MinWidth="100"
+                                  IsVisible="{Binding Workspace.GenerateMultiSizeIco}"
+                                  ToolTip.Tip="{Binding Workspace.SelectedIcoSizesDisplay}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- TRANSFORM CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsTransformCategorySelected}">
+                    <TextBlock Text="Transform" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <TextBlock Text="Rotate:"/>
+                    <Button Command="{Binding Workspace.RotateLeftCommand}" ToolTip.Tip="Rotate Left 90°" Padding="6,4">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <PathIcon Data="{StaticResource RotateLeftIcon}" Width="14" Height="14"/>
+                            <TextBlock Text="90°"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Command="{Binding Workspace.RotateRightCommand}" ToolTip.Tip="Rotate Right 90°" Padding="6,4">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <PathIcon Data="{StaticResource RotateRightIcon}" Width="14" Height="14"/>
+                            <TextBlock Text="90°"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="Flip:"/>
+                    <ToggleButton IsChecked="{Binding Workspace.FlipHorizontal}" ToolTip.Tip="Flip Horizontal" Padding="6,4">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <PathIcon Data="{StaticResource FlipHorizontalIcon}" Width="14" Height="14"/>
+                            <TextBlock Text="H"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton IsChecked="{Binding Workspace.FlipVertical}" ToolTip.Tip="Flip Vertical" Padding="6,4">
+                        <StackPanel Orientation="Horizontal" Spacing="4">
+                            <PathIcon Data="{StaticResource FlipVerticalIcon}" Width="14" Height="14"/>
+                            <TextBlock Text="V"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- RESIZE CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsResizeCategorySelected}">
+                    <TextBlock Text="Resize" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="Preset:"/>
+                    <ComboBox ItemsSource="{Binding Workspace.ResizePresets}"
+                              SelectedItem="{Binding Workspace.SelectedResizePreset}"
+                              MinWidth="120"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="W:"/>
+                    <NumericUpDown Value="{Binding Workspace.ResizeWidth}" Minimum="1" Maximum="10000"
+                                   FormatString="0" Watermark="Auto" Width="75"/>
+
+                    <TextBlock Text="H:"/>
+                    <NumericUpDown Value="{Binding Workspace.ResizeHeight}" Minimum="1" Maximum="10000"
+                                   FormatString="0" Watermark="Auto" Width="75"/>
+
+                    <ToggleButton IsChecked="{Binding Workspace.MaintainAspectRatio}"
+                                  ToolTip.Tip="Keep Aspect Ratio" Padding="6,4">
+                        <PathIcon Data="{StaticResource LinkIcon}" Width="14" Height="14"/>
+                    </ToggleButton>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <Button Command="{Binding Workspace.ResetResizeCommand}" Content="Reset"
+                            ToolTip.Tip="Reset to original dimensions"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- ADJUST CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsAdjustCategorySelected}">
+                    <TextBlock Text="Adjust" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                        <TextBlock Text="Bright:" Width="38"/>
+                        <Slider Value="{Binding Workspace.Brightness}" Minimum="-100" Maximum="100" Width="70" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.Brightness}" Width="24" HorizontalAlignment="Right"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                        <TextBlock Text="Contrast:" Width="50"/>
+                        <Slider Value="{Binding Workspace.Contrast}" Minimum="-100" Maximum="100" Width="70" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.Contrast}" Width="24" HorizontalAlignment="Right"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                        <TextBlock Text="Sat:" Width="26"/>
+                        <Slider Value="{Binding Workspace.Saturation}" Minimum="-100" Maximum="100" Width="70" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.Saturation}" Width="24" HorizontalAlignment="Right"/>
+                    </StackPanel>
+
+                    <Button Command="{Binding Workspace.ResetAdjustmentsCommand}" Content="Reset"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- FILTERS CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsFiltersCategorySelected}">
+                    <TextBlock Text="Filters" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <ToggleButton IsChecked="{Binding Workspace.Grayscale}" Content="Grayscale"/>
+                    <ToggleButton IsChecked="{Binding Workspace.Sepia}" Content="Sepia"/>
+                    <ToggleButton IsChecked="{Binding Workspace.Invert}" Content="Invert"/>
+                    <Button Command="{Binding Workspace.ResetFiltersCommand}" Content="Reset"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- BLUR/SHARPEN CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsBlurSharpenCategorySelected}">
+                    <TextBlock Text="Blur/Sharpen" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                        <TextBlock Text="Blur:" Width="30"/>
+                        <Slider Value="{Binding Workspace.BlurRadius}" Minimum="0" Maximum="20" Width="70" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.BlurRadius}" Width="20" HorizontalAlignment="Right"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="3">
+                        <TextBlock Text="Sharp:" Width="36"/>
+                        <Slider Value="{Binding Workspace.SharpenAmount}" Minimum="0" Maximum="100" Width="70" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding Workspace.SharpenAmount}" Width="24" HorizontalAlignment="Right"/>
+                    </StackPanel>
+
+                    <Button Command="{Binding Workspace.ResetBlurSharpenCommand}" Content="Reset"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- EFFECTS CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsEffectsCategorySelected}">
+                    <TextBlock Text="Effects" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <ToggleButton IsChecked="{Binding Workspace.AutoEnhance}" Content="Auto"
+                                  ToolTip.Tip="Auto-Enhance"/>
+
+                    <ToggleButton IsChecked="{Binding Workspace.Vignette}" Padding="6,4"
+                                  ToolTip.Tip="Vignette">
+                        <ToggleButton.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel Spacing="8" Width="160">
+                                    <TextBlock Text="Vignette Settings" FontWeight="Bold"/>
+                                    <Grid ColumnDefinitions="50,*,30">
+                                        <TextBlock Text="Radius"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.VignetteRadius}" Minimum="10" Maximum="100"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.VignetteRadius}"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="50,*,30">
+                                        <TextBlock Text="Softness"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.VignetteSoftness}" Minimum="10" Maximum="100"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.VignetteSoftness}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Flyout>
+                        </ToggleButton.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="3">
+                            <TextBlock Text="Vignette"/>
+                            <TextBlock Text="▾" FontSize="10" Opacity="0.8"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton IsChecked="{Binding Workspace.Posterize}" Padding="6,4"
+                                  ToolTip.Tip="Posterize">
+                        <ToggleButton.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel Spacing="8" Width="140">
+                                    <TextBlock Text="Posterize Settings" FontWeight="Bold"/>
+                                    <Grid ColumnDefinitions="40,*,25">
+                                        <TextBlock Text="Levels"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.PosterizeLevels}" Minimum="2" Maximum="16"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.PosterizeLevels}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Flyout>
+                        </ToggleButton.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="3">
+                            <TextBlock Text="Posterize"/>
+                            <TextBlock Text="▾" FontSize="10" Opacity="0.8"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton IsChecked="{Binding Workspace.EdgeDetect}" Padding="6,4"
+                                  ToolTip.Tip="Edge Detect">
+                        <ToggleButton.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel Spacing="8" Width="140">
+                                    <TextBlock Text="Edge Detection" FontWeight="Bold"/>
+                                    <Grid ColumnDefinitions="40,*,25">
+                                        <TextBlock Text="Radius"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.EdgeDetectRadius}" Minimum="1" Maximum="5"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.EdgeDetectRadius}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Flyout>
+                        </ToggleButton.Flyout>
+                        <StackPanel Orientation="Horizontal" Spacing="3">
+                            <TextBlock Text="Edge"/>
+                            <TextBlock Text="▾" FontSize="10" Opacity="0.8"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <Button Command="{Binding Workspace.ResetEffectsCommand}" Content="Reset"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- CROP CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsCropCategorySelected}">
+                    <TextBlock Text="Crop" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <TextBlock Text="Ratio:"/>
+                    <ComboBox ItemsSource="{Binding Workspace.CropAspectRatios}"
+                              SelectedItem="{Binding Workspace.CropAspectRatio}"
+                              MinWidth="80"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="X:"/>
+                    <NumericUpDown Value="{Binding Workspace.CropX}" Minimum="0" Maximum="10000"
+                                   FormatString="0" Width="65"/>
+                    <TextBlock Text="Y:"/>
+                    <NumericUpDown Value="{Binding Workspace.CropY}" Minimum="0" Maximum="10000"
+                                   FormatString="0" Width="65"/>
+                    <TextBlock Text="W:"/>
+                    <NumericUpDown Value="{Binding Workspace.CropWidth}" Minimum="1" Maximum="10000"
+                                   FormatString="0" Width="65"/>
+                    <TextBlock Text="H:"/>
+                    <NumericUpDown Value="{Binding Workspace.CropHeight}" Minimum="1" Maximum="10000"
+                                   FormatString="0" Width="65"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <Button Command="{Binding Workspace.ApplyCropCommand}" Content="Apply" Padding="10,4"
+                            ToolTip.Tip="Apply the crop to the image (use main Undo to revert)"/>
+                    <Button Command="{Binding Workspace.ResetCropCommand}" Content="Reset"
+                            ToolTip.Tip="Reset crop selection to full image"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- WATERMARK CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsWatermarkCategorySelected}">
+                    <TextBlock Text="Watermark" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <TextBlock Text="Text:"/>
+                    <TextBox Text="{Binding Workspace.WatermarkText}" Watermark="© Your Name" Width="120" Padding="4,3"/>
+
+                    <Button Command="{Binding Workspace.LoadWatermarkImageCommand}" Content="Image" Padding="6,4"
+                            ToolTip.Tip="Load watermark image"/>
+                    <Button Command="{Binding Workspace.ClearWatermarkImageCommand}" Padding="4,4"
+                            IsVisible="{Binding Workspace.HasWatermarkImage}" ToolTip.Tip="Clear watermark image">
+                        <PathIcon Data="{StaticResource ClearIcon}" Width="12" Height="12"/>
+                    </Button>
+                    <TextBlock Text="✓" Foreground="{DynamicResource DaisySuccessBrush}"
+                               IsVisible="{Binding Workspace.HasWatermarkImage}"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="Pos:"/>
+                    <ComboBox ItemsSource="{Binding Workspace.WatermarkPositions}"
+                              SelectedItem="{Binding Workspace.WatermarkPosition}"
+                              MinWidth="90"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="Opacity:"/>
+                    <Slider Value="{Binding Workspace.WatermarkOpacity}" Minimum="0" Maximum="100" Width="60" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Workspace.WatermarkOpacity, StringFormat='{}{0}%'}" Width="28"/>
+
+                    <Button ToolTip.Tip="More watermark options" Padding="6,4">
+                        <Button.Flyout>
+                            <Flyout Placement="Bottom">
+                                <StackPanel Spacing="8" Width="180">
+                                    <TextBlock Text="Watermark Options" FontWeight="Bold"/>
+                                    <Grid ColumnDefinitions="60,*,35">
+                                        <TextBlock Text="Font Size"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.WatermarkFontSize}" Minimum="8" Maximum="120"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.WatermarkFontSize}"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="60,*">
+                                        <TextBlock Text="Color"/>
+                                        <TextBox Grid.Column="1" Text="{Binding Workspace.WatermarkColor}" Watermark="#FFFFFF"/>
+                                    </Grid>
+                                    <Grid ColumnDefinitions="60,*,35">
+                                        <TextBlock Text="Padding"/>
+                                        <Slider Grid.Column="1" Value="{Binding Workspace.WatermarkPadding}" Minimum="0" Maximum="100"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding Workspace.WatermarkPadding}"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                        <TextBlock Text="More ▾"/>
+                    </Button>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- BACKGROUND CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsBackgroundCategorySelected}">
+                    <TextBlock Text="Background" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <TextBlock Text="Replace:"/>
+                    <ComboBox ItemsSource="{Binding Workspace.BackgroundColors}"
+                              SelectedItem="{Binding Workspace.BackgroundColor}"
+                              MinWidth="100"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <TextBlock Text="Margin:"/>
+                    <Slider Value="{Binding Workspace.BackgroundTolerance}" Minimum="1" Maximum="50" Width="60" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding Workspace.BackgroundTolerance, StringFormat='{}{0}%'}" Width="28"/>
+
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+
+                    <Button Command="{Binding Workspace.ApplyBackgroundRemovalCommand}" Content="Apply" Padding="10,4"
+                            ToolTip.Tip="Remove background (use main Undo to revert)"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- METADATA CATEGORY -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsMetadataCategorySelected}">
+                    <TextBlock Text="Metadata" FontWeight="SemiBold"/>
+                    <Border Width="1" Background="{DynamicResource DaisyBase300Brush}" Margin="4,2"/>
+                    <CheckBox Content="Strip EXIF/Metadata" IsChecked="{Binding Workspace.StripMetadata}"/>
+                    <TextBlock Text="(removes camera info, GPS, etc.)" Opacity="0.8"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

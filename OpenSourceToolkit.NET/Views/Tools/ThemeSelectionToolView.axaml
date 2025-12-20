@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="using:Flowery.Controls"
+             xmlns:services="clr-namespace:Flowery.Services;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.ThemeSelectionToolView"
+             x:DataType="vm:ThemeSelectionToolViewModel">
+
+    <UserControl.Styles>
+        <!-- Animated selection border style for DaisyUI theme cards -->
+        <Style Selector="Border.daisy-selected[Tag=True]">
+            <Setter Property="BorderBrush" Value="#22c55e"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Style.Animations>
+                <Animation Duration="0:0:1.5" IterationCount="Infinite">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="1"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="50%">
+                        <Setter Property="Opacity" Value="0.7"/>
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="1"/>
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Border.daisy-selected[Tag=False]">
+            <Setter Property="BorderBrush" Value="{DynamicResource DaisyNeutralBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*" Margin="0">
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,10,20,15">
+            <TextBlock Text="{loc:Localize Theme_SelectPrompt}"
+                       Foreground="{DynamicResource DaisyBaseContentBrush}" Opacity="0.7" FontSize="14"/>
+            <TextBlock Text="{Binding CurrentThemeName, StringFormat='Current: {0}'}"
+                       FontWeight="SemiBold" FontSize="12" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- DaisyUI Themes Grid -->
+        <Border Grid.Row="1" Background="{DynamicResource DaisyBase200Brush}"
+                BorderBrush="{DynamicResource DaisyNeutralBrush}"
+                BorderThickness="1" CornerRadius="8"
+                Padding="{services:Scale SpacingMedium}"
+                Margin="0,10,10,0">
+            <Grid RowDefinitions="Auto,*">
+                <!-- Header -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                    <TextBlock Text="{loc:Localize Theme_DaisyUIThemes_Label}" FontWeight="Bold"
+                               FontSize="{services:Scale FontSubheading}"/>
+                    <TextBlock Text="{loc:Localize Theme_DaisyUIThemes_Desc}"
+                               Foreground="{DynamicResource DaisyBaseContentBrush}" Opacity="0.7"
+                               FontSize="{services:Scale FontCaption}"
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <!-- Theme Grid -->
+                <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl ItemsSource="{Binding DaisyThemePreviews}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:DaisyThemePreview">
+                                <!-- Theme Card -->
+                                <daisy:DaisyButton Command="{Binding $parent[UserControl].DataContext.SelectThemeCommand}"
+                                        CommandParameter="{Binding}"
+                                        Margin="0,0,12,12"
+                                        Padding="0"
+                                        Height="80"
+                                        Variant="Ghost"
+                                        Cursor="Hand">
+                                    <Border Classes="daisy-selected"
+                                            Background="{Binding BackgroundBrush}"
+                                            CornerRadius="8"
+                                            Width="200"
+                                            Padding="15,10"
+                                            Tag="{Binding IsSelected}">
+                                        <StackPanel Spacing="10">
+                                            <!-- Theme name -->
+                                            <TextBlock Text="{Binding Name}"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="13"
+                                                       Foreground="{Binding TextBrush}"/>
+                                            <!-- Color swatches row -->
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Border Background="{Binding PrimaryBrush}" CornerRadius="4"
+                                                        Width="28" Height="28">
+                                                    <TextBlock Text="A" FontWeight="Bold" FontSize="12"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{Binding PrimaryContentBrush}"/>
+                                                </Border>
+                                                <Border Background="{Binding SecondaryBrush}" CornerRadius="4"
+                                                        Width="28" Height="28">
+                                                    <TextBlock Text="A" FontWeight="Bold" FontSize="12"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{Binding SecondaryContentBrush}"/>
+                                                </Border>
+                                                <Border Background="{Binding AccentBrush}" CornerRadius="4"
+                                                        Width="28" Height="28">
+                                                    <TextBlock Text="A" FontWeight="Bold" FontSize="12"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{Binding AccentContentBrush}"/>
+                                                </Border>
+                                                <Border Background="{Binding NeutralBrush}" CornerRadius="4"
+                                                        Width="28" Height="28">
+                                                    <TextBlock Text="A" FontWeight="Bold" FontSize="12"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                               Foreground="{Binding NeutralContentBrush}"/>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+                                </daisy:DaisyButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

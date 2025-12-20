@@ -1,0 +1,119 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.CronToolView"
+             x:DataType="vm:CronToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Presets -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="{loc:Localize Cron_QuickPresets_Label}" FontWeight="SemiBold" />
+                <ItemsControl ItemsSource="{Binding Presets}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <daisy:DaisyButton Content="{Binding Key}"
+                                    Command="{Binding $parent[UserControl].DataContext.ApplyPresetCommand}"
+                                    CommandParameter="{Binding Value}"
+                                    Margin="0,0,5,5"
+                                    Size="Small" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Manual Builder -->
+            <daisy:DaisyCard Variant="Compact">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="{loc:Localize Cron_ManualBuilder_Label}" FontWeight="SemiBold" />
+                    <Grid ColumnDefinitions="*,*,*,*,*" RowDefinitions="Auto,Auto" Margin="0,0,0,5">
+                        <Grid.Styles>
+                            <Style Selector="TextBlock">
+                                <Setter Property="FontSize" Value="12"/>
+                                <Setter Property="Margin" Value="0,0,0,5"/>
+                            </Style>
+                            <Style Selector="ComboBox">
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                                <Setter Property="Margin" Value="0,0,5,0"/>
+                            </Style>
+                        </Grid.Styles>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Text="Minute" />
+                        <ComboBox Grid.Row="1" Grid.Column="0"
+                                  ItemsSource="{Binding MinuteOptions}"
+                                  SelectedValue="{Binding SelectedMinute}"
+                                  DisplayMemberBinding="{Binding Key}"
+                                  SelectedValueBinding="{Binding Value}" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="Hour" />
+                        <ComboBox Grid.Row="1" Grid.Column="1"
+                                  ItemsSource="{Binding HourOptions}"
+                                  SelectedValue="{Binding SelectedHour}"
+                                  DisplayMemberBinding="{Binding Key}"
+                                  SelectedValueBinding="{Binding Value}" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="2" Text="Day" />
+                        <ComboBox Grid.Row="1" Grid.Column="2"
+                                  ItemsSource="{Binding DayOptions}"
+                                  SelectedValue="{Binding SelectedDay}"
+                                  DisplayMemberBinding="{Binding Key}"
+                                  SelectedValueBinding="{Binding Value}" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="3" Text="Month" />
+                        <ComboBox Grid.Row="1" Grid.Column="3"
+                                  ItemsSource="{Binding MonthOptions}"
+                                  SelectedValue="{Binding SelectedMonth}"
+                                  DisplayMemberBinding="{Binding Key}"
+                                  SelectedValueBinding="{Binding Value}" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="4" Text="Weekday" />
+                        <ComboBox Grid.Row="1" Grid.Column="4"
+                                  ItemsSource="{Binding WeekdayOptions}"
+                                  SelectedValue="{Binding SelectedWeekday}"
+                                  DisplayMemberBinding="{Binding Key}"
+                                  SelectedValueBinding="{Binding Value}"
+                                  Margin="0" />
+                    </Grid>
+                    <TextBlock Text="Use the dropdowns above to build your schedule, or type directly in the cron expression field."
+                               FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}" FontStyle="Italic" Opacity="0.7"/>
+                </StackPanel>
+            </daisy:DaisyCard>
+
+            <!-- Expression Input -->
+            <StackPanel Spacing="5">
+                <TextBlock Text="{loc:Localize Cron_Expression_Label}" FontWeight="SemiBold" />
+                <daisy:DaisyInput Text="{Binding Expression}" Watermark="{loc:Localize Cron_Expression_Watermark}" FontFamily="Consolas,Monospace" />
+                <TextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}"
+                           IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+            </StackPanel>
+
+            <!-- Description and Preview -->
+            <daisy:DaisyCard Variant="Compact"
+                    IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNullOrEmpty}}">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="{loc:Localize Cron_SchedulePreview_Label}" FontWeight="Bold" />
+                    <TextBlock Text="{Binding CronDescription}" FontSize="14" />
+                </StackPanel>
+            </daisy:DaisyCard>
+
+            <!-- Next Occurrences -->
+            <StackPanel Spacing="5">
+                <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding OccurrencesCount, StringFormat={loc:Localize Cron_NextOccurrences_Format}}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <daisy:DaisyButton Content="-" Command="{Binding DecreaseOccurrencesCommand}" Shape="Square" Size="Small" />
+                    <daisy:DaisyButton Content="+" Command="{Binding IncreaseOccurrencesCommand}" Shape="Square" Size="Small" />
+                </StackPanel>
+                <daisy:DaisyCard Variant="Compact">
+                    <ListBox ItemsSource="{Binding NextOccurrences}" Height="200" Background="Transparent" BorderThickness="0" />
+                </daisy:DaisyCard>
+            </StackPanel>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

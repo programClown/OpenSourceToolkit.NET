@@ -1,0 +1,191 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.SpeedTestToolView"
+             x:DataType="vm:SpeedTestToolViewModel">
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Control Panel -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="{loc:Localize SpeedTest_Title}" FontWeight="SemiBold" FontSize="16"/>
+                    <TextBlock Text="{loc:Localize SpeedTest_Description}"
+                               Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    <TextBlock Text="{loc:Localize SpeedTest_DataInfo}"
+                               Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="11"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center">
+                        <daisy:DaisyButton Content="{loc:Localize SpeedTest_StartButton}"
+                                Command="{Binding StartTestCommand}"
+                                IsEnabled="{Binding !IsRunning}"
+                                Variant="Primary"/>
+                        <daisy:DaisyButton Content="{loc:Localize SpeedTest_StopButton}"
+                                Command="{Binding StopTestCommand}"
+                                IsVisible="{Binding IsRunning}"
+                                Variant="Error"/>
+                    </StackPanel>
+
+                    <!-- Progress -->
+                    <StackPanel IsVisible="{Binding IsRunning}" Spacing="10">
+                        <TextBlock Text="{Binding CurrentTest}"
+                                   HorizontalAlignment="Center" FontWeight="SemiBold"/>
+                        <ProgressBar Value="{Binding Progress}" Maximum="100" Height="8"/>
+                        <TextBlock Text="{Binding Progress, StringFormat='Progress: {0}%'}"
+                                   HorizontalAlignment="Center"
+                                   Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+
+                    <!-- Error -->
+                    <Border IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                            Background="{DynamicResource DaisyErrorBrush}" Opacity="0.2" BorderBrush="{DynamicResource DaisyErrorBrush}" BorderThickness="1"
+                            CornerRadius="4" Padding="10">
+                        <TextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}"/>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Results -->
+            <Grid ColumnDefinitions="*,*,*" IsVisible="{Binding HasResults}">
+                <Grid.Styles>
+                    <Style Selector="Border.ResultCard">
+                        <Setter Property="Background" Value="{DynamicResource DaisyBase200Brush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource DaisyBase300Brush}"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="CornerRadius" Value="8"/>
+                        <Setter Property="Padding" Value="20"/>
+                        <Setter Property="Margin" Value="5"/>
+                    </Style>
+                </Grid.Styles>
+
+                <!-- Ping -->
+                <Border Grid.Column="0" Classes="ResultCard">
+                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="M13 3v18h-2V3h2zm4 8v10h-2V11h2zm4 4v6h-2v-6h2zM7 14v7H5v-7h2z"
+                                      Width="20" Height="20"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_Ping_Label}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding PingResult, StringFormat='{}{0:F0} ms'}"
+                                   FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{loc:Localize SpeedTest_Latency_Label}" Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Download -->
+                <Border Grid.Column="1" Classes="ResultCard">
+                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                                      Width="20" Height="20"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_Download_Label}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding DownloadResult, StringFormat='{}{0:F2} Mbps'}"
+                                   FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{loc:Localize SpeedTest_DownloadSpeed_Label}" Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Upload -->
+                <Border Grid.Column="2" Classes="ResultCard">
+                    <StackPanel Spacing="10" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <PathIcon Data="M9 16h6v-6h4l-7-7-7 7h4v6zm-4 2h14v2H5v-2z"
+                                      Width="20" Height="20"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_Upload_Label}" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding UploadResult, StringFormat='{}{0:F2} Mbps'}"
+                                   FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{loc:Localize SpeedTest_UploadSpeed_Label}" Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                   HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- History -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20"
+                    IsVisible="{Binding History.Count}">
+                <StackPanel Spacing="15">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel>
+                            <TextBlock Text="{loc:Localize SpeedTest_History_Label}" FontWeight="SemiBold" FontSize="16"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_RecentResults_Label}"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        </StackPanel>
+                        <daisy:DaisyButton Grid.Column="1" Content="{loc:Localize SpeedTest_ClearHistory_Button}"
+                                Command="{Binding ClearHistoryCommand}"/>
+                    </Grid>
+
+                    <ItemsControl ItemsSource="{Binding History}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="{DynamicResource SidebarBackgroundBrush}"
+                                        CornerRadius="4" Padding="12" Margin="0,2">
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto">
+                                        <TextBlock Text="{Binding Timestamp}"
+                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                   VerticalAlignment="Center"/>
+                                        <StackPanel Grid.Column="1" Margin="20,0">
+                                            <TextBlock Text="{Binding Ping, StringFormat='{}{0:F0} ms'}"
+                                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{loc:Localize SpeedTest_Ping_Label}" FontSize="11"
+                                                       Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Margin="20,0">
+                                            <TextBlock Text="{Binding Download, StringFormat='{}{0:F2} Mbps'}"
+                                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{loc:Localize SpeedTest_Download_Label}" FontSize="11"
+                                                       Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="3" Margin="20,0">
+                                            <TextBlock Text="{Binding Upload, StringFormat='{}{0:F2} Mbps'}"
+                                                       FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="{loc:Localize SpeedTest_Upload_Label}" FontSize="11"
+                                                       Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- Info -->
+            <Border Background="{DynamicResource DaisyBase200Brush}"
+                    BorderBrush="{DynamicResource DaisyBase300Brush}"
+                    BorderThickness="1" CornerRadius="8" Padding="20">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="{loc:Localize SpeedTest_About_Label}" FontWeight="SemiBold" FontSize="16"/>
+                    <Grid ColumnDefinitions="*,*,*">
+                        <StackPanel Grid.Column="0" Spacing="5" Margin="0,0,10,0">
+                            <TextBlock Text="{loc:Localize SpeedTest_HowItWorks_Label}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_HowItWorks_Text}"
+                                       TextWrapping="Wrap" Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Spacing="5" Margin="10,0">
+                            <TextBlock Text="{loc:Localize SpeedTest_TestServices_Label}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_TestServices_Text}"
+                                       TextWrapping="Wrap" Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="12"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="5" Margin="10,0,0,0">
+                            <TextBlock Text="{loc:Localize SpeedTest_Accuracy_Label}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{loc:Localize SpeedTest_Accuracy_Text}"
+                                       TextWrapping="Wrap" Foreground="{DynamicResource DaisyBaseContentBrush}" FontSize="12"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

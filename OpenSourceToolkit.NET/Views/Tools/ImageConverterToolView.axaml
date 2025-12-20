@@ -1,0 +1,608 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:imgvm="using:OpenSourceToolkit.NET.ViewModels.Tools.ImageConverter"
+             xmlns:models="using:OpenSourceToolkit.NET.ViewModels.Tools.ImageConverter.Models"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:imgviews="using:OpenSourceToolkit.NET.Views.Tools.ImageConverter"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+            mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+            x:Class="OpenSourceToolkit.NET.Views.Tools.ImageConverterToolView"
+            x:Name="RootControl"
+            x:DataType="vm:ImageConverterToolViewModel">
+
+    <daisy:DaisyTabs SelectedIndex="{Binding SelectedTabIndex}" Padding="0" Variant="Boxed" Size="Small">
+
+        <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 1: Single Image Workspace -->
+        <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+        <TabItem Header="{loc:Localize Image_SingleImage_Tab}">
+            <Grid RowDefinitions="Auto,Auto,*">
+
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <!-- TOP TOOLBAR -->
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <Border Grid.Row="0"
+                        Background="{DynamicResource DaisyBase200Brush}"
+                        Padding="6,4"
+                        Margin="0,0,0,4">
+                    <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                        <!-- File Actions -->
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="4">
+                            <daisy:DaisyButton Command="{Binding Workspace.OpenSingleImageCommand}"
+                                    ToolTip.Tip="Open Image"
+                                    Size="Small">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource OpenFileIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{loc:Localize Image_Open_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </daisy:DaisyButton>
+                            <daisy:DaisyButton Command="{Binding Workspace.SaveWorkspaceImageCommand}"
+                                    ToolTip.Tip="Save Image"
+                                    Size="Small"
+                                    IsEnabled="{Binding Workspace.HasWorkspaceImage}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource SaveIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{loc:Localize Image_Save_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </daisy:DaisyButton>
+                            <daisy:DaisyButton Command="{Binding Workspace.CopyWorkspaceImageCommand}"
+                                    ToolTip.Tip="Copy Image to Clipboard"
+                                    Size="Small"
+                                    IsEnabled="{Binding Workspace.HasWorkspaceImage}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource CopyIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{loc:Localize Image_Copy_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </daisy:DaisyButton>
+                            <daisy:DaisyButton Command="{Binding Workspace.ClearWorkspaceCommand}"
+                                    ToolTip.Tip="Clear Image"
+                                    Size="Small"
+                                    IsEnabled="{Binding Workspace.HasWorkspaceImage}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource ClearIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{loc:Localize Image_Clear_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </daisy:DaisyButton>
+                            <ToggleButton IsChecked="{Binding IsAiCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.AI}"
+                                          ToolTip.Tip="{Binding Ai.AiButtonTooltip}"
+                                          Padding="8,6"
+                                          IsEnabled="{Binding Ai.HasAiConnections}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource AiIcon}" Width="16" Height="16"
+                                              Foreground="{Binding Ai.AiIconColor}"/>
+                                    <TextBlock Text="{loc:Localize Image_AIGen_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ToggleButton>
+                            <Button ToolTip.Tip="Manage Sessions"
+                                    Padding="8,6">
+                                <Button.Flyout>
+                                    <Flyout Placement="Bottom">
+                                        <Border Padding="12" MinWidth="250">
+                                            <StackPanel Spacing="8">
+                                                <!-- Session Management Header -->
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Grid.Column="0" Text="{loc:Localize Image_Session_Header}" FontWeight="Bold" FontSize="12"/>
+                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="2">
+                                                        <daisy:DaisyButton Command="{Binding Sessions.NewSessionCommand}"
+                                                                ToolTip.Tip="New Session"
+                                                                Size="Small" Variant="Ghost">
+                                                            <PathIcon Data="{StaticResource AddIcon}" Width="10" Height="10"/>
+                                                        </daisy:DaisyButton>
+                                                        <daisy:DaisyButton Command="{Binding Sessions.SaveSessionCommand}"
+                                                                ToolTip.Tip="Save Session"
+                                                                Size="Small" Variant="Ghost">
+                                                            <PathIcon Data="{StaticResource SaveIcon}" Width="10" Height="10"/>
+                                                        </daisy:DaisyButton>
+                                                        <daisy:DaisyButton Command="{Binding Sessions.RenameSessionCommand}"
+                                                                ToolTip.Tip="Rename Session"
+                                                                Size="Small" Variant="Ghost">
+                                                            <PathIcon Data="{StaticResource RenameIcon}" Width="10" Height="10"/>
+                                                        </daisy:DaisyButton>
+                                                        <daisy:DaisyButton Command="{Binding Sessions.DeleteSessionCommand}"
+                                                                ToolTip.Tip="Delete Session"
+                                                                Size="Small" Variant="Ghost">
+                                                            <PathIcon Data="{StaticResource DeleteIcon}" Width="10" Height="10"/>
+                                                        </daisy:DaisyButton>
+                                                    </StackPanel>
+                                                </Grid>
+                                                <ComboBox ItemsSource="{Binding Sessions.AvailableSessions}"
+                                                          SelectedItem="{Binding Sessions.SelectedSessionSummary, Mode=TwoWay}"
+                                                          HorizontalAlignment="Stretch">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:SessionSummary">
+                                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                                <TextBlock Text="{Binding DisplayName}"/>
+                                                                <TextBlock Text="{Binding ThumbnailCount, StringFormat='({0} img)'}"
+                                                                           FontSize="10" Opacity="0.6" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                                <daisy:DaisyButton Command="{Binding Sessions.SwitchSessionCommand}"
+                                                        Content="{loc:Localize Image_LoadSelectedSession_Button}"
+                                                        Shape="Block"
+                                                        Size="Small"/>
+                                                <Separator Margin="0,6"/>
+                                                <TextBlock Text="{loc:Localize Image_SessionsHelp}"
+                                                           FontSize="11" Opacity="0.5" TextWrapping="Wrap" MaxWidth="230"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Flyout>
+                                </Button.Flyout>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{StaticResource SessionIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{loc:Localize Image_Sessions_Button}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- Spacer -->
+                        <Border Grid.Column="1"/>
+
+                        <!-- Empty center (file info moved to bottom) -->
+                        <Border Grid.Column="2"/>
+
+                        <!-- View Toggles (right) -->
+                        <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="4">
+                            <ToggleButton IsChecked="{Binding Workspace.EnableZoom}"
+                                          ToolTip.Tip="Zoom Mode (wheel=zoom, Ctrl+wheel=scroll, Shift+drag=pan)"
+                                          Padding="8,6">
+                                <PathIcon Data="{StaticResource ZoomIcon}" Width="16" Height="16"/>
+                            </ToggleButton>
+                            <ToggleButton IsChecked="{Binding Workspace.ShowHistogram}"
+                                          ToolTip.Tip="Toggle Histogram"
+                                          Padding="8,6">
+                                <PathIcon Data="{StaticResource HistogramIcon}" Width="16" Height="16"/>
+                            </ToggleButton>
+                            <Button ToolTip.Tip="Before/After Comparison"
+                                    Padding="8,6"
+                                    IsEnabled="{Binding Workspace.CanShowComparison}">
+                                <Button.Flyout>
+                                    <MenuFlyout Placement="Bottom">
+                                        <MenuItem Header="{loc:Localize Image_Compare_Off}" Command="{Binding Workspace.SetComparisonModeCommand}" CommandParameter="Off"/>
+                                        <MenuItem Header="{loc:Localize Image_Compare_Horizontal}" Command="{Binding Workspace.SetComparisonModeCommand}" CommandParameter="Horizontal"/>
+                                        <MenuItem Header="{loc:Localize Image_Compare_Vertical}" Command="{Binding Workspace.SetComparisonModeCommand}" CommandParameter="Vertical"/>
+                                    </MenuFlyout>
+                                </Button.Flyout>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <PathIcon Data="{StaticResource CompareIcon}" Width="16" Height="16"/>
+                                    <TextBlock Text="{Binding Workspace.ComparisonModeDisplay}" FontSize="11" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <daisy:DaisyButton Command="{Binding Workspace.ResetAllCommand}"
+                                    ToolTip.Tip="Reset all preview adjustments (brightness, contrast, rotation, etc.)"
+                                    Size="Small" Variant="Ghost"
+                                    IsEnabled="{Binding Workspace.HasWorkspaceImage}">
+                                <PathIcon Data="{StaticResource ResetIcon}" Width="16" Height="16"/>
+                            </daisy:DaisyButton>
+                            <daisy:DaisyButton Command="{Binding Workspace.UndoCommand}"
+                                    ToolTip.Tip="{Binding Workspace.UndoTooltip}"
+                                    Size="Small" Variant="Ghost"
+                                    IsEnabled="{Binding Workspace.CanUndo}">
+                                <PathIcon Data="{StaticResource UndoIcon}" Width="16" Height="16"/>
+                            </daisy:DaisyButton>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <!-- HORIZONTAL TOOL OPTIONS BAR (visible when non-AI tool selected) -->
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <imgviews:HorizontalToolOptionsBar Grid.Row="1"
+                                                   IsVisible="{Binding IsHorizontalToolbarVisible}"
+                                                   Margin="0,0,0,4"/>
+
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <!-- MAIN CONTENT AREA (Left Toolbar + Image + Splitter + Right Panel) -->
+                <!-- ═══════════════════════════════════════════════════════════════════ -->
+                <Grid Grid.Row="2" x:Name="MainContentGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*" MinWidth="200"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- Width and MinWidth bound to VM to control collapsing and constraints -->
+                        <ColumnDefinition Width="{Binding DataContext.SidebarWidth, ElementName=RootControl, Mode=TwoWay}"
+                                          MinWidth="{Binding DataContext.SidebarMinWidth, ElementName=RootControl}"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT TOOLBAR (Tool Categories) -->
+                    <Border Grid.Column="0"
+                            Background="{DynamicResource DaisyBase200Brush}"
+                            Padding="3"
+                            Margin="0,0,4,0"
+                            CornerRadius="4">
+                        <StackPanel Spacing="2">
+                            <!-- Pan/View Mode (default, no settings panel) - can coexist with AI panel -->
+                            <ToggleButton IsChecked="{Binding !IsAnyToolCategorySelected}"
+                                          Command="{Binding SelectPanModeCommand}"
+                                          ToolTip.Tip="Pan / View Mode"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource PointerIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <Separator Height="1" Margin="4,4" Background="{DynamicResource DaisyBase300Brush}"/>
+
+                            <!-- Output (Format/Quality) -->
+                            <ToggleButton IsChecked="{Binding IsOutputCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Output}"
+                                          ToolTip.Tip="Output Format &amp; Quality"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource OutputIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Transform (Rotate/Flip) -->
+                            <ToggleButton IsChecked="{Binding IsTransformCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Transform}"
+                                          ToolTip.Tip="Transform (Rotate/Flip)"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource TransformIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Resize -->
+                            <ToggleButton IsChecked="{Binding IsResizeCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Resize}"
+                                          ToolTip.Tip="Resize"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource ResizeIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Adjustments (Brightness/Contrast/Saturation) -->
+                            <ToggleButton IsChecked="{Binding IsAdjustCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Adjust}"
+                                          ToolTip.Tip="Adjustments (Brightness/Contrast/Saturation)"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource AdjustIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Filters (Grayscale/Sepia/Invert) -->
+                            <ToggleButton IsChecked="{Binding IsFiltersCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Filters}"
+                                          ToolTip.Tip="Filters (Grayscale/Sepia/Invert)"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource PaletteIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Blur/Sharpen -->
+                            <ToggleButton IsChecked="{Binding IsBlurSharpenCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.BlurSharpen}"
+                                          ToolTip.Tip="Blur / Sharpen"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource BlurSharpenIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Effects (Vignette/Posterize/EdgeDetect) -->
+                            <ToggleButton IsChecked="{Binding IsEffectsCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Effects}"
+                                          ToolTip.Tip="Effects (Vignette/Posterize/Edge Detect)"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource EffectsIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Crop -->
+                            <ToggleButton IsChecked="{Binding IsCropCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Crop}"
+                                          ToolTip.Tip="Crop"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource CropIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Watermark -->
+                            <ToggleButton IsChecked="{Binding IsWatermarkCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Watermark}"
+                                          ToolTip.Tip="Watermark"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource WatermarkIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Background Removal -->
+                            <ToggleButton IsChecked="{Binding IsBackgroundCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Background}"
+                                          ToolTip.Tip="Background Removal"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource RemoveBackgroundIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+
+                            <!-- Metadata -->
+                            <ToggleButton IsChecked="{Binding IsMetadataCategorySelected}"
+                                          Command="{Binding SelectToolCategoryCommand}"
+                                          CommandParameter="{x:Static vm:ImageToolCategory.Metadata}"
+                                          ToolTip.Tip="Metadata (Strip EXIF)"
+                                          Width="36" Height="36" Padding="0">
+                                <PathIcon Data="{StaticResource MetadataIcon}" Width="18" Height="18"/>
+                            </ToggleButton>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- CENTER: Image Preview Area -->
+                    <Grid Grid.Column="1" RowDefinitions="*,Auto,Auto,Auto">
+
+                        <!-- Main Image Display -->
+                        <Border Grid.Row="0"
+                                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Background="{DynamicResource DaisyBase200Brush}"
+                                ClipToBounds="True"
+                                Margin="0,0,6,0">
+                            <Grid>
+                                <!-- Normal Image View with Crop Overlay (when zoom and compare are disabled) -->
+                                <Grid IsVisible="{Binding Workspace.HasWorkspaceImage}">
+                                    <Grid IsVisible="{Binding !Workspace.IsZoomViewVisible}" Margin="4">
+                                        <Image x:Name="MainPreviewImage"
+                                               Source="{Binding Workspace.WorkspaceImage}"
+                                               Stretch="Uniform"/>
+
+                                        <!-- Crop Selection Overlay -->
+                                        <controls:CropSelectionOverlay
+                                            x:Name="CropOverlay"
+                                            IsActive="{Binding Workspace.CropEnabled}"
+                                            ImageWidth="{Binding Workspace.ImageWidth}"
+                                            ImageHeight="{Binding Workspace.ImageHeight}"
+                                            SelectionX="{Binding Workspace.CropX, Mode=TwoWay}"
+                                            SelectionY="{Binding Workspace.CropY, Mode=TwoWay}"
+                                            SelectionWidth="{Binding Workspace.CropWidth, Mode=TwoWay}"
+                                            SelectionHeight="{Binding Workspace.CropHeight, Mode=TwoWay}"
+                                            IsVisible="{Binding Workspace.CropEnabled}"/>
+                                    </Grid>
+
+                                    <!-- Zoomable Image View (when zoom or compare is enabled) -->
+                                    <controls:ZoomableImageControl
+                                        x:Name="ZoomableImageView"
+                                        Source="{Binding Workspace.WorkspaceImage}"
+                                        ComparisonSource="{Binding Workspace.OriginalImage}"
+                                        SliderPosition="{Binding Workspace.ComparisonSliderPosition, Mode=TwoWay}"
+                                        IsVerticalComparison="{Binding Workspace.IsVerticalComparison}"
+                                        IsComparisonMode="{Binding Workspace.ShowComparison}"
+                                        ZoomLevel="{Binding Workspace.ZoomLevel, Mode=TwoWay}"
+                                        IsPanModeEnabled="{Binding !IsAnyToolCategorySelected}"
+                                        IsVisible="{Binding Workspace.IsZoomViewVisible}"/>
+                                </Grid>
+
+                                <!-- Empty State -->
+                                <StackPanel VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            Spacing="15"
+                                            IsVisible="{Binding !Workspace.HasWorkspaceImage}">
+                                    <PathIcon Data="{StaticResource ImageIcon}"
+                                              Width="64" Height="64" Opacity="0.3"/>
+                                    <TextBlock Text="{loc:Localize Image_NoImageLoaded_Text}" Opacity="0.5" HorizontalAlignment="Center"/>
+                                    <daisy:DaisyButton Command="{Binding Workspace.OpenSingleImageCommand}"
+                                            Content="{loc:Localize Image_OpenImage_Button}" Variant="Primary"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Thumbnail Strip (film strip style, collapsible) -->
+                        <Border Grid.Row="1"
+                                Background="{DynamicResource DaisyBase100Brush}"
+                                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                                BorderThickness="0,2"
+                                Margin="0,3,6,0"
+                                IsVisible="{Binding Thumbnails.ThumbnailStripVisible}"
+                                MinHeight="140"
+                                Padding="0,6">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <!-- Collapse button on left -->
+                                <daisy:DaisyButton Grid.Column="0"
+                                        Command="{Binding Thumbnails.ToggleThumbnailStripCommand}"
+                                        ToolTip.Tip="Collapse thumbnail strip"
+                                        Size="Small" Variant="Ghost"
+                                        VerticalAlignment="Top"
+                                        Margin="2,0">
+                                    <PathIcon Data="{StaticResource ChevronDownIcon}" Width="12" Height="12"/>
+                                </daisy:DaisyButton>
+                                <ScrollViewer x:Name="ThumbnailScrollViewer"
+                                              Grid.Column="1"
+                                              HorizontalScrollBarVisibility="Auto"
+                                              VerticalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding Thumbnails.ThumbnailItems}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="0"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:ThumbnailItem">
+                                            <!-- Each item: sprocket holes + frame content -->
+                                            <StackPanel Orientation="Horizontal">
+                                                <!-- Sprocket holes (film perforation) -->
+                                                <StackPanel VerticalAlignment="Center" Spacing="6" Margin="4,0" Width="12">
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                    <Border Width="8" Height="6" CornerRadius="1" Background="{DynamicResource DaisyNeutralBrush}"/>
+                                                </StackPanel>
+
+                                                <!-- Frame content -->
+                                                <StackPanel Spacing="3" Width="100" Margin="2,0">
+                                                    <!-- Image with border (red if unsaved, white if saved) -->
+                                                    <Border Padding="2"
+                                                            CornerRadius="3"
+                                                            Cursor="Hand"
+                                                            DoubleTapped="OnThumbnailDoubleTapped"
+                                                            Tag="{Binding}"
+                                                            HorizontalAlignment="Center"
+                                                            ToolTip.Tip="{Binding SavedStatusDisplay}">
+                                                        <Panel Width="76" Height="76">
+                                                            <!-- Red border for unsaved images -->
+                                                            <Border BorderBrush="{DynamicResource UnsavedIndicatorBrush}" BorderThickness="3" CornerRadius="2"
+                                                                    IsVisible="{Binding !IsSavedOutsideSession}"/>
+                                                            <!-- Green border for saved images -->
+                                                            <Border BorderBrush="{DynamicResource SavedIndicatorBrush}" BorderThickness="2" CornerRadius="2"
+                                                                    IsVisible="{Binding IsSavedOutsideSession}"/>
+                                                            <!-- Image container -->
+                                                            <Border Background="{DynamicResource AppColorBackground4}" Margin="3" CornerRadius="1">
+                                                                <Image Source="{Binding Thumbnail}" Stretch="Uniform"/>
+                                                            </Border>
+                                                        </Panel>
+                                                    </Border>
+
+                                                    <!-- Button row: AI checkbox + Save + Delete -->
+                                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="2,0">
+                                                        <CheckBox Grid.Column="0"
+                                                                  IsChecked="{Binding SendToAi}"
+                                                                  Content="AI"
+                                                                  FontSize="10"
+                                                                  Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                                  VerticalAlignment="Center"
+                                                                  ToolTip.Tip="Include in AI messages"/>
+                                                        <daisy:DaisyButton Grid.Column="2"
+                                                                Command="{Binding $parent[UserControl].((vm:ImageConverterToolViewModel)DataContext).Thumbnails.SaveThumbnailImageCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Size="Small" Variant="Ghost"
+                                                                ToolTip.Tip="Save full-resolution image">
+                                                            <PathIcon Data="{StaticResource SaveIcon}"
+                                                                      Width="14" Height="14"
+                                                                      Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                                        </daisy:DaisyButton>
+                                                        <daisy:DaisyButton Grid.Column="3"
+                                                                Command="{Binding $parent[UserControl].((vm:ImageConverterToolViewModel)DataContext).Thumbnails.RemoveThumbnailCommand}"
+                                                                CommandParameter="{Binding}"
+                                                                Size="Small" Variant="Ghost"
+                                                                ToolTip.Tip="Delete image">
+                                                            <PathIcon Data="{StaticResource DeleteIcon}"
+                                                                      Width="14" Height="14"
+                                                                      Foreground="{DynamicResource DeleteIconBrush}"/>
+                                                        </daisy:DaisyButton>
+                                                    </Grid>
+
+                                                    <!-- Footer: Label, size, timestamp -->
+                                                    <StackPanel Spacing="0" HorizontalAlignment="Center">
+                                                        <TextBlock Text="{Binding Label}"
+                                                                   FontSize="10"
+                                                                   FontWeight="SemiBold"
+                                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                                   HorizontalAlignment="Center"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   MaxWidth="96"/>
+                                                        <TextBlock Text="{Binding FileSizeDisplay}"
+                                                                   FontSize="9"
+                                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                                   HorizontalAlignment="Center"/>
+                                                        <TextBlock Text="{Binding TimestampDisplay}"
+                                                                   FontSize="9"
+                                                                   Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                                                   HorizontalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                        </Border>
+
+                        <!-- File Info Status Bar -->
+                        <Border Grid.Row="2"
+                                Background="{DynamicResource DaisyBase200Brush}"
+                                Padding="8,3"
+                                Margin="0,3,6,0"
+                                CornerRadius="4"
+                                IsVisible="{Binding Workspace.HasWorkspaceImage}">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <!-- Expand thumbnail strip button (when collapsed) -->
+                                <daisy:DaisyButton Grid.Column="0"
+                                        Command="{Binding Thumbnails.ToggleThumbnailStripCommand}"
+                                        ToolTip.Tip="Show thumbnail strip"
+                                        Size="Small"
+                                        Margin="0,0,8,0"
+                                        IsVisible="{Binding Thumbnails.ShowThumbnailExpandButton}">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <PathIcon Data="{StaticResource ImageMultipleIcon}" Width="14" Height="14" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                                        <TextBlock Text="{Binding Thumbnails.ThumbnailItems.Count}" FontSize="10" Foreground="{DynamicResource DaisyBaseContentBrush}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </daisy:DaisyButton>
+                                <!-- File info -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10">
+                                    <TextBlock Text="{Binding Workspace.WorkspaceFileName}" FontWeight="SemiBold" FontSize="11"/>
+                                    <TextBlock Text="{Binding Workspace.WorkspaceDimensions}" Opacity="0.6" FontSize="11"/>
+                                    <TextBlock Text="{Binding Workspace.WorkspaceFileSizeBytes}" Opacity="0.6" FontSize="11"/>
+                                    <TextBlock Text="{Binding Workspace.WorkspaceFormat}" Opacity="0.6" FontSize="11"/>
+                                    <TextBlock Text="{Binding Workspace.WorkspaceTimestamp}" Opacity="0.6" FontSize="11"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Histogram Panel (collapsible) -->
+                        <controls:HistogramControl Grid.Row="3"
+                                                   Margin="0,3,6,0"
+                                                   SourceImage="{Binding Workspace.WorkspaceImage}"
+                                                   IsVisible="{Binding Workspace.ShowHistogram}"
+                                                   Height="135"/>
+                    </Grid>
+
+                    <!-- SPLITTER between Image Canvas and Right Panel (hidden when no category selected) -->
+                    <GridSplitter Grid.Column="2"
+                                  Width="8"
+                                  Background="Transparent"
+                                  ResizeBehavior="PreviousAndNext"
+                                  ResizeDirection="Columns"
+                                  IsVisible="{Binding IsAnyCategorySelected}">
+                        <GridSplitter.Template>
+                            <ControlTemplate>
+                                <Border Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Grid>
+                                        <!-- Visual separator line -->
+                                        <Border Width="1" HorizontalAlignment="Center" Background="{DynamicResource DaisyBase300Brush}"/>
+                                        <!-- Grip handle (Thumb) -->
+                                        <Border Width="4" Height="24" CornerRadius="2" Background="{DynamicResource DaisyBase300Brush}" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </ControlTemplate>
+                        </GridSplitter.Template>
+                    </GridSplitter>
+
+                    <!-- RIGHT PANEL: AI Assistant (only visible when AI category selected) -->
+                    <Border x:Name="RightPanelBorder"
+                            Grid.Column="3"
+                            BorderBrush="{DynamicResource DaisyBase300Brush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12"
+                            IsEnabled="{Binding Workspace.CanEditSingleImage}"
+                            IsVisible="{Binding IsAiCategorySelected}">
+                        <Grid>
+                            <imgviews:AiAssistantPanel DataContext="{Binding Ai}"
+                                                       Margin="0,0,10,0"/>
+
+                            <!-- Progress Bar (always visible when processing, positioned at bottom) -->
+                            <ProgressBar IsIndeterminate="True"
+                                         IsVisible="{Binding IsProcessing}"
+                                         Height="4"
+                                         VerticalAlignment="Bottom"
+                                         Margin="0,0,10,0"/>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+        <!-- TAB 2: Batch Convert (extracted to separate UserControl for maintainability) -->
+        <!-- ═══════════════════════════════════════════════════════════════════════════ -->
+        <TabItem Header="{loc:Localize Image_BatchConvert_Tab}">
+            <imgviews:BatchConvertPanel DataContext="{Binding Batch}"/>
+        </TabItem>
+
+    </daisy:DaisyTabs>
+</UserControl>

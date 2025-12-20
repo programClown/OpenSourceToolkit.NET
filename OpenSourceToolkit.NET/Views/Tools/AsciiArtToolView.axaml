@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.AsciiArtToolView"
+             x:DataType="vm:AsciiArtToolViewModel">
+    <Grid RowDefinitions="Auto,*">
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto,Auto,Auto" Margin="0,0,0,20">
+            <TextBox Grid.Column="0" Text="{Binding Path}" Watermark="{loc:Localize AsciiArt_ImagePath_Watermark}" Margin="0,0,10,0"
+                     IsReadOnly="True" VerticalAlignment="Center" />
+            <daisy:DaisyButton Grid.Column="1" Click="Browse_Click" Content="..." ToolTip.Tip="{loc:Localize AsciiArt_Browse_Tooltip}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,10,0" VerticalAlignment="Center" Spacing="5">
+                <TextBlock Text="{loc:Localize AsciiArt_Zoom_Label}" VerticalAlignment="Center" FontSize="12"/>
+                <Slider Width="100" Minimum="6" Maximum="20" Value="{Binding FontSize}" VerticalAlignment="Center"/>
+                <TextBlock Text="{Binding FontSize, StringFormat='{}{0:F0} pt'}" VerticalAlignment="Center" Width="35" FontSize="12"/>
+            </StackPanel>
+            <daisy:DaisyButton Grid.Column="3" Click="Copy_Click" ToolTip.Tip="{loc:Localize AsciiArt_Copy_Tooltip}" Margin="0,0,5,0" VerticalAlignment="Center" Size="Small" Shape="Square" Variant="Ghost">
+                <PathIcon Data="{DynamicResource CopyIcon}" Width="12" Height="12"/>
+            </daisy:DaisyButton>
+            <daisy:DaisyButton Grid.Column="4" Click="Clear_Click" ToolTip.Tip="{loc:Localize AsciiArt_Clear_Tooltip}" VerticalAlignment="Center" Size="Small" Shape="Square" Variant="Ghost">
+                <PathIcon Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" Width="10" Height="10"/>
+            </daisy:DaisyButton>
+        </Grid>
+
+        <TextBox Grid.Row="1"
+                 Text="{Binding Output}"
+                 IsReadOnly="True"
+                 AcceptsReturn="True"
+                 TextWrapping="NoWrap"
+                 FontFamily="Consolas"
+                 FontSize="{Binding FontSize}"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"/>
+    </Grid>
+</UserControl>

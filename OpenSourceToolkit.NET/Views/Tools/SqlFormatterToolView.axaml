@@ -1,0 +1,213 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:controls="using:OpenSourceToolkit.NET.Controls"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.SqlFormatterToolView"
+             x:DataType="vm:SqlFormatterToolViewModel">
+    <Grid RowDefinitions="Auto,*,Auto,Auto" Margin="10,10,10,10">
+        <!-- Settings Row -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,*,*" Margin="0,0,0,10">
+                <!-- Settings -->
+                <Border Grid.Column="0" Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,5,0">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="{loc:Localize SqlFormatter_Settings_Label}" FontWeight="SemiBold"/>
+
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="{loc:Localize SqlFormatter_Dialect_Label}" FontSize="12"/>
+                            <daisy:DaisySelect ItemsSource="{Binding Dialects}"
+                                      SelectedItem="{Binding SelectedDialect}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="5">
+                            <TextBlock Text="{loc:Localize SqlFormatter_IndentSize_Label}" FontSize="12"/>
+                            <daisy:DaisySelect ItemsSource="{Binding IndentSizes}"
+                                      SelectedItem="{Binding IndentSize}"
+                                      HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{loc:Localize SqlFormatter_Uppercase_Label}" VerticalAlignment="Center"/>
+                            <daisy:DaisyToggle Grid.Column="1" Variant="Primary" IsChecked="{Binding UppercaseKeywords}"/>
+                        </Grid>
+
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{loc:Localize SqlFormatter_Newline_Label}" VerticalAlignment="Center"/>
+                            <daisy:DaisyToggle Grid.Column="1" Variant="Primary" IsChecked="{Binding NewlineBeforeKeywords}"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Operations -->
+                <Border Grid.Column="1" Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="{loc:Localize SqlFormatter_Operations_Label}" FontWeight="SemiBold"/>
+                        <daisy:DaisyButton Content="{loc:Localize SqlFormatter_Format_Button}" Command="{Binding FormatCommand}"
+                                Variant="Primary"/>
+                        <daisy:DaisyButton Content="{loc:Localize SqlFormatter_Minify_Button}" Command="{Binding MinifyCommand}"
+                                Variant="Secondary"/>
+                        <daisy:DaisyButton Content="{loc:Localize SqlFormatter_ClearAll_Button}" Command="{Binding ClearCommand}"
+                                Variant="Secondary"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Templates -->
+                <Border Grid.Column="2" Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,0,0">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{loc:Localize SqlFormatter_Templates_Label}" FontWeight="SemiBold"/>
+                        <ScrollViewer MaxHeight="200">
+                            <ItemsControl ItemsSource="{Binding Templates}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <daisy:DaisyButton Command="{Binding $parent[UserControl].DataContext.LoadTemplateCommand}"
+                                                CommandParameter="{Binding}"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Left"
+                                                Margin="0,2">
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12"/>
+                                                <TextBlock Text="{Binding Description}" FontSize="10"
+                                                           Foreground="{DynamicResource DaisyNeutralBrush}"/>
+                                            </StackPanel>
+                                        </daisy:DaisyButton>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+        </Grid>
+
+        <!-- Editor Row -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,0,0,10">
+                <!-- Input -->
+                <Border Grid.Column="0" Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,5,0">
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                            <TextBlock Text="{loc:Localize SqlFormatter_Input_Label}" FontWeight="SemiBold"/>
+                            <daisy:DaisyButton Grid.Column="1" Command="{Binding CopyInputCommand}"
+                                    ToolTip.Tip="Copy to clipboard" Size="Small" Variant="Ghost">
+                                <PathIcon Data="{DynamicResource CopyIcon}" Width="14" Height="14"/>
+                            </daisy:DaisyButton>
+                        </Grid>
+                        <controls:DragDropTextBox Grid.Row="1" Text="{Binding InputSql}"
+                                                  AcceptsReturn="True" TextWrapping="Wrap"
+                                                  FontFamily="Consolas,Monospace"
+                                                  FontSize="13"
+                                                  VerticalAlignment="Stretch"
+                                                  VerticalContentAlignment="Top"
+                                                  DropTitle="{loc:Localize SqlFormatter_DropTitle}"
+                                                  DropHint="{loc:Localize SqlFormatter_DropHint}"
+                                                  Watermark="{loc:Localize SqlFormatter_Input_Watermark}"/>
+                    </Grid>
+                </Border>
+
+                <!-- Output -->
+                <Border Grid.Column="1" Background="{DynamicResource DaisyBase200Brush}"
+                        BorderBrush="{DynamicResource DaisyBase300Brush}"
+                        BorderThickness="1" CornerRadius="8" Padding="15" Margin="5,0,0,0">
+                    <Grid RowDefinitions="Auto,Auto,Auto,*">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,10">
+                            <TextBlock Text="{loc:Localize Label_Output}" FontWeight="SemiBold"/>
+                            <daisy:DaisyButton Grid.Column="1" Command="{Binding CopyOutputCommand}"
+                                    ToolTip.Tip="Copy to clipboard" Size="Small" Variant="Ghost">
+                                <PathIcon Data="{DynamicResource CopyIcon}" Width="14" Height="14"/>
+                            </daisy:DaisyButton>
+                        </Grid>
+                        <!-- Error -->
+                        <Border Grid.Row="1" IsVisible="{Binding Error, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyErrorBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="10" Margin="0,0,0,10">
+                            <TextBlock Text="{Binding Error}" Foreground="{DynamicResource DaisyErrorBrush}" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <!-- Warnings -->
+                        <Border Grid.Row="2" IsVisible="{Binding Warnings, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                Background="{DynamicResource DaisyBase200Brush}" BorderBrush="{DynamicResource DaisyWarningBrush}" BorderThickness="1"
+                                CornerRadius="4" Padding="10" Margin="0,0,0,10">
+                            <TextBlock Text="{Binding Warnings}" Foreground="{DynamicResource DaisyWarningBrush}" TextWrapping="Wrap"/>
+                        </Border>
+
+                        <daisy:DaisyTextArea Grid.Row="3" Text="{Binding OutputSql}"
+                                 AcceptsReturn="True" TextWrapping="Wrap"
+                                 FontFamily="Consolas,Monospace"
+                                 FontSize="13"
+                                 IsReadOnly="True"
+                                 VerticalAlignment="Stretch"
+                                 VerticalContentAlignment="Top"
+                                 Watermark="{loc:Localize SqlFormatter_Output_Watermark}"/>
+                    </Grid>
+                </Border>
+        </Grid>
+
+        <!-- Optimization Tips -->
+        <Border Grid.Row="2" IsVisible="{Binding OptimizationTips, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                Background="{DynamicResource DaisyBase200Brush}"
+                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,10">
+            <StackPanel Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <PathIcon Data="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"
+                              Width="20" Height="20" Foreground="{DynamicResource DaisyWarningBrush}"/>
+                    <TextBlock Text="{loc:Localize SqlFormatter_Tips_Label}" FontWeight="SemiBold"/>
+                </StackPanel>
+                <TextBlock Text="{Binding OptimizationTips}" TextWrapping="Wrap"
+                           Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- SQL Reference (Collapsible) -->
+        <Border Grid.Row="3" Background="{DynamicResource DaisyBase200Brush}"
+                BorderBrush="{DynamicResource DaisyBase300Brush}"
+                BorderThickness="1" CornerRadius="8" Padding="15">
+            <StackPanel Spacing="15">
+                <daisy:DaisyButton Command="{Binding ToggleSqlReferenceCommand}"
+                       
+                        Variant="Ghost">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Panel Width="16" Height="16">
+                            <PathIcon Data="M6 9l6 6 6-6" Width="16" Height="16"
+                                      IsVisible="{Binding IsSqlReferenceExpanded}"/>
+                            <PathIcon Data="M9 6l6 6-6 6" Width="16" Height="16"
+                                      IsVisible="{Binding !IsSqlReferenceExpanded}"/>
+                        </Panel>
+                        <TextBlock Text="{loc:Localize SqlFormatter_Reference_Label}" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </daisy:DaisyButton>
+                <Grid ColumnDefinitions="*,*,*" IsVisible="{Binding IsSqlReferenceExpanded}">
+                    <StackPanel Grid.Column="0" Spacing="5">
+                        <TextBlock Text="{loc:Localize SqlFormatter_BasicQueries_Label}" FontWeight="SemiBold" FontSize="13"/>
+                        <TextBlock Text="SELECT - Retrieve data" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="INSERT - Add data" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="UPDATE - Modify data" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="DELETE - Remove data" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="5">
+                        <TextBlock Text="{loc:Localize SqlFormatter_Joins_Label}" FontWeight="SemiBold" FontSize="13"/>
+                        <TextBlock Text="INNER JOIN - Matching records" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="LEFT JOIN - All from left" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="RIGHT JOIN - All from right" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="FULL JOIN - All records" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="5">
+                        <TextBlock Text="{loc:Localize SqlFormatter_Functions_Label}" FontWeight="SemiBold" FontSize="13"/>
+                        <TextBlock Text="COUNT() - Count rows" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="SUM() - Sum values" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="AVG() - Average" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                        <TextBlock Text="GROUP BY - Group results" FontSize="12" Foreground="{DynamicResource DaisyBaseContentBrush}"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

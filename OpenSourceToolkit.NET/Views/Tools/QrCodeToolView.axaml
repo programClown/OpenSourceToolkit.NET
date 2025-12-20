@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:OpenSourceToolkit.NET.ViewModels.Tools"
+             xmlns:daisy="clr-namespace:Flowery.Controls;assembly=Flowery.NET"
+             xmlns:loc="clr-namespace:OpenSourceToolkit.NET.Localization"
+             x:Class="OpenSourceToolkit.NET.Views.Tools.QrCodeToolView"
+             x:DataType="vm:QrCodeToolViewModel">
+
+    <UserControl.Styles>
+        <!-- Fixed style for QR copy buttons (no hover/pressed visual changes) -->
+        <Style Selector="Button.CopyOverlay">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Padding" Value="20,10" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{DynamicResource DaisyNeutralBrush}"
+                            BorderBrush="{DynamicResource DaisyBase300Brush}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Foreground="{DynamicResource DaisyNeutralContentBrush}"
+                                          FontWeight="SemiBold" />
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <StackPanel Spacing="10" Margin="0,0,15,0">
+            <!-- Configuration -->
+            <Grid ColumnDefinitions="Auto,*,Auto,*" RowDefinitions="Auto,Auto" Margin="0,0,0,10">
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="{loc:Localize QrCode_PayloadType_Label}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <daisy:DaisySelect Grid.Row="0" Grid.Column="1" ItemsSource="{Binding PayloadTypes}" SelectedItem="{Binding PayloadType}" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Grid.Row="0" Grid.Column="2" Text="{loc:Localize QrCode_EccLevel_Label}" VerticalAlignment="Center" Margin="20,0,10,0"/>
+                <daisy:DaisySelect Grid.Row="0" Grid.Column="3" ItemsSource="{Binding EccLevels}" SelectedItem="{Binding EccLevel}" HorizontalAlignment="Stretch"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="{loc:Localize QrCode_OutputFormat_Label}" VerticalAlignment="Center" Margin="0,10,10,0"/>
+                <daisy:DaisySelect Grid.Row="1" Grid.Column="1" ItemsSource="{Binding OutputFormats}" SelectedItem="{Binding OutputFormat}" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+                
+                <TextBlock Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
+                           Text="{loc:Localize QrCode_PngWarning_Text}"
+                           IsVisible="{Binding !IsPngSupported}"
+                           Foreground="{DynamicResource DaisyWarningBrush}"
+                           VerticalAlignment="Center"
+                           Margin="20,10,0,0"
+                           FontSize="11"/>
+            </Grid>
+
+            <!-- Inputs -->
+            <StackPanel IsVisible="{Binding IsTextOrUrl}" Spacing="5">
+                <TextBlock Text="{loc:Localize QrCode_Content_Label}" />
+                <daisy:DaisyTextArea Text="{Binding InputText}" Watermark="{loc:Localize QrCode_ContentWatermark}" MinHeight="80" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding IsEmail}" Spacing="5">
+                <TextBlock Text="{loc:Localize QrCode_EmailAddress_Label}" />
+                <daisy:DaisyInput Text="{Binding EmailAddress}" />
+                <TextBlock Text="{loc:Localize QrCode_Subject_Label}" />
+                <daisy:DaisyInput Text="{Binding EmailSubject}" />
+                <TextBlock Text="{loc:Localize QrCode_Message_Label}" />
+                <daisy:DaisyTextArea Text="{Binding EmailMessage}" MinHeight="60" />
+            </StackPanel>
+
+            <StackPanel IsVisible="{Binding IsWiFi}" Spacing="5">
+                <TextBlock Text="{loc:Localize QrCode_WifiSsid_Label}" />
+                <daisy:DaisyInput Text="{Binding WifiSsid}" />
+                <TextBlock Text="{loc:Localize QrCode_WifiPassword_Label}" />
+                <daisy:DaisyInput Text="{Binding WifiPassword}" />
+                <TextBlock Text="{loc:Localize QrCode_WifiSecurity_Label}" />
+                <daisy:DaisySelect ItemsSource="{Binding WifiTypes}" SelectedItem="{Binding WifiType}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+
+            <daisy:DaisyButton Command="{Binding GenerateCommand}" Content="{loc:Localize QrCode_Generate_Button}" Variant="Primary" HorizontalAlignment="Left" />
+
+            <!-- Outputs -->
+            <Grid ColumnDefinitions="*,*" Margin="0,20,0,0">
+
+                <!-- PNG Output -->
+                <StackPanel Grid.Column="0"
+                            Margin="0,0,5,0"
+                            Spacing="5"
+                            IsVisible="{Binding IsPngVisible}">
+                    <Button Classes="CopyOverlay"
+                            Content="{loc:Localize QrCode_CopyPng_Button}"
+                            Click="CopyPng_Click"
+                            HorizontalAlignment="Left" />
+                    <Border BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Background="White">
+                        <StackPanel>
+                            <Image Source="{Binding QrImage}"
+                                   Margin="20"
+                                   Stretch="Uniform"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   MaxHeight="300" />
+                            <TextBlock Text="{loc:Localize QrCode_PngPreview_Label}"
+                                       HorizontalAlignment="Center"
+                                       Margin="5"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- SVG Output -->
+                <StackPanel Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Spacing="5"
+                            IsVisible="{Binding IsSvgVisible}">
+                    <Button Classes="CopyOverlay"
+                            Content="{loc:Localize QrCode_CopySvg_Button}"
+                            Click="CopySvg_Click"
+                            HorizontalAlignment="Left" />
+                    <Border BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Background="White">
+                        <StackPanel>
+                            <daisy:DaisyTextArea Text="{Binding SvgText}"
+                                     IsReadOnly="True"
+                                     Margin="10,10,10,10"
+                                     MaxHeight="300" />
+                            <TextBlock Text="{loc:Localize QrCode_SvgCode_Label}"
+                                       HorizontalAlignment="Center"
+                                       Margin="5"
+                                       Foreground="{DynamicResource DaisyBaseContentBrush}"
+                                       IsHitTestVisible="False" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock Text="{Binding CopyStatusMessage}"
+                       Margin="0,10,0,0"
+                       HorizontalAlignment="Center"
+                       Foreground="{DynamicResource DaisyBaseContentBrush}"
+                       FontSize="11" />
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
