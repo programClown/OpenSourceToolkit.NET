@@ -22,7 +22,7 @@ namespace OpenSourceToolkit.Media
         {
             var height = (int)(bitmap.Height * ((double)width / bitmap.Width) * 0.55); // 0.55 accounts for char aspect ratio
 
-            using var resized = bitmap.Resize(new SKImageInfo(width, height), SKFilterQuality.Medium);
+            using var resized = bitmap.Resize(new SKImageInfo(width, height), new SKSamplingOptions(SKFilterMode.Linear));
             if (resized == null)
                 throw new InvalidOperationException("Failed to resize image");
 

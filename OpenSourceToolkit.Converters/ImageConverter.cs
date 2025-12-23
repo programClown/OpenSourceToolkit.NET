@@ -2,9 +2,11 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.Versioning;
 
 namespace OpenSourceToolkit.Converters
 {
+    [SupportedOSPlatform("windows")]
     public static class ImageConverter
     {
         public static void Convert(string inputPath, string outputPath, ImageFormat format)

@@ -28,7 +28,7 @@ namespace OpenSourceToolkit.Calculators
         {
             var outputQueue = new Queue<string>();
             var operatorStack = new Stack<string>();
-            
+
             // Tokenize
             var tokens = Tokenize(expression);
 
@@ -51,8 +51,8 @@ namespace OpenSourceToolkit.Calculators
                 }
                 else if (IsOperator(token))
                 {
-                    while (operatorStack.Count > 0 && 
-                           IsOperator(operatorStack.Peek()) && 
+                    while (operatorStack.Count > 0 &&
+                           IsOperator(operatorStack.Peek()) &&
                            GetPrecedence(operatorStack.Peek()) >= GetPrecedence(token))
                     {
                         outputQueue.Enqueue(operatorStack.Pop());
@@ -96,11 +96,11 @@ namespace OpenSourceToolkit.Calculators
         {
             var tokens = new List<string>();
             var buffer = "";
-            
+
             for (int i = 0; i < expression.Length; i++)
             {
                 char c = expression[i];
-                
+
                 if (char.IsDigit(c) || c == '.')
                 {
                     buffer += c;
@@ -112,7 +112,7 @@ namespace OpenSourceToolkit.Calculators
                         tokens.Add(buffer);
                         buffer = "";
                     }
-                    
+
                     if (char.IsLetter(c))
                     {
                         // Function or constant
@@ -130,7 +130,7 @@ namespace OpenSourceToolkit.Calculators
                     }
                 }
             }
-            
+
             if (!string.IsNullOrEmpty(buffer))
             {
                 tokens.Add(buffer);
@@ -194,20 +194,21 @@ namespace OpenSourceToolkit.Calculators
 
         private static bool IsOperator(string token)
         {
-            return token == "+" || token == "-" || token == "*" || token == "/" || token == "^" || token == "%";
+            return token == "+" || token == "-" || token == "*" || token == "/" || token == "^" || token == "%" || token == "neg";
         }
 
         private static bool IsFunction(string token)
         {
-            return token == "sin" || token == "cos" || token == "tan" || 
-                   token == "asin" || token == "acos" || token == "atan" || 
-                   token == "sqrt" || token == "log" || token == "ln" || 
-                   token == "abs" || token == "floor" || token == "ceil" || 
+            return token == "sin" || token == "cos" || token == "tan" ||
+                   token == "asin" || token == "acos" || token == "atan" ||
+                   token == "sqrt" || token == "log" || token == "ln" ||
+                   token == "abs" || token == "floor" || token == "ceil" ||
                    token == "round" || token == "trunc";
         }
 
         private static int GetPrecedence(string op)
         {
+            if (op == "neg") return 5; // Unary negation has highest precedence
             if (op == "^") return 4;
             if (op == "*" || op == "/" || op == "%") return 3;
             if (op == "+" || op == "-") return 2;
