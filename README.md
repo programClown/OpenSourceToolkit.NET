@@ -13,7 +13,7 @@ Porting was mainly done by help of AI, but I spent hundreds of hours tweaking
 the tools, adding translations, add more features and simultaneously enhancing
 my [Flowery.NET component suite](https://github.com/tobitege/Flowery.NET) for the UI.
 
-The total lines of code count (excluding comments) is > 400K.
+The total lines of code count (excluding comments) is > 91K.
 
 <div align="center">
 
