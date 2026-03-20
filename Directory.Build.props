@@ -9,7 +9,7 @@
   -->
   <PropertyGroup>
     <!-- Toggle this to switch between NuGet and local project reference -->
-    <UseLocalFlowery>true</UseLocalFlowery>
+    <UseLocalFlowery>false</UseLocalFlowery>
 
     <!-- Path to Flowery.NET project (relative to this file) -->
     <FloweryPath>D:\github\Flowery.NET\Flowery.NET</FloweryPath>

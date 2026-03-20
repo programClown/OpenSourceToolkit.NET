@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-03-20
+
+### Changed
+
+- Updated Magick.NET-Q8-AnyCPU from 14.10.0 to 14.11.0 in the app and converters projects to address known security advisories.
+- Updated Flowery.NET from 1.8.0 to 1.9.2 and aligned Avalonia package references to 11.3.12.
+- Updated System.Text.Json package references to 10.0.5 across affected projects.
+- Switched the default Flowery.NET dependency back to the NuGet package instead of a local project reference.
+
+### Fixed
+
+- Resolved NuGet restore and build warnings caused by Avalonia and System.Text.Json package downgrades.
+
 ## [0.1.1] - 2025-12-23
 
 ### Changed
