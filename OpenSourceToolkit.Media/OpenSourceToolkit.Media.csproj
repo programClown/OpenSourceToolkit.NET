@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="FIGLet" Version="1.1.0" />
-    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <PackageReference Include="SkiaSharp" Version="3.119.2" />
   </ItemGroup>
 
 </Project>

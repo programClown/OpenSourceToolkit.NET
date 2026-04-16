@@ -412,10 +412,10 @@ namespace OpenSourceToolkit.Converters
                     // We want to keep 1 and 3 (foreground and probable foreground)
                     const int GC_FGD = 1;
                     const int GC_PR_FGD = 3;
-                    Cv2.Compare(mask, new Scalar(GC_FGD), fgMask, CmpType.EQ);
+                    Cv2.Compare(mask, new Scalar(GC_FGD), fgMask, CmpTypes.EQ);
                     using (var prFgMask = new Mat())
                     {
-                        Cv2.Compare(mask, new Scalar(GC_PR_FGD), prFgMask, CmpType.EQ);
+                        Cv2.Compare(mask, new Scalar(GC_PR_FGD), prFgMask, CmpTypes.EQ);
                         Cv2.BitwiseOr(fgMask, prFgMask, fgMask);
                     }
 

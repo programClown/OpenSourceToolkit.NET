@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-04-16
+
+### Fixed
+
+- Updated the OpenCvSharp API usage in `ImageProcessor` from `CmpType` to `CmpTypes` so the solution builds again with the current minor package line.
+
+### Changed
+
+- Applied non-major NuGet updates across the solution, including `CommunityToolkit.Mvvm`, `LlmTornado`, `Microsoft.SqlServer.TransactSql.ScriptDom`, `NAudio`, `OpenCvSharp4`, `OpenCvSharp4.runtime.win`, `PDFsharp`, `QRCoder`, `SkiaSharp`, `System.Drawing.Common`, `System.IdentityModel.Tokens.Jwt`, and `System.Text.Json`.
+
+### Security
+
+- Kept `Magick.NET-Q8-AnyCPU` on `14.12.0` because the Dependabot advisory metadata points to `14.20.0`, but that version is not currently published on NuGet and does not restore or build.
+- Verified that `14.20.0` is not consumable from the public NuGet feed, so `14.12.0` is the current buildable fallback until a newer package is actually released.
+
 ## [0.2.0] - 2026-04-07
 
 ### Changed
