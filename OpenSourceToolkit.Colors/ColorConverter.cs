@@ -3,13 +3,28 @@ using System.Drawing;
 
 namespace OpenSourceToolkit.Colors
 {
+    /// <summary>
+    /// Provides color conversion helpers for common color formats and color spaces.
+    /// </summary>
     public static class ColorConverter
     {
+        /// <summary>
+        /// Converts RGB color components to a hexadecimal color string.
+        /// </summary>
+        /// <param name="r">The red component from 0 to 255.</param>
+        /// <param name="g">The green component from 0 to 255.</param>
+        /// <param name="b">The blue component from 0 to 255.</param>
+        /// <returns>A hexadecimal color string in the format #RRGGBB.</returns>
         public static string RgbToHex(int r, int g, int b)
         {
             return $"#{r:X2}{g:X2}{b:X2}";
         }
 
+        /// <summary>
+        /// Converts a hexadecimal color string to RGB color components.
+        /// </summary>
+        /// <param name="hex">The hexadecimal color string to convert.</param>
+        /// <returns>The red, green, and blue components, or zeros when conversion fails.</returns>
         public static (int R, int G, int B) HexToRgb(string hex)
         {
             try
@@ -23,6 +38,13 @@ namespace OpenSourceToolkit.Colors
             }
         }
 
+        /// <summary>
+        /// Converts RGB color components to HSL color components.
+        /// </summary>
+        /// <param name="r">The red component from 0 to 255.</param>
+        /// <param name="g">The green component from 0 to 255.</param>
+        /// <param name="b">The blue component from 0 to 255.</param>
+        /// <returns>The hue in degrees, saturation from 0 to 1, and lightness from 0 to 1.</returns>
         public static (double H, double S, double L) RgbToHsl(int r, int g, int b)
         {
              double rd = r / 255.0;
@@ -58,6 +80,13 @@ namespace OpenSourceToolkit.Colors
              return (h * 360.0, s, l);
         }
 
+        /// <summary>
+        /// Converts HSL color components to RGB color components.
+        /// </summary>
+        /// <param name="h">The hue in degrees.</param>
+        /// <param name="s">The saturation from 0 to 1.</param>
+        /// <param name="l">The lightness from 0 to 1.</param>
+        /// <returns>The red, green, and blue components.</returns>
         public static (int R, int G, int B) HslToRgb(double h, double s, double l)
         {
             // h: 0-360, s: 0-1, l: 0-1
@@ -90,6 +119,13 @@ namespace OpenSourceToolkit.Colors
             return p;
         }
 
+        /// <summary>
+        /// Converts RGB color components to HSV color components.
+        /// </summary>
+        /// <param name="r">The red component from 0 to 255.</param>
+        /// <param name="g">The green component from 0 to 255.</param>
+        /// <param name="b">The blue component from 0 to 255.</param>
+        /// <returns>The hue in degrees, saturation from 0 to 1, and value from 0 to 1.</returns>
         public static (double H, double S, double V) RgbToHsv(int r, int g, int b)
         {
             double rd = r / 255.0;
@@ -116,6 +152,13 @@ namespace OpenSourceToolkit.Colors
             return (h * 360.0, s, v);
         }
 
+        /// <summary>
+        /// Converts RGB color components to CMYK color components.
+        /// </summary>
+        /// <param name="r">The red component from 0 to 255.</param>
+        /// <param name="g">The green component from 0 to 255.</param>
+        /// <param name="b">The blue component from 0 to 255.</param>
+        /// <returns>The cyan, magenta, yellow, and key components as percentages.</returns>
         public static (int C, int M, int Y, int K) RgbToCmyk(int r, int g, int b)
         {
             double rd = r / 255.0;
@@ -132,6 +175,13 @@ namespace OpenSourceToolkit.Colors
             return ((int)(c * 100), (int)(m * 100), (int)(y * 100), (int)(k * 100));
         }
 
+        /// <summary>
+        /// Converts RGB color components to CIE L*a*b* color components.
+        /// </summary>
+        /// <param name="r">The red component from 0 to 255.</param>
+        /// <param name="g">The green component from 0 to 255.</param>
+        /// <param name="b">The blue component from 0 to 255.</param>
+        /// <returns>The lightness, a-axis, and b-axis components.</returns>
         public static (double L, double A, double B) RgbToLab(int r, int g, int b)
         {
             double R = r / 255.0;

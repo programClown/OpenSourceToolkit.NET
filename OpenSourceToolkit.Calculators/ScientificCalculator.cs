@@ -4,8 +4,16 @@ using System.Globalization;
 
 namespace OpenSourceToolkit.Calculators
 {
+    /// <summary>
+    /// Evaluates mathematical expressions with common scientific functions and operators.
+    /// </summary>
     public static class ScientificCalculator
     {
+        /// <summary>
+        /// Evaluates a mathematical expression and returns the calculated result.
+        /// </summary>
+        /// <param name="expression">The expression to evaluate.</param>
+        /// <returns>The calculated result, zero for empty input, or <see cref="double.NaN"/> when evaluation fails.</returns>
         public static double Evaluate(string expression)
         {
             if (string.IsNullOrWhiteSpace(expression)) return 0;
